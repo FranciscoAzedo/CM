@@ -1,7 +1,9 @@
 package com.example.challenge1;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -66,6 +68,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) { }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 2) {
+            if (resultCode == 1) {
+
+                int animalSelected = data.getExtras().getInt("AnimalSelected");
+
+                if (data.hasExtra("AnimalName"))
+                    animals.get(animalSelected).setName(data.getExtras().getString("AnimalName"));
+
+                if (data.hasExtra("AnimalOwner"))
+                    animals.get(animalSelected).setOwner(data.getExtras().getString("AnimalOwner"));
+
+                if (data.hasExtra("AnimalAge"))
+                    animals.get(animalSelected).setAge(data.getExtras().getInt("AnimalAge"));
+
+                ownerName.setText(animals.get(animalSelected).getOwner());
+                animalName.setText(animals.get(animalSelected).getName());
+                animalAge.setText(String.valueOf(animals.get(animalSelected).getAge()));
+            }
+        }
+    }
+
     private Animal getAnimalByType(String type){
         for (Animal animal : animals) {
             if (animal.getType().equalsIgnoreCase(type))
@@ -75,6 +102,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void editInfo(View view) {
-
+        Intent intent = new Intent(getApplicationContext(), SecondActivity.class);
+        intent.putExtra("SpinnerOption", spinner.getSelectedItemPosition());
+        startActivityForResult(intent, 2);
     }
 }
