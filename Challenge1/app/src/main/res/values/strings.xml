@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Challenge1</string>
+    <string name="spinnerText">Choose the animal:</string>
+    <array name="animalList">
+        <item>Cat</item>
+        <item>Dog</item>
+        <item>Duck</item>
+        <item>Elephant</item>
+        <item>Fish</item>
+        <item>Giraffe</item>
+        <item>Horse</item>
+        <item>Lion</item>
+        <item>Rabbit</item>
+        <item>Tiger</item>
+    </array>
+</resources>
