@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             add(new Animal("elephant", "Lipito", "Trombas", 14));
             add(new Animal("fish", "Cidito", "Fixe", 10));
             add(new Animal("giraffe", "Celito", "Cumprido", 8));
-            add(new Animal("horse", "Litito", "Tarolo", 9));
+            add(new Animal("horse", "Litito", "Crinas", 9));
             add(new Animal("lion", "Acacio", "Jubinha", 24));
             add(new Animal("rabbit", "Armenioc", "Saltitao", 5));
             add(new Animal("tiger", "Junioc", "Dentes", 7));
@@ -60,9 +60,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         "drawable",
                         getPackageName())
         );
-        ownerName.setText(currentAnimal.getOwner());
-        animalName.setText(currentAnimal.getName());
-        animalAge.setText(String.valueOf(currentAnimal.getAge()));
+
+        updateLabels(currentAnimal);
+//        ownerName.setText("Owner: " + currentAnimal.getOwner());
+//        animalName.setText("Name: " + currentAnimal.getName());
+//        animalAge.setText(String.valueOf("Age: " + currentAnimal.getAge()));
     }
 
     @Override
@@ -79,17 +81,57 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 if (data.hasExtra("AnimalName"))
                     animals.get(animalSelected).setName(data.getExtras().getString("AnimalName"));
+                else
+                    animals.get(animalSelected).setName(null);
 
                 if (data.hasExtra("AnimalOwner"))
                     animals.get(animalSelected).setOwner(data.getExtras().getString("AnimalOwner"));
+                else
+                    animals.get(animalSelected).setOwner(null);
+
 
                 if (data.hasExtra("AnimalAge"))
                     animals.get(animalSelected).setAge(data.getExtras().getInt("AnimalAge"));
+                else
+                    animals.get(animalSelected).setAge(0);
 
-                ownerName.setText(animals.get(animalSelected).getOwner());
-                animalName.setText(animals.get(animalSelected).getName());
-                animalAge.setText(String.valueOf(animals.get(animalSelected).getAge()));
+
+                updateLabels(animals.get(animalSelected));
+//                ownerName.setText(animals.get(animalSelected).getOwner());
+//                animalAge.setText(String.valueOf(animals.get(animalSelected).getAge()));
             }
+        }
+    }
+
+    private void updateLabels(Animal animal){
+        if(animal.getName() != null){
+            animalName.setText("Name: " + animal.getName());
+            animalName.setEnabled(true);
+            animalName.setVisibility(View.VISIBLE);
+        }
+        else {
+            animalName.setVisibility(View.GONE);
+            animalName.setEnabled(false);
+        }
+
+        if(animal.getOwner() != null){
+            ownerName.setText("Owner: " + animal.getOwner());
+            ownerName.setEnabled(true);
+            ownerName.setVisibility(View.VISIBLE);
+        }
+        else {
+            ownerName.setVisibility(View.GONE);
+            ownerName.setEnabled(false);
+        }
+
+        if(animal.getAge() != 0){
+            animalAge.setText("Age: " + animal.getAge());
+            animalAge.setEnabled(true);
+            animalAge.setVisibility(View.VISIBLE);
+        }
+        else {
+            animalAge.setVisibility(View.GONE);
+            animalAge.setEnabled(false);
         }
     }
 
