@@ -189,11 +189,20 @@ public class MainActivity extends AppCompatActivity implements ListAnimalsFragme
 
     @Override
     public void OnListAnimalsFragmentInteraction(Animal animal, int currentAnimalIndex) {
-        AnimalInfoFragment animalInfoFragment = AnimalInfoFragment.newInstance(animal, currentAnimalIndex);
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.layout, animalInfoFragment, "animalInfoFragment");
-        fragmentTransaction.addToBackStack("Top");
-        fragmentTransaction.commit();
+
+        AnimalInfoFragment animalInfoFragment;
+
+        if((animalInfoFragment = (AnimalInfoFragment) getSupportFragmentManager().findFragmentByTag("animalInfoFragment")) == null) {
+            animalInfoFragment = AnimalInfoFragment.newInstance(animal, currentAnimalIndex);
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.layout, animalInfoFragment, "animalInfoFragment");
+            fragmentTransaction.addToBackStack("Top");
+            fragmentTransaction.commit();
+        }
+        else{
+            animalInfoFragment.initArguments(animal, currentAnimalIndex);
+            getSupportFragmentManager().popBackStack();
+        }
     }
 
     @Override
