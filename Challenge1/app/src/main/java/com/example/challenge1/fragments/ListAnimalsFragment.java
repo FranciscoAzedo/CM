@@ -29,6 +29,9 @@ public class ListAnimalsFragment extends Fragment implements AdapterView.OnItemS
     private TextView animalAge;
     private Button animalInfoButton;
 
+    private static final String LIST_ANIMALS_KEY = "LIST_ANIMALS";
+    private static final String INDEX_KEY = "INDEX";
+
     private ArrayList<Animal> animals;
     private Animal currentAnimal;
     private int currentAnimalIndex;
@@ -39,10 +42,8 @@ public class ListAnimalsFragment extends Fragment implements AdapterView.OnItemS
         // Required empty public constructor
     }
 
-    public static ListAnimalsFragment newInstance(ArrayList<Animal> animals, int currentAnimalIndex) {
-        ListAnimalsFragment fragment = new ListAnimalsFragment();
-        fragment.initArguments(animals, currentAnimalIndex);
-        return fragment;
+    public static ListAnimalsFragment newInstance() {
+        return new ListAnimalsFragment();
     }
 
     @Override
@@ -50,15 +51,19 @@ public class ListAnimalsFragment extends Fragment implements AdapterView.OnItemS
         super.onCreate(savedInstanceState);
     }
 
-    public void initArguments(ArrayList<Animal> animals, int currentAnimalIndex){
-        if (animals != null)
-            this.animals = animals;
-        this.currentAnimalIndex = currentAnimalIndex;
+    public void initArguments(){
+
+        if (getArguments() != null) {
+            animals = Utils.deserializeListOfAnimals(getArguments().getString(LIST_ANIMALS_KEY));
+            currentAnimalIndex = Integer.parseInt(getArguments().getString(INDEX_KEY));
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        initArguments();
 
         View view = inflater.inflate(R.layout.fragment_list_animals, container, false);
 

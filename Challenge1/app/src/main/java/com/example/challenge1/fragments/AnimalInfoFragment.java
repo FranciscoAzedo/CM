@@ -13,6 +13,7 @@ import android.widget.EditText;
 
 import com.example.challenge1.Animal;
 import com.example.challenge1.R;
+import com.example.challenge1.Utils;
 
 public class AnimalInfoFragment extends Fragment {
 
@@ -20,6 +21,9 @@ public class AnimalInfoFragment extends Fragment {
     private EditText ownerName;
     private EditText animalAge;
     private Button saveAnimalChangesButton;
+
+    private static final String ANIMAL_KEY = "ANIMAL";
+    private static final String INDEX_KEY = "INDEX";
 
     private int currentAnimalIndex;
     private Animal currentAnimal;
@@ -30,16 +34,15 @@ public class AnimalInfoFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static AnimalInfoFragment newInstance(Animal animal, int currentAnimalIndex) {
-        AnimalInfoFragment fragment = new AnimalInfoFragment();
-        fragment.initArguments(animal, currentAnimalIndex);
-        return fragment;
+    public static AnimalInfoFragment newInstance() {
+        return new AnimalInfoFragment();
     }
 
-    public void initArguments(Animal animal, int currentAnimalIndex){
-        if (animal != null)
-            currentAnimal = animal;
-        this.currentAnimalIndex = currentAnimalIndex;
+    public void initArguments(){
+        if (getArguments() != null) {
+            currentAnimal = Utils.deserializeAnimal(getArguments().getString(ANIMAL_KEY));
+            currentAnimalIndex = Integer.parseInt(getArguments().getString(INDEX_KEY));
+        }
     }
 
     @Override
@@ -50,6 +53,8 @@ public class AnimalInfoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        initArguments();
 
         View view = inflater.inflate(R.layout.fragment_animal_info, container, false);
         animalAge = view.findViewById(R.id.animalAge);

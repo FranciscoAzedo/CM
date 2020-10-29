@@ -1,16 +1,18 @@
 package com.example.challenge1;
 
-import androidx.annotation.Nullable;
+//import androidx.annotation.Nullable;
+//import android.content.Intent;
+//import android.util.Log;
+//import android.view.View;
+//import android.widget.AdapterView;
+//import android.widget.ImageView;
+//import android.widget.Spinner;
+//import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.example.challenge1.fragments.AnimalInfoFragment;
 import com.example.challenge1.fragments.ListAnimalsFragment;
@@ -166,12 +168,19 @@ public class MainActivity extends AppCompatActivity implements ListAnimalsFragme
         }
     };
 
+    private static final String LIST_ANIMALS_KEY = "LIST_ANIMALS";
+    private static final String ANIMAL_KEY = "ANIMAL";
+    private static final String INDEX_KEY = "INDEX";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        ListAnimalsFragment listAnimalsFragment = ListAnimalsFragment.newInstance(animals, 0);
+        ListAnimalsFragment listAnimalsFragment = ListAnimalsFragment.newInstance();
+        Bundle bundle = new Bundle();
+        bundle.putString(LIST_ANIMALS_KEY, Utils.serializeListOfAnimals(animals));
+        bundle.putString(INDEX_KEY, String.valueOf(0));
+        listAnimalsFragment.setArguments(bundle);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.layout, listAnimalsFragment, "listAnimalsFragment");
         fragmentTransaction.commit();
@@ -193,14 +202,21 @@ public class MainActivity extends AppCompatActivity implements ListAnimalsFragme
         AnimalInfoFragment animalInfoFragment;
 
         if((animalInfoFragment = (AnimalInfoFragment) getSupportFragmentManager().findFragmentByTag("animalInfoFragment")) == null) {
-            animalInfoFragment = AnimalInfoFragment.newInstance(animal, currentAnimalIndex);
+            animalInfoFragment = AnimalInfoFragment.newInstance();
+            Bundle bundle = new Bundle();
+            bundle.putString(ANIMAL_KEY, Utils.serializeAnimal(animal));
+            bundle.putString(INDEX_KEY, String.valueOf(currentAnimalIndex));
+            animalInfoFragment.setArguments(bundle);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.layout, animalInfoFragment, "animalInfoFragment");
             fragmentTransaction.addToBackStack("Top");
             fragmentTransaction.commit();
         }
         else{
-            animalInfoFragment.initArguments(animal, currentAnimalIndex);
+            Bundle bundle = new Bundle();
+            bundle.putString(ANIMAL_KEY, Utils.serializeAnimal(animal));
+            bundle.putString(INDEX_KEY, String.valueOf(currentAnimalIndex));
+            animalInfoFragment.setArguments(bundle);
             getSupportFragmentManager().popBackStack();
         }
     }
@@ -212,13 +228,20 @@ public class MainActivity extends AppCompatActivity implements ListAnimalsFragme
 
         updateAnimal(animal);
         if((listAnimalsFragment = (ListAnimalsFragment) getSupportFragmentManager().findFragmentByTag("listAnimalsFragment")) == null) {
-            listAnimalsFragment = ListAnimalsFragment.newInstance(animals, currentAnimalIndex);
+            listAnimalsFragment = ListAnimalsFragment.newInstance();
+            Bundle bundle = new Bundle();
+            bundle.putString(LIST_ANIMALS_KEY, Utils.serializeListOfAnimals(animals));
+            bundle.putString(INDEX_KEY, String.valueOf(currentAnimalIndex));
+            listAnimalsFragment.setArguments(bundle);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.layout, listAnimalsFragment, "listAnimalsFragment");
             fragmentTransaction.commit();
         }
         else {
-            listAnimalsFragment.initArguments(animals, currentAnimalIndex);
+            Bundle bundle = new Bundle();
+            bundle.putString(LIST_ANIMALS_KEY, Utils.serializeListOfAnimals(animals));
+            bundle.putString(INDEX_KEY, String.valueOf(currentAnimalIndex));
+            listAnimalsFragment.setArguments(bundle);
             getSupportFragmentManager().popBackStack();
         }
     }
