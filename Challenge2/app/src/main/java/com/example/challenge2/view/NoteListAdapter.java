@@ -1,6 +1,8 @@
 package com.example.challenge2.view;
 
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -17,12 +19,13 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteLi
 
     private final ArrayList<Note> notesList;
     private OnItemClickListener listener;
+    private int positionLongPressed;
 
     public NoteListAdapter(ArrayList<Note> notesList) {
         this.notesList = notesList;
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener){
+    public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 
@@ -45,7 +48,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteLi
         });
 
         holder.itemView.setOnLongClickListener(v -> {
-            listener.onItemLongClick(position);
+            positionLongPressed = position;
             return false;
         });
     }
@@ -55,13 +58,21 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteLi
         return notesList.size();
     }
 
-    public interface OnItemClickListener{
-        void onItemClick(int position);
-
-        void onItemLongClick(int position);
+    @Override
+    public void onViewRecycled(NoteListViewHolder holder) {
+        holder.itemView.setOnLongClickListener(null);
+        super.onViewRecycled(holder);
     }
 
-    public static class NoteListViewHolder extends RecyclerView.ViewHolder {
+    public int getPositionLongPressed() {
+        return positionLongPressed;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    public static class NoteListViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
         private final TextView tvTitle;
         //private TextView tvDate;
@@ -71,6 +82,14 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteLi
 
             tvTitle = itemView.findViewById(R.id.tv_note_title);
             //tvDate = itemView.findViewById(R.id.tv_note_date);
+
+            itemView.setOnCreateContextMenuListener(this);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.add(Menu.NONE, R.id.menu_change_title, Menu.NONE, R.string.long_press_change);
+            menu.add(Menu.NONE, R.id.menu_delete, Menu.NONE, R.string.long_press_delete);
         }
     }
 }

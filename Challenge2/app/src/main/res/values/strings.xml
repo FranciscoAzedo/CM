@@ -11,11 +11,20 @@
     <string name="button_save_description">Save</string>
     <string name="button_delete_description">Delete</string>
 
-    <!-- Alert Dialog to Long Press -->
-    <string name="erase_dialog_title">Erase Note</string>
-    <string name="erase_dialog_content">Are your sure you want to erase the selected note?</string>
-    <string name="erase_dialog_confirm">Sure</string>
-    <string name="erase_dialog_cancel">No</string>
+    <!-- Alert Dialog to Delete Note -->
+    <string name="delete_dialog_title">Delete Note</string>
+    <string name="delete_dialog_content">Are your sure you want to delete the selected note?</string>
+    <string name="delete_dialog_confirm">Sure</string>
+    <string name="delete_dialog_cancel">No</string>
+
+    <!-- Alert Dialog to Change Note's Title -->
+    <string name="change_dialog_title">Change Note Title</string>
+    <string name="change_dialog_edit_hint">Insert the new note title...</string>
+    <string name="change_dialog_confirm">Save</string>
+
+    <!-- Long Press Menu -->
+    <string name="long_press_change">Change Title</string>
+    <string name="long_press_delete">Delete</string>
 
     <!-- Strings used for fragments for navigation -->
     <string name="note_list_fragment_label">Note List Fragment</string>
