@@ -16,9 +16,14 @@ import java.util.ArrayList;
 public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteListViewHolder> {
 
     private final ArrayList<Note> notesList;
+    private OnItemClickListener listener;
 
     public NoteListAdapter(ArrayList<Note> notesList) {
         this.notesList = notesList;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.listener = listener;
     }
 
     @NonNull
@@ -34,11 +39,26 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteLi
 
         holder.tvTitle.setText(currentNote.getTitle());
         //holder.tvTitle.setText(currentNote.getDate());
+
+        holder.itemView.setOnClickListener(v -> {
+            listener.onItemClick(position);
+        });
+
+        holder.itemView.setOnLongClickListener(v -> {
+            listener.onItemLongClick(position);
+            return false;
+        });
     }
 
     @Override
     public int getItemCount() {
         return notesList.size();
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(int position);
+
+        void onItemLongClick(int position);
     }
 
     public static class NoteListViewHolder extends RecyclerView.ViewHolder {

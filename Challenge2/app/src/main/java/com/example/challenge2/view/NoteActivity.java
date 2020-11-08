@@ -29,8 +29,7 @@ public class NoteActivity extends AppCompatActivity {
 
         // Apresentar inicialmente a lista de todas as notas
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_note, new NoteListFragment())
-                .addToBackStack(getString(R.string.note_list_fragment_label))
-                .commit();
+                                    .replace(R.id.frame_note, new NoteListFragment())
+                                    .commit();
     }
 }

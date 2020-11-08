@@ -1,5 +1,6 @@
 package com.example.challenge2.view;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -110,6 +112,33 @@ public class NoteListFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        // Listener para quando houver um clique, ou longo clique, num elemento da lista de notas
+        rvNotesListAdapter.setOnItemClickListener(new NoteListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                // Abrir a nota respetiva
+                // [SUBSTITUIR] Enviar a nota que é clicada
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.frame_note, new NoteDetailedFragment())
+                        .addToBackStack(getString(R.string.note_detailed_fragment_label))
+                        .commit();
+            }
+
+            @Override
+            public void onItemLongClick(int position) {
+                 // Apresentar a dialog para o utilizador apagar ou não
+                new AlertDialog.Builder(getContext())
+                                .setTitle(R.string.erase_dialog_title)
+                                .setMessage(R.string.erase_dialog_content)
+                                .setPositiveButton(R.string.erase_dialog_confirm, (dialog, which) -> {
+                                    // Apagar a nota
+
+                                }).setNegativeButton(R.string.erase_dialog_cancel, (dialog, which) -> {
+                                    dialog.dismiss();
+                                }).show();
             }
         });
     }
