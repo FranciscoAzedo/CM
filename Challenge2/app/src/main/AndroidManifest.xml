@@ -11,7 +11,7 @@
         android:theme="@style/Theme.Challenge2">
 
         <activity
-            android:name=".NoteActivity"
+            android:name=".view.NoteActivity"
             android:label="@string/title_activity_note"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 

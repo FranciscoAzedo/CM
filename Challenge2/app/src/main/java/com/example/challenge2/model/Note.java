@@ -17,6 +17,7 @@ public class Note {
 
     /**
      * Construtor que permite criar uma nova Nota apenas com o título
+     *
      * @param title título da Nota
      */
     public Note(String title) {
@@ -25,8 +26,9 @@ public class Note {
 
     /**
      * Construtor que permite criar uma nova Nota com o título e conteúdo
+     *
      * @param title título da Nota
-     * @param text conteúdo textual da Nota
+     * @param text  conteúdo textual da Nota
      */
     public Note(String title, String text) {
         this.title = title;
@@ -35,6 +37,7 @@ public class Note {
 
     /**
      * Método que permite obter o título da Nota
+     *
      * @return título da Nota
      */
     public String getTitle() {
@@ -43,6 +46,7 @@ public class Note {
 
     /**
      * Método que permite atualizar o título da Nota
+     *
      * @param title novo título da Nota
      */
     public void setTitle(String title) {
@@ -51,6 +55,7 @@ public class Note {
 
     /**
      * Método que permite obter o conteúdo textual da Nota
+     *
      * @return conteúdo textual da Nota
      */
     public String getText() {
@@ -59,6 +64,7 @@ public class Note {
 
     /**
      * Método que permite atualizar o conteúdo textual da Nota
+     *
      * @param text novo conteúdo textual da Nota
      */
     public void setText(String text) {

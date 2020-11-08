@@ -4,15 +4,15 @@
 
     <!-- Present Fragment -->
     <string name="fragment_title">All Notes</string>
-    <string name="total_notes">%d notes</string>
-    <string name="search_hint">Search notes by title</string>
+    <string name="total_notes">%1$s notes</string>
+    <string name="search_hint">Search notes by title...</string>
 
     <!-- Add Fragment -->
     <string name="button_save_description">Save</string>
     <string name="button_delete_description">Delete</string>
 
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
+    <string name="note_list_fragment_label">Note List Fragment</string>
+    <string name="note_detailed_fragment_label">Note Detailed Fragment</string>
 
 </resources>

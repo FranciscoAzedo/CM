@@ -3,9 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/gray_lighter"
     android:paddingHorizontal="16dp"
     android:paddingVertical="32dp"
-    tools:context=".SecondFragment">
+    tools:context=".view.NoteDetailedFragment">
 
     <!-- Back -->
     <ImageView
@@ -32,21 +33,25 @@
             android:orientation="vertical">
 
             <!-- Note Title -->
-            <TextView
-                android:id="@+id/tv_note_title"
+            <EditText
+                android:id="@+id/et_note_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:inputType="text"
                 android:text="TEST"
                 android:textColor="@android:color/black"
                 android:textSize="28sp"
                 android:textStyle="bold" />
 
             <!-- Note Content -->
-            <TextView
-                android:id="@+id/tv_note_content"
+            <EditText
+                android:id="@+id/et_note_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:background="@android:color/transparent"
+                android:inputType="text"
                 android:text="TEST"
                 android:textColor="@android:color/black"
                 android:textSize="14sp" />
@@ -55,6 +60,7 @@
 
     </ScrollView>
 
+    <!-- Bottom Bar -->
     <LinearLayout
         android:id="@+id/bottom_bar_note"
         android:layout_width="match_parent"

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="10dp"
+    android:background="@drawable/background_round_corner_gray"
+    android:orientation="vertical"
+    android:paddingHorizontal="10dp"
+    android:paddingVertical="12dp">
+
+    <!-- Note Title -->
+    <TextView
+        android:id="@+id/tv_note_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TEST"
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+
+    <!--    &lt;!&ndash; Note Date &ndash;&gt;-->
+    <!--    <TextView-->
+    <!--        android:id="@+id/tv_note_date"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="6dp"-->
+    <!--        android:text="TEST"-->
+    <!--        android:textColor="@color/gray_light"-->
+    <!--        android:textSize="12sp" />-->
+
+</LinearLayout>
