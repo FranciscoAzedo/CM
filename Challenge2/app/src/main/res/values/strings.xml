@@ -30,4 +30,8 @@
     <string name="note_list_fragment_label">Note List Fragment</string>
     <string name="note_detailed_fragment_label">Note Detailed Fragment</string>
 
+    <!-- Strings used for fragments for navigation -->
+    <string name="save_note_error">An error occurred during save note process</string>
+    <string name="read_note_error">An error occurred during read note process</string>
+
 </resources>
