@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.challenge2.R;
 import com.example.challenge2.model.Note;
+import com.example.challenge2.model.Repository.SharedPreferencesManager;
 
 import java.util.ArrayList;
 
@@ -13,23 +14,23 @@ public class NoteActivity extends AppCompatActivity {
 
     // Only for test purposes
     // [SUBSTITUIR] Pelo que é dito no enunciado
-    public ArrayList<Note> notesList = new ArrayList<Note>() {
-        {
-            add(new Note("Test 1", "Text of Test 1"));
-            add(new Note("Test 2", "Text of Test 2"));
-            add(new Note("Test 3", "Text of Test 3"));
-            add(new Note("Test 4", "Text of Test 4"));
-        }
-    };
+    public ArrayList<Note> notesList = new ArrayList<Note>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
 
+        fillNotesList();
         // Apresentar inicialmente a lista de todas as notas
         getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.frame_note, new NoteListFragment())
-                                    .commit();
+                .replace(R.id.frame_note, new NoteListFragment())
+                .commit();
+    }
+
+    private void fillNotesList() {
+        for (String s : SharedPreferencesManager.getSharedPreference(this, "titles")) {
+            notesList.add(new Note(s, "texto"));
+        }
     }
 }

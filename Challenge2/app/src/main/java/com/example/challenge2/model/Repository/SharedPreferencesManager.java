@@ -5,18 +5,38 @@ import android.content.SharedPreferences;
 
 import com.example.challenge2.R;
 
-public class SharedPreferencesManager {
+import java.util.HashSet;
+import java.util.Set;
 
-    public static String getSharedPreference(Context context, final String key, final String defaultValue) {
+public abstract class SharedPreferencesManager {
+
+    public static Set<String> getSharedPreference(Context context, final String key) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.app_name),
                 Context.MODE_PRIVATE);
-        return sharedPreferences.getString(key, defaultValue);
+        return sharedPreferences.getStringSet(key, null);
     }
 
     public static void saveSharedPreference(Context context, String key, String value) {
+        Set<String> stringSet = new HashSet<>(getSharedPreference(context, key));
+        stringSet.add(value);
+
         SharedPreferences.Editor editor = context.getSharedPreferences(context.getString(R.string.app_name),
                 Context.MODE_PRIVATE).edit();
-        editor.putString(key, value);
+        editor.putStringSet(key, stringSet);
         editor.commit();
+    }
+
+    public static void saveSharedPreference(Context context, String key, Set<String> value) {
+
+        SharedPreferences.Editor editor = context.getSharedPreferences(context.getString(R.string.app_name),
+                Context.MODE_PRIVATE).edit();
+        editor.putStringSet(key, value);
+        editor.commit();
+    }
+
+    public static void removeSharedPreference(Context context, String key, String value) {
+        Set<String> stringSet = new HashSet<>(getSharedPreference(context, key));
+        stringSet.remove(value);
+        saveSharedPreference(context, key, stringSet);
     }
 }

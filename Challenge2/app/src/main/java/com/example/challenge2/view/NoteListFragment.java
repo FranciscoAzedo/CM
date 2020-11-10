@@ -109,6 +109,8 @@ public class NoteListFragment extends Fragment {
                     }
                 }
 
+                // Atualizar o numero de notas na pesquisa
+                tvTotalNotes.setText(getString(R.string.total_notes, String.valueOf(notesSearchList.size())));
                 // Atualizar o Adapter
                 rvNotesListAdapter.notifyDataSetChanged();
             }
