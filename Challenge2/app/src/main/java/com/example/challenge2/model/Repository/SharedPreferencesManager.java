@@ -26,17 +26,13 @@ public abstract class SharedPreferencesManager {
         editor.commit();
     }
 
-    public static void saveSharedPreference(Context context, String key, Set<String> value) {
-
-        SharedPreferences.Editor editor = context.getSharedPreferences(context.getString(R.string.app_name),
-                Context.MODE_PRIVATE).edit();
-        editor.putStringSet(key, value);
-        editor.commit();
-    }
-
     public static void removeSharedPreference(Context context, String key, String value) {
         Set<String> stringSet = new HashSet<>(getSharedPreference(context, key));
         stringSet.remove(value);
-        saveSharedPreference(context, key, stringSet);
+
+        SharedPreferences.Editor editor = context.getSharedPreferences(context.getString(R.string.app_name),
+                Context.MODE_PRIVATE).edit();
+        editor.putStringSet(key, stringSet);
+        editor.commit();
     }
 }
