@@ -1,11 +1,9 @@
 package com.example.challenge2.view.fragment;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -24,12 +22,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.challenge2.R;
-import com.example.challenge2.model.Repository.FileSystemManager;
+import com.example.challenge2.model.AsyncTasks.ReadNoteTask;
 import com.example.challenge2.model.Repository.SharedPreferencesManager;
 import com.example.challenge2.view.NoteListAdapter;
-import com.google.android.material.snackbar.Snackbar;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class NoteListFragment extends Fragment {
@@ -38,7 +34,6 @@ public class NoteListFragment extends Fragment {
     private TextView tvTotalNotes;
     private EditText etSearch;
     private ImageView ivAdd;
-    private Snackbar sbError;
 
     // Recycler View elements
     private RecyclerView rvNotesList;
@@ -59,17 +54,9 @@ public class NoteListFragment extends Fragment {
     }
 
     private void initArguments() {
-        if (getArguments() != null)
-            updateNotes(getArguments());
-
         // Inicializar as notas gaurdadas pela aplicação
         notesList = new ArrayList<>(SharedPreferencesManager.getSharedPreference(getActivity(), "titles"));
         notesSearchList = new ArrayList<>(notesList);
-    }
-
-    private void updateNotes(Bundle bundle) {
-        SharedPreferencesManager.removeSharedPreference(getActivity(), "titles", bundle.getString("title"));
-        FileSystemManager.removeNoteFile(getActivity(), bundle.getString("title"));
     }
 
     @Override
@@ -92,11 +79,7 @@ public class NoteListFragment extends Fragment {
         rvNotesList = view.findViewById(R.id.recycler_notes);
         ivAdd = view.findViewById(R.id.iv_add);
 
-        // Inicializar snackbar de erro
-        sbError = Snackbar.make(view.findViewById(R.id.RelativeLayout),
-                R.string.read_note_error,
-                Snackbar.LENGTH_SHORT);
-
+        // Indicar o número de notas mostradas
         tvTotalNotes.setText(getString(R.string.total_notes, String.format("%d", notesList.size())));
 
         // Setup da Recycler View
@@ -162,7 +145,6 @@ public class NoteListFragment extends Fragment {
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.menu_long_press, menu);
     }
@@ -192,7 +174,7 @@ public class NoteListFragment extends Fragment {
     /**
      * Método que lida com a intenção do utilizador mudar o título de uma nota
      */
-    public void editNote(int position) {
+    public void editNote(int index) {
         // Criar a caixa de Texto para o utilizador inserir o novo título
         // Podia ser feito com recurso a uma Custom View este Dialog
         final EditText edittext = new EditText(getContext());
@@ -206,12 +188,23 @@ public class NoteListFragment extends Fragment {
                     // Obter o novo título digitado
                     String newTitle = edittext.getText().toString();
 
-                    if (!newTitle.isEmpty())
-                        // [SUBSTITUIR] Falta o código agora para alterar na nota
-                        notesSearchList.set(position, newTitle);
+                    if (!newTitle.isEmpty()) {
 
-                    // Atualizar o Adapter
-                    rvNotesListAdapter.notifyDataSetChanged();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("title", notesSearchList.get(index));
+
+                        // Gerar título com ID
+//                        String uuidNoteTitle = etNoteTitle.getText().toString() + "-" + Utils.generateUUID();
+
+                        // [SUBSTITUIR] Falta o código agora para alterar na nota
+                        notesSearchList.set(index, newTitle);
+                        notesSearchList.set(index, newTitle);
+
+                        // Atualizar o Adapter
+                        rvNotesListAdapter.notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton(R.string.change_dialog_cancel, (dialog, whichButton) -> {
                 }).show();
     }
 
@@ -254,48 +247,4 @@ public class NoteListFragment extends Fragment {
     public interface OnNotesListFragmentInteractionListener {
         void OnNotesListFragmentInteraction(Bundle bundle);
     }
-
-    private class ReadNoteTask extends AsyncTask<Void, Void, Void> {
-
-        private Exception exception;
-        private Context context;
-        private String title;
-        private String content;
-        private Bundle bundle;
-
-        // Construtor da async task
-        ReadNoteTask(Context context, String title, Bundle bundle) {
-            this.context = context;
-            this.title = title;
-            this.bundle = bundle;
-        }
-
-        // Método executado no final da async task
-        @Override
-        protected void onPostExecute(Void arg) {
-
-            NoteDetailedFragment noteDetailedFragment;
-
-            if ((noteDetailedFragment = (NoteDetailedFragment) getActivity().getSupportFragmentManager().findFragmentByTag("noteDetailsFragment")) != null)
-                noteDetailedFragment.updateView();
-
-            if (exception != null) {
-                Log.e("EXCEPTION", "Exception " + exception + "has occurred!");
-                sbError.show();
-            }
-        }
-
-        // Método executado quando a async task é chamada
-        @Override
-        protected Void doInBackground(Void... args) {
-            try {
-                content = FileSystemManager.readNoteFile(context, title);
-                bundle.putString("content", content);
-            } catch (FileNotFoundException exception) {
-                this.exception = exception;
-            }
-            return null;
-        }
-    }
-
 }

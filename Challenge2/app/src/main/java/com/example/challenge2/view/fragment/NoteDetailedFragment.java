@@ -1,9 +1,7 @@
 package com.example.challenge2.view.fragment;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +14,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.challenge2.R;
 import com.example.challenge2.Utils;
-import com.example.challenge2.model.Repository.FileSystemManager;
-import com.example.challenge2.model.Repository.SharedPreferencesManager;
-import com.google.android.material.snackbar.Snackbar;
-
-import java.io.FileNotFoundException;
 
 public class NoteDetailedFragment extends Fragment {
 
@@ -30,7 +23,6 @@ public class NoteDetailedFragment extends Fragment {
     private EditText etNoteContent;
     private LinearLayout llSave;
     private LinearLayout llDelete;
-    private Snackbar sbError;
 
     // Fragment listener
     private OnNoteDetailsFragmentInteractionListener mListener;
@@ -83,88 +75,68 @@ public class NoteDetailedFragment extends Fragment {
         etNoteTitle.setText(Utils.getNoteTitle(noteTitle));
         etNoteContent.setText(noteContent);
 
-        // Inicializar snackbar de erro
-        sbError = Snackbar.make(view.findViewById(R.id.RelativeLayout),
-                R.string.save_note_error,
-                Snackbar.LENGTH_SHORT);
-
         // Listener para quando existir um clique para voltar atrás
         ivBack.setOnClickListener(v -> {
             // Voltar ao fragment anterior
-            mListener.OnNoteDetailsFragmentInteraction(null);
+            mListener.OnNoteDetailsFragmentInteraction();
         });
 
         // Listener para quando existir um clique para guardar a nota atual
         llSave.setOnClickListener(v -> {
 
-            Bundle bundle = null;
+            Bundle bundle = new Bundle();
+            bundle.putString("content", etNoteContent.getText().toString());
 
-            if(edit) {
-                // Caso título seja diferente apagar titulo e ficheiro da nota original
+            // Se se estiver a editar uma nota
+            if (edit) {
+
+                // Caso título seja diferente apagar titulo e ficheiro da nota original e criar nova nota
                 if (!Utils.getNoteTitle(noteTitle).equals(etNoteTitle.getText().toString())) {
-                    // Colocar no bundle informação de nota a apagar
-                    bundle = new Bundle();
-                    bundle.putString("title", noteTitle);
+
+                    // Gerar título com ID
                     String uuidNoteTitle = etNoteTitle.getText().toString() + "-" + Utils.generateUUID();
-                    SharedPreferencesManager.saveSharedPreference(getActivity(), "titles", uuidNoteTitle);
-                    /*
-                    EDITAR E NOME DIFERENTE: PRESERVAR UUID E MUDAR PREFIXO
-                     */
+
+                    // Colocar no bundle informação sobre nota
+                    bundle.putString("title", noteTitle);
+                    bundle.putString("uuidTitle", uuidNoteTitle);
+
+                    Utils.updateNotes("CHANGE NOTE", getActivity(), bundle);
                 }
-                new SaveNoteTask(getActivity(), noteTitle, etNoteContent.getText().toString()).execute();
+                // Caso título seja igual atualizar só o conteúdo do ficheiro
+                else {
+                    // Guardar dados
+                    bundle.putString("uuidTitle", noteTitle);
+                    Utils.updateNotes("CHANGE CONTENT", getActivity(), bundle);
+                }
+            }
+            // Se se estiver a criar uma nota
+            else {
+                // Gerar título com ID
+                String uuidNoteTitle = etNoteTitle.getText().toString() + "-" + Utils.generateUUID();
+
+                // Colocar no bundle informação sobre nota
+                bundle.putString("uuidTitle", uuidNoteTitle);
+
+                // Guardar dados
+                Utils.updateNotes("CREATE NOTE", getActivity(), bundle);
             }
 
-
-            // Guardar dados
-
             // Voltar ao fragment anterior
-            mListener.OnNoteDetailsFragmentInteraction(bundle);
+            mListener.OnNoteDetailsFragmentInteraction();
         });
 
         // Listener para quando existir um clique para eliminar a nota atual
         llDelete.setOnClickListener(v -> {
+
             // Colocar no bundle informação de nota a apagar
             Bundle bundle = new Bundle();
             bundle.putString("title", noteTitle);
 
+            Utils.updateNotes("DELETE NOTE", getActivity(), bundle);
+
             // Voltar ao fragment anterior
-            mListener.OnNoteDetailsFragmentInteraction(bundle);
+            mListener.OnNoteDetailsFragmentInteraction();
         });
-    }
-
-    private class SaveNoteTask extends AsyncTask<Void, Void, Void>{
-
-        private Exception exception;
-        private Context context;
-        private String title;
-        private String content;
-
-        // Construtor da async task
-        SaveNoteTask(Context context, String title, String content){
-            this.context = context;
-            this.title = title;
-            this.content = content;
-        }
-
-        // Método executado no final da async task
-        @Override
-        protected void onPostExecute(Void arg){
-            if (exception != null) {
-                Log.e("EXCEPTION", "Exception " + exception + "has occurred!");
-                sbError.show();
-            }
-        }
-
-        // Método executado quando a async task é chamada
-        @Override
-        protected Void doInBackground(Void... args) {
-            try {
-                FileSystemManager.createNoteFile(context, title, content);
-            } catch (FileNotFoundException exception) {
-                this.exception = exception;
-            }
-            return null;
-        }
     }
 
     @Override
@@ -185,6 +157,6 @@ public class NoteDetailedFragment extends Fragment {
     }
 
     public interface OnNoteDetailsFragmentInteractionListener {
-        void OnNoteDetailsFragmentInteraction(Bundle bundle);
+        void OnNoteDetailsFragmentInteraction();
     }
 }

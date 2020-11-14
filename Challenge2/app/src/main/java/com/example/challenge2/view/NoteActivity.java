@@ -25,13 +25,13 @@ public class NoteActivity extends AppCompatActivity
     }
 
     @Override
-    public void OnNoteDetailsFragmentInteraction(Bundle bundle) {
+    public void OnNoteDetailsFragmentInteraction() {
         NoteListFragment noteListFragment;
 
         if ((noteListFragment = (NoteListFragment) getSupportFragmentManager().findFragmentByTag("noteListFragment")) == null)
             noteListFragment = NoteListFragment.newInstance();
 
-        noteListFragment.setArguments(bundle);
+//        noteListFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_note, noteListFragment, "noteListFragment")
                 .addToBackStack(null)

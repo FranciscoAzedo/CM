@@ -38,8 +38,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteLi
 
     @Override
     public void onBindViewHolder(@NonNull NoteListViewHolder holder, int index) {
-        final String currentNote = notesList.get(index);
-//        final String currentNote = Utils.getNoteTitle(notesList.get(position));
+        final String currentNote = Utils.getNoteTitle(notesList.get(index));
 
         holder.tvTitle.setText(currentNote);
 

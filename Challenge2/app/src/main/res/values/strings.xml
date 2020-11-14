@@ -21,6 +21,7 @@
     <string name="change_dialog_title">Change Note Title</string>
     <string name="change_dialog_edit_hint">Insert the new note title...</string>
     <string name="change_dialog_confirm">Save</string>
+    <string name="change_dialog_cancel">Cancel</string>
 
     <!-- Long Press Menu -->
     <string name="long_press_change">Change Title</string>
