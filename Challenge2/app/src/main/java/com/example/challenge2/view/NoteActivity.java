@@ -5,32 +5,48 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.challenge2.R;
-import com.example.challenge2.model.Note;
-import com.example.challenge2.model.Repository.SharedPreferencesManager;
 
-import java.util.ArrayList;
-
-public class NoteActivity extends AppCompatActivity {
-
-    // Only for test purposes
-    // [SUBSTITUIR] Pelo que é dito no enunciado
-    public ArrayList<Note> notesList = new ArrayList<Note>();
+public class NoteActivity extends AppCompatActivity
+        implements NoteListFragment.OnNotesListFragmentInteractionListener,
+        NoteDetailedFragment.OnNoteDetailsFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
 
-        fillNotesList();
-        // Apresentar inicialmente a lista de todas as notas
+        // Iniciar fragmento com lista das notas
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_note, new NoteListFragment())
+                .replace(R.id.frame_note, NoteListFragment.newInstance())
+                .addToBackStack(null)
                 .commit();
     }
 
-    private void fillNotesList() {
-        for (String s : SharedPreferencesManager.getSharedPreference(this, "titles")) {
-            notesList.add(new Note(s, "texto"));
-        }
+    @Override
+    public void OnNoteDetailsFragmentInteraction(Bundle bundle) {
+        NoteListFragment noteListFragment;
+
+        if ((noteListFragment = (NoteListFragment) getSupportFragmentManager().findFragmentByTag("noteListFragment")) == null)
+            noteListFragment = NoteListFragment.newInstance();
+
+        noteListFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_note, noteListFragment, "noteListFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void OnNotesListFragmentInteraction(Bundle bundle) {
+        NoteDetailedFragment noteDetailedFragment;
+
+        if ((noteDetailedFragment = (NoteDetailedFragment) getSupportFragmentManager().findFragmentByTag("noteDetailsFragment")) == null)
+            noteDetailedFragment = NoteDetailedFragment.newInstance();
+
+        noteDetailedFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_note, noteDetailedFragment, "noteDetailsFragment")
+                .addToBackStack(null)
+                .commit();
     }
 }
