@@ -1,4 +1,4 @@
-package com.example.challenge2.view;
+package com.example.challenge2.view.fragment;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.challenge2.R;
 import com.example.challenge2.model.Repository.FileSystemManager;
 import com.example.challenge2.model.Repository.SharedPreferencesManager;
+import com.example.challenge2.view.NoteListAdapter;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.FileNotFoundException;

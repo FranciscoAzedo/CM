@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.challenge2.R;
+import com.example.challenge2.Utils;
 
 import java.util.ArrayList;
 
@@ -36,17 +37,18 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteLi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NoteListViewHolder holder, int position) {
-        final String currentNote = notesList.get(position);
+    public void onBindViewHolder(@NonNull NoteListViewHolder holder, int index) {
+        final String currentNote = notesList.get(index);
+//        final String currentNote = Utils.getNoteTitle(notesList.get(position));
 
         holder.tvTitle.setText(currentNote);
 
         holder.itemView.setOnClickListener(v -> {
-            listener.onItemClick(position);
+            listener.onItemClick(index);
         });
 
         holder.itemView.setOnLongClickListener(v -> {
-            positionLongPressed = position;
+            positionLongPressed = index;
             return false;
         });
     }

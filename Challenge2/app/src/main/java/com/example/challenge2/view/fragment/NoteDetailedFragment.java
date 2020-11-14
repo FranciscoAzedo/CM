@@ -1,4 +1,4 @@
-package com.example.challenge2.view;
+package com.example.challenge2.view.fragment;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.challenge2.R;
+import com.example.challenge2.Utils;
 import com.example.challenge2.model.Repository.FileSystemManager;
 import com.example.challenge2.model.Repository.SharedPreferencesManager;
 import com.google.android.material.snackbar.Snackbar;
@@ -64,7 +65,7 @@ public class NoteDetailedFragment extends Fragment {
 
     public void updateView() {
         initArguments();
-        etNoteTitle.setText(noteTitle);
+        etNoteTitle.setText(Utils.getNoteTitle(noteTitle));
         etNoteContent.setText(noteContent);
     }
 
@@ -79,7 +80,7 @@ public class NoteDetailedFragment extends Fragment {
         llDelete = view.findViewById(R.id.ll_delete_note);
 
         // Preencher informações da nota
-        etNoteTitle.setText(noteTitle);
+        etNoteTitle.setText(Utils.getNoteTitle(noteTitle));
         etNoteContent.setText(noteContent);
 
         // Inicializar snackbar de erro
@@ -98,16 +99,23 @@ public class NoteDetailedFragment extends Fragment {
 
             Bundle bundle = null;
 
-            // Caso título seja diferente apagar titulo e ficheiro da nota original
-            if (!noteTitle.equalsIgnoreCase(etNoteTitle.getText().toString())) {
-                // Colocar no bundle informação de nota a apagar
-                bundle = new Bundle();
-                bundle.putString("title", noteTitle);
+            if(edit) {
+                // Caso título seja diferente apagar titulo e ficheiro da nota original
+                if (!Utils.getNoteTitle(noteTitle).equals(etNoteTitle.getText().toString())) {
+                    // Colocar no bundle informação de nota a apagar
+                    bundle = new Bundle();
+                    bundle.putString("title", noteTitle);
+                    String uuidNoteTitle = etNoteTitle.getText().toString() + "-" + Utils.generateUUID();
+                    SharedPreferencesManager.saveSharedPreference(getActivity(), "titles", uuidNoteTitle);
+                    /*
+                    EDITAR E NOME DIFERENTE: PRESERVAR UUID E MUDAR PREFIXO
+                     */
+                }
+                new SaveNoteTask(getActivity(), noteTitle, etNoteContent.getText().toString()).execute();
             }
 
+
             // Guardar dados
-            SharedPreferencesManager.saveSharedPreference(getActivity(), "titles", etNoteTitle.getText().toString());
-            new SaveNoteTask(getActivity(), etNoteTitle.getText().toString(), etNoteContent.getText().toString()).execute();
 
             // Voltar ao fragment anterior
             mListener.OnNoteDetailsFragmentInteraction(bundle);
