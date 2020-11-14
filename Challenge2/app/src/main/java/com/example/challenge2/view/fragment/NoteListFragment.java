@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.challenge2.R;
+import com.example.challenge2.Utils;
 import com.example.challenge2.model.AsyncTasks.ReadNoteTask;
 import com.example.challenge2.model.Repository.SharedPreferencesManager;
 import com.example.challenge2.view.NoteListAdapter;
@@ -80,7 +81,8 @@ public class NoteListFragment extends Fragment {
         ivAdd = view.findViewById(R.id.iv_add);
 
         // Indicar o número de notas mostradas
-        tvTotalNotes.setText(getString(R.string.total_notes, String.format("%d", notesList.size())));
+
+        tvTotalNotes.setText(getString(R.string.total_notes, String.valueOf(notesSearchList.size())));
 
         // Setup da Recycler View
         rvNotesListLayoutManager = new LinearLayoutManager(getContext());
@@ -151,20 +153,20 @@ public class NoteListFragment extends Fragment {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        int position = -1;
+        int index = -1;
 
         try {
-            position = rvNotesListAdapter.getPositionLongPressed();
+            index = rvNotesListAdapter.getPositionLongPressed();
         } catch (Exception e) {
             return super.onContextItemSelected(item);
         }
 
         switch (item.getItemId()) {
             case R.id.menu_change_title:
-                editNote(position);
+                editNote(index);
                 break;
             case R.id.menu_delete:
-                deleteNote();
+                deleteNote(index);
                 break;
         }
 
@@ -211,13 +213,19 @@ public class NoteListFragment extends Fragment {
     /**
      * Método que lida com a intenção do utilizador eliminar uma nota
      */
-    public void deleteNote() {
+    public void deleteNote(int index) {
         // Apresentar a dialog para o utilizador apagar ou não
         new AlertDialog.Builder(getContext())
                 .setTitle(R.string.delete_dialog_title)
                 .setMessage(R.string.delete_dialog_content)
                 .setPositiveButton(R.string.delete_dialog_confirm, (dialog, which) -> {
+
                     // Apagar a nota
+                    Bundle bundle = new Bundle();
+                    bundle.putString("title", notesSearchList.get(index));
+                    Utils.updateNotes("DELETE NOTE", getActivity(), bundle);
+                    notesList.remove(notesSearchList.remove(index));
+                    tvTotalNotes.setText(getString(R.string.total_notes, String.valueOf(notesSearchList.size())));
 
                     // Atualizar o Adapter
                     rvNotesListAdapter.notifyDataSetChanged();
