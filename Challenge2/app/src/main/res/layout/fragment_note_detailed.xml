@@ -38,23 +38,29 @@
                 android:id="@+id/et_note_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
                 android:inputType="text"
-                android:text="TEST"
+                android:hint="Title"
                 android:textColor="@android:color/black"
                 android:textSize="28sp"
-                android:textStyle="bold" />
+                android:background="@drawable/border"
+                android:textStyle="bold"
+                android:padding="10dp"/>
 
             <!-- Note Content -->
             <EditText
                 android:id="@+id/et_note_content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="12dp"
-                android:background="@android:color/transparent"
-                android:inputType="text"
-                android:text="TEST"
+                android:background="@drawable/border"
+                android:inputType="textMultiLine"
+                android:hint="Text"
+                android:paddingTop="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="100dp"
                 android:textColor="@android:color/black"
+
                 android:textSize="14sp" />
 
         </LinearLayout>
