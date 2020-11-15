@@ -7,25 +7,26 @@ import android.util.Log;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.challenge2.R;
+import com.example.challenge2.model.NoteContent;
 import com.example.challenge2.model.Repository.FileSystemManager;
 import com.example.challenge2.view.fragment.NoteDetailedFragment;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.FileNotFoundException;
+import java.util.UUID;
 
 public class ReadNoteTask extends AsyncTask<Void, Void, Void> {
 
     private Exception exception;
-
     private FragmentActivity activity;
-    private String title;
-    private String content;
+    private UUID noteUUID;
+    private NoteContent noteContent;
     private Bundle bundle;
 
     // Construtor da async task
-    public ReadNoteTask(FragmentActivity activity, String title, Bundle bundle) {
+    public ReadNoteTask(FragmentActivity activity, UUID noteUUID, Bundle bundle) {
         this.activity = activity;
-        this.title = title;
+        this.noteUUID = noteUUID;
         this.bundle = bundle;
     }
 
@@ -41,10 +42,10 @@ public class ReadNoteTask extends AsyncTask<Void, Void, Void> {
         if (exception != null) {
             Log.e("EXCEPTION", "Exception " + exception + "has occurred!");
             // Criar e mostrar snackbar de erro
-            Snackbar sbError = Snackbar.make(activity.getWindow().getDecorView().findViewById(R.id.RelativeLayout),
+            Snackbar.make(activity.getWindow().getDecorView().findViewById(R.id.RelativeLayout),
                     R.string.read_note_error,
-                    Snackbar.LENGTH_SHORT);
-            sbError.show();
+                    Snackbar.LENGTH_SHORT)
+                    .show();
         }
     }
 
@@ -52,8 +53,8 @@ public class ReadNoteTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... args) {
         try {
-            content = FileSystemManager.readNoteFile(activity, title);
-            bundle.putString("content", content);
+            noteContent = FileSystemManager.readNoteContent(activity, noteUUID);
+            bundle.putSerializable("noteContent", noteContent);
         } catch (FileNotFoundException exception) {
             this.exception = exception;
         }

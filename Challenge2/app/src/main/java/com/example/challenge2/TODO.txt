@@ -1,0 +1,4 @@
+Evitar campos a null no titulo e content
+Processar long cliques
+Verificação 3# no titulo
+Melhorar aspeto do layout

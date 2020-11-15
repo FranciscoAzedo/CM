@@ -2,6 +2,7 @@ package com.example.challenge2.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,11 @@ import androidx.fragment.app.Fragment;
 
 import com.example.challenge2.R;
 import com.example.challenge2.Utils;
+import com.example.challenge2.model.NoteContent;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.io.FileNotFoundException;
+import java.util.UUID;
 
 public class NoteDetailedFragment extends Fragment {
 
@@ -29,7 +35,7 @@ public class NoteDetailedFragment extends Fragment {
 
     private Boolean edit = false;
     private String noteTitle;
-    private String noteContent;
+    private NoteContent noteContent;
 
     public static NoteDetailedFragment newInstance() {
         return new NoteDetailedFragment();
@@ -37,9 +43,9 @@ public class NoteDetailedFragment extends Fragment {
 
     private void initArguments() {
         if (getArguments() != null) {
-            noteTitle = getArguments().getString("title");
-            noteContent = getArguments().getString("content");
-            edit = getArguments().getBoolean("edit");
+            noteTitle = getArguments().getString(Utils.NOTE_TITLE_KEY);
+            noteContent = (NoteContent) getArguments().getSerializable(Utils.NOTE_CONTENT_KEY);
+            edit = getArguments().getBoolean(Utils.EDIT_MODE_KEY);
         }
     }
 
@@ -58,7 +64,7 @@ public class NoteDetailedFragment extends Fragment {
     public void updateView() {
         initArguments();
         etNoteTitle.setText(Utils.getNoteTitle(noteTitle));
-        etNoteContent.setText(noteContent);
+        etNoteContent.setText(noteContent != null ? noteContent.getContent() : null);
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -73,7 +79,7 @@ public class NoteDetailedFragment extends Fragment {
 
         // Preencher informações da nota
         etNoteTitle.setText(Utils.getNoteTitle(noteTitle));
-        etNoteContent.setText(noteContent);
+        etNoteContent.setText(noteContent != null ? noteContent.getContent() : null);
 
         // Listener para quando existir um clique para voltar atrás
         ivBack.setOnClickListener(v -> {
@@ -83,60 +89,74 @@ public class NoteDetailedFragment extends Fragment {
 
         // Listener para quando existir um clique para guardar a nota atual
         llSave.setOnClickListener(v -> {
+            try {
+                String updateNoteMode = null;
+                Bundle bundle = new Bundle();
 
-            Bundle bundle = new Bundle();
-            bundle.putString("content", etNoteContent.getText().toString());
+                // Se se estiver a editar uma nota
+                if (edit) {
+                    // Se o título for diferente
+                    if (!Utils.getNoteTitle(noteTitle).equals(etNoteTitle.getText().toString())) {
+                        // Se o conteudo for diferente
+                        if (!noteContent.getContent().equals(etNoteContent.getText().toString()))
+                            updateNoteMode = Utils.CHANGE_NOTE_TITLE_AND_CONTENT_MODE;
+                        else
+                            updateNoteMode = Utils.CHANGE_NOTE_TITLE_MODE;
+                    }
+                    // Se o conteudo for diferente
+                    else if (!noteContent.getContent().equals(etNoteContent.getText().toString()))
+                        updateNoteMode = Utils.CHANGE_NOTE_CONTENT_MODE;
 
-            // Se se estiver a editar uma nota
-            if (edit) {
+                    noteContent.setContent(etNoteContent.getText().toString());
+                    noteTitle = etNoteTitle.getText().toString() + Utils.SPLIT_STRING_PATTERN + Utils.getUUIDFromTitle(noteTitle);
+                }
 
-                // Caso título seja diferente apagar titulo e ficheiro da nota original e criar nova nota
-                if (!Utils.getNoteTitle(noteTitle).equals(etNoteTitle.getText().toString())) {
+                // Se se estiver a criar uma nota
+                else {
+                    updateNoteMode = Utils.CREATE_NOTE_MODE;
+                    UUID noteUUID = UUID.randomUUID();
+                    noteContent = new NoteContent(noteUUID, etNoteContent.getText().toString());
 
                     // Gerar título com ID
-                    String uuidNoteTitle = etNoteTitle.getText().toString() + "-" + Utils.generateUUID();
-
-                    // Colocar no bundle informação sobre nota
-                    bundle.putString("title", noteTitle);
-                    bundle.putString("uuidTitle", uuidNoteTitle);
-
-                    Utils.updateNotes("CHANGE NOTE", getActivity(), bundle);
+                    noteTitle = etNoteTitle.getText().toString() + Utils.SPLIT_STRING_PATTERN + noteUUID;
                 }
-                // Caso título seja igual atualizar só o conteúdo do ficheiro
-                else {
-                    // Guardar dados
-                    bundle.putString("uuidTitle", noteTitle);
-                    Utils.updateNotes("CHANGE CONTENT", getActivity(), bundle);
-                }
-            }
-            // Se se estiver a criar uma nota
-            else {
-                // Gerar título com ID
-                String uuidNoteTitle = etNoteTitle.getText().toString() + "-" + Utils.generateUUID();
 
-                // Colocar no bundle informação sobre nota
-                bundle.putString("uuidTitle", uuidNoteTitle);
+                bundle.putString(Utils.NOTE_TITLE_KEY, noteTitle);
+                bundle.putSerializable(Utils.NOTE_CONTENT_KEY, noteContent);
 
                 // Guardar dados
-                Utils.updateNotes("CREATE NOTE", getActivity(), bundle);
-            }
+                Utils.updateNotes(updateNoteMode, getActivity(), bundle);
 
-            // Voltar ao fragment anterior
-            mListener.OnNoteDetailsFragmentInteraction();
+            } catch (FileNotFoundException exception) {
+                notifyException(exception);
+            } finally {
+                // Voltar ao fragment anterior
+                mListener.OnNoteDetailsFragmentInteraction();
+            }
         });
 
         // Listener para quando existir um clique para eliminar a nota atual
         llDelete.setOnClickListener(v -> {
-
-            // Colocar no bundle informação de nota a apagar
-            Bundle bundle = new Bundle();
-            bundle.putString("title", noteTitle);
-
-            Utils.updateNotes("DELETE NOTE", getActivity(), bundle);
-
-            // Voltar ao fragment anterior
-            mListener.OnNoteDetailsFragmentInteraction();
+            try {
+                // Colocar no bundle informação de nota a apagar
+                Bundle bundle = new Bundle();
+                bundle.putString("title", noteTitle);
+                Utils.updateNotes("DELETE NOTE", getActivity(), bundle);
+            } catch (FileNotFoundException exception) {
+                notifyException(exception);
+            } finally {
+                // Voltar ao fragment anterior
+                mListener.OnNoteDetailsFragmentInteraction();
+            }
         });
+    }
+
+    private void notifyException(Exception exception) {
+        Log.e("EXCEPTION", "Exception " + exception + "has occurred!");
+        Snackbar.make(getActivity().getWindow().getDecorView().findViewById(R.id.RelativeLayout),
+                R.string.read_note_error,
+                Snackbar.LENGTH_SHORT)
+                .show();
     }
 
     @Override

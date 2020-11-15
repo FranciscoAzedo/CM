@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.challenge2.R;
+import com.example.challenge2.model.NoteContent;
 import com.example.challenge2.model.Repository.FileSystemManager;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -14,15 +15,15 @@ import java.io.FileNotFoundException;
 public class SaveNoteTask extends AsyncTask<Void, Void, Void> {
 
     private Exception exception;
+    private Boolean update;
     private FragmentActivity activity;
-    private String title;
-    private String content;
+    private NoteContent noteContent;
 
     // Construtor da async task
-    public SaveNoteTask(FragmentActivity activity, String title, String content) {
+    public SaveNoteTask(FragmentActivity activity, NoteContent noteContent, Boolean update) {
         this.activity = activity;
-        this.title = title;
-        this.content = content;
+        this.noteContent = noteContent;
+        this.update = update;
     }
 
     // Método executado no final da async task
@@ -42,7 +43,10 @@ public class SaveNoteTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... args) {
         try {
-            FileSystemManager.createNoteFile(activity, title, content);
+            if (update)
+                FileSystemManager.updateNoteContent(activity, noteContent);
+            else
+                FileSystemManager.saveNoteContent(activity, noteContent);
         } catch (FileNotFoundException exception) {
             this.exception = exception;
         }

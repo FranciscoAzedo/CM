@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -24,9 +25,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.challenge2.R;
 import com.example.challenge2.Utils;
 import com.example.challenge2.model.AsyncTasks.ReadNoteTask;
+import com.example.challenge2.model.NoteContent;
 import com.example.challenge2.model.Repository.SharedPreferencesManager;
 import com.example.challenge2.view.NoteListAdapter;
+import com.google.android.material.snackbar.Snackbar;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class NoteListFragment extends Fragment {
@@ -42,10 +46,10 @@ public class NoteListFragment extends Fragment {
     private RecyclerView.LayoutManager rvNotesListLayoutManager;
 
     // Existing notes list
-    private ArrayList<String> notesList;
+    private ArrayList<String> noteTitlesList;
 
     // Search secondary list
-    private ArrayList<String> notesSearchList;
+    private ArrayList<String> noteTitlesSearchList;
 
     // Fragment listener
     private OnNotesListFragmentInteractionListener mListener;
@@ -56,8 +60,8 @@ public class NoteListFragment extends Fragment {
 
     private void initArguments() {
         // Inicializar as notas gaurdadas pela aplicação
-        notesList = new ArrayList<>(SharedPreferencesManager.getSharedPreference(getActivity(), "titles"));
-        notesSearchList = new ArrayList<>(notesList);
+        noteTitlesList = new ArrayList<>(SharedPreferencesManager.getSharedPreference(getActivity(), "titles"));
+        noteTitlesSearchList = new ArrayList<>(noteTitlesList);
     }
 
     @Override
@@ -82,12 +86,12 @@ public class NoteListFragment extends Fragment {
 
         // Indicar o número de notas mostradas
 
-        tvTotalNotes.setText(getString(R.string.total_notes, String.valueOf(notesSearchList.size())));
+        tvTotalNotes.setText(getString(R.string.total_notes, String.valueOf(noteTitlesSearchList.size())));
 
         // Setup da Recycler View
         rvNotesListLayoutManager = new LinearLayoutManager(getContext());
         rvNotesList.setLayoutManager(rvNotesListLayoutManager);
-        rvNotesListAdapter = new NoteListAdapter(notesSearchList);
+        rvNotesListAdapter = new NoteListAdapter(noteTitlesSearchList);
         rvNotesList.setAdapter(rvNotesListAdapter);
 
 
@@ -104,26 +108,26 @@ public class NoteListFragment extends Fragment {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 // Limpar a lista de pesquisa
-                notesSearchList.clear();
+                noteTitlesSearchList.clear();
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // Caso em que a pesquisa está vazia
                 if (s.length() == 0)
-                    notesSearchList.addAll(notesList);
+                    noteTitlesSearchList.addAll(noteTitlesList);
 
                     // Caso em que é inserda alguma pesquisa
                 else
-                    for (String noteTittle : notesList)
+                    for (String noteTittle : noteTitlesList)
                         if (noteTittle.equalsIgnoreCase(s.toString()) || noteTittle.contains(s))
-                            notesSearchList.add(noteTittle);
+                            noteTitlesSearchList.add(noteTittle);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 // Atualizar o numero de notas na pesquisa
-                tvTotalNotes.setText(getString(R.string.total_notes, String.valueOf(notesSearchList.size())));
+                tvTotalNotes.setText(getString(R.string.total_notes, String.valueOf(noteTitlesSearchList.size())));
                 // Atualizar o Adapter
                 rvNotesListAdapter.notifyDataSetChanged();
             }
@@ -132,13 +136,13 @@ public class NoteListFragment extends Fragment {
         // Listener para quando houver um clique, ou longo clique, num elemento da lista de notas
         rvNotesListAdapter.setOnItemClickListener(new NoteListAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(int position) {
+            public void onItemClick(int index) {
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("edit", true);
-                bundle.putString("title", notesList.get(position));
-                bundle.putString("content", "");
+                bundle.putBoolean(Utils.EDIT_MODE_KEY, true);
+                bundle.putString(Utils.NOTE_TITLE_KEY, noteTitlesSearchList.get(index));
+                bundle.putSerializable(Utils.NOTE_CONTENT_KEY, new NoteContent(null, null));
 
-                new ReadNoteTask(getActivity(), notesList.get(position), bundle).execute();
+                new ReadNoteTask(getActivity(), Utils.getUUIDFromTitle(noteTitlesSearchList.get(index)), bundle).execute();
                 mListener.OnNotesListFragmentInteraction(bundle);
             }
         });
@@ -193,14 +197,14 @@ public class NoteListFragment extends Fragment {
                     if (!newTitle.isEmpty()) {
 
                         Bundle bundle = new Bundle();
-                        bundle.putString("title", notesSearchList.get(index));
+                        bundle.putString("title", noteTitlesSearchList.get(index));
 
                         // Gerar título com ID
-//                        String uuidNoteTitle = etNoteTitle.getText().toString() + "-" + Utils.generateUUID();
+//                        String uuidNoteTitle = newTitle + Utils.SPLIT_STRING_PATTERN + Utils.generateUUID();
 
                         // [SUBSTITUIR] Falta o código agora para alterar na nota
-                        notesSearchList.set(index, newTitle);
-                        notesSearchList.set(index, newTitle);
+                        noteTitlesSearchList.set(index, newTitle);
+                        noteTitlesSearchList.set(index, newTitle);
 
                         // Atualizar o Adapter
                         rvNotesListAdapter.notifyDataSetChanged();
@@ -219,17 +223,23 @@ public class NoteListFragment extends Fragment {
                 .setTitle(R.string.delete_dialog_title)
                 .setMessage(R.string.delete_dialog_content)
                 .setPositiveButton(R.string.delete_dialog_confirm, (dialog, which) -> {
+                    try {
+                        // Apagar a nota
+                        Bundle bundle = new Bundle();
+                        bundle.putString("title", noteTitlesSearchList.get(index));
+                        Utils.updateNotes("DELETE NOTE", getActivity(), bundle);
+                        noteTitlesList.remove(noteTitlesSearchList.remove(index));
+                        tvTotalNotes.setText(getString(R.string.total_notes, String.valueOf(noteTitlesSearchList.size())));
 
-                    // Apagar a nota
-                    Bundle bundle = new Bundle();
-                    bundle.putString("title", notesSearchList.get(index));
-                    Utils.updateNotes("DELETE NOTE", getActivity(), bundle);
-                    notesList.remove(notesSearchList.remove(index));
-                    tvTotalNotes.setText(getString(R.string.total_notes, String.valueOf(notesSearchList.size())));
-
-                    // Atualizar o Adapter
-                    rvNotesListAdapter.notifyDataSetChanged();
-
+                        // Atualizar o Adapter
+                        rvNotesListAdapter.notifyDataSetChanged();
+                    } catch (FileNotFoundException exception) {
+                        Log.e("EXCEPTION", "Exception " + exception + "has occurred!");
+                        Snackbar.make(getActivity().getWindow().getDecorView().findViewById(R.id.RelativeLayout),
+                                R.string.read_note_error,
+                                Snackbar.LENGTH_SHORT)
+                                .show();
+                    }
                 }).setNegativeButton(R.string.delete_dialog_cancel, (dialog, which) -> {
             dialog.dismiss();
         }).show();

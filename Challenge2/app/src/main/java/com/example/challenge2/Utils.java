@@ -5,66 +5,118 @@ import android.os.Bundle;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.challenge2.model.AsyncTasks.SaveNoteTask;
+import com.example.challenge2.model.NoteContent;
 import com.example.challenge2.model.Repository.FileSystemManager;
 import com.example.challenge2.model.Repository.SharedPreferencesManager;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public abstract class Utils {
-    public static String generateUUID() {
-        return String.valueOf(UUID.randomUUID());
+
+    public static final String SPLIT_STRING_PATTERN = "###";
+    public static final String NOTE_CONTENT_FILE_NAME = "noteContents.json";
+    public static final String TITLE_LIST_KEY = "titles";
+    public static final String NOTE_TITLE_KEY = "noteTitle";
+    public static final String NOTE_CONTENT_KEY = "noteContent";
+    public static final String EDIT_MODE_KEY = "edit";
+    public static final String CREATE_NOTE_MODE = "CREATE NOTE";
+    public static final String CHANGE_NOTE_TITLE_MODE = "CHANGE NOTE TITLE";
+    public static final String CHANGE_NOTE_CONTENT_MODE = "CHANGE NOTE CONTENT";
+    public static final String CHANGE_NOTE_TITLE_AND_CONTENT_MODE = "CHANGE NOTE TITLE AND CONTENT";
+    public static final String DELETE_NOTE_MODE = "DELETE NOTE";
+
+    public static void updateNotes(String operation, FragmentActivity fragmentActivity, Bundle bundle) throws FileNotFoundException {
+        if (operation != null)
+            switch (operation) {
+                case CREATE_NOTE_MODE:
+                    createTitleSharedPreference(fragmentActivity, bundle);
+                    createNoteContent(fragmentActivity, bundle);
+                    break;
+                case CHANGE_NOTE_TITLE_MODE:
+                    updateTitleSharedPreference(fragmentActivity, bundle);
+                    break;
+                case CHANGE_NOTE_CONTENT_MODE:
+                    updateNoteContent(fragmentActivity, bundle);
+                    break;
+                case CHANGE_NOTE_TITLE_AND_CONTENT_MODE:
+                    updateTitleSharedPreference(fragmentActivity, bundle);
+                    updateNoteContent(fragmentActivity, bundle);
+                    break;
+                case DELETE_NOTE_MODE:
+                    deleteTitleSharedPreference(fragmentActivity, bundle);
+                    deleteNoteContent(fragmentActivity, bundle);
+                    break;
+            }
     }
 
     public static String getNoteTitle(String uuidNoteTitle) {
-        return uuidNoteTitle != null ? uuidNoteTitle.split("-")[0] : null;
+        return uuidNoteTitle != null ? uuidNoteTitle.split(Utils.SPLIT_STRING_PATTERN)[0] : null;
     }
 
-    public static void updateNotes(String operation, FragmentActivity fragmentActivity, Bundle bundle) {
-        switch (operation) {
-            case "CREATE NOTE":
-                createTitleSharedPreference(fragmentActivity, bundle);
-                createContentFile(fragmentActivity, bundle);
-                break;
-            case "CHANGE NOTE":
-                createTitleSharedPreference(fragmentActivity, bundle);
-                createContentFile(fragmentActivity, bundle);
-                deleteTitleSharedPreference(fragmentActivity, bundle);
-                deleteContentFile(fragmentActivity, bundle);
-                break;
-            case "CHANGE CONTENT":
-                createContentFile(fragmentActivity, bundle);
-                break;
-            case "DELETE NOTE":
-                deleteTitleSharedPreference(fragmentActivity, bundle);
-                deleteContentFile(fragmentActivity, bundle);
-                break;
-        }
+    public static UUID getUUIDFromTitle(String noteTitle) {
+        return UUID.fromString(noteTitle.split(String.valueOf(Utils.SPLIT_STRING_PATTERN))[1]);
+    }
+
+    public static String serializeListOfNoteContents(ArrayList<NoteContent> noteContents) {
+        return new Gson().toJson(noteContents, new TypeToken<ArrayList<NoteContent>>() {
+        }.getType());
+    }
+
+    public static ArrayList<NoteContent> deserializeListOfNoteContents(String noteContents) {
+        return new Gson().fromJson(noteContents, new TypeToken<ArrayList<NoteContent>>() {
+        }.getType());
     }
 
     private static void createTitleSharedPreference(FragmentActivity fragmentActivity, Bundle bundle) {
         SharedPreferencesManager.saveSharedPreference(
                 fragmentActivity,
-                "titles",
-                bundle.getString("uuidTitle"));
+                TITLE_LIST_KEY,
+                bundle.getString(NOTE_TITLE_KEY)
+        );
     }
 
-    private static void createContentFile(FragmentActivity fragmentActivity, Bundle bundle) {
-        new SaveNoteTask(
+    private static void updateTitleSharedPreference(FragmentActivity fragmentActivity, Bundle bundle) {
+        SharedPreferencesManager.updateSharedPreference(
                 fragmentActivity,
-                bundle.getString("uuidTitle"),
-                bundle.getString("content")).execute();
+                TITLE_LIST_KEY,
+                bundle.getString(NOTE_TITLE_KEY)
+        );
     }
 
     private static void deleteTitleSharedPreference(FragmentActivity fragmentActivity, Bundle bundle) {
         SharedPreferencesManager.removeSharedPreference(
                 fragmentActivity,
-                "titles",
-                bundle.getString("title"));
+                TITLE_LIST_KEY,
+                bundle.getString(NOTE_TITLE_KEY)
+        );
     }
 
-    private static void deleteContentFile(FragmentActivity fragmentActivity, Bundle bundle) {
-        FileSystemManager.removeNoteFile(
+    private static void createNoteContent(FragmentActivity fragmentActivity, Bundle bundle) {
+        new SaveNoteTask(
                 fragmentActivity,
-                bundle.getString("title"));
+                (NoteContent) bundle.getSerializable(NOTE_CONTENT_KEY),
+                false
+        ).execute();
+    }
+
+    private static void updateNoteContent(FragmentActivity fragmentActivity, Bundle bundle) throws FileNotFoundException {
+        new SaveNoteTask(
+                fragmentActivity,
+                (NoteContent) bundle.getSerializable(NOTE_CONTENT_KEY),
+                true
+        ).execute();
+    }
+
+    private static void deleteNoteContent(FragmentActivity fragmentActivity, Bundle bundle) throws FileNotFoundException {
+
+        NoteContent noteContent = (NoteContent) bundle.getSerializable(NOTE_CONTENT_KEY);
+        FileSystemManager.removeNoteContent(
+                fragmentActivity,
+                noteContent.getNoteUUID()
+        );
     }
 }
