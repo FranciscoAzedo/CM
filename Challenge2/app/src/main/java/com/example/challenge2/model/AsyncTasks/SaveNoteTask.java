@@ -11,6 +11,7 @@ import com.example.challenge2.model.Repository.FileSystemManager;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class SaveNoteTask extends AsyncTask<Void, Void, Void> {
 
@@ -47,7 +48,7 @@ public class SaveNoteTask extends AsyncTask<Void, Void, Void> {
                 FileSystemManager.updateNoteContent(activity, noteContent);
             else
                 FileSystemManager.saveNoteContent(activity, noteContent);
-        } catch (FileNotFoundException exception) {
+        } catch ( FileNotFoundException exception) {
             this.exception = exception;
         }
         return null;

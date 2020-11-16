@@ -5,8 +5,12 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.challenge2.R;
+import com.example.challenge2.Utils;
+import com.example.challenge2.model.Repository.FileSystemManager;
 import com.example.challenge2.view.fragment.NoteDetailedFragment;
 import com.example.challenge2.view.fragment.NoteListFragment;
+
+import java.io.File;
 
 public class NoteActivity extends AppCompatActivity
         implements NoteListFragment.OnNotesListFragmentInteractionListener,
