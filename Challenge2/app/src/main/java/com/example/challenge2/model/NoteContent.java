@@ -28,4 +28,12 @@ public class NoteContent implements Serializable {
     public void setContent(String content) {
         this.content = content;
     }
+
+    @Override
+    public String toString() {
+        return "NoteContent{" +
+                "noteUUID=" + noteUUID +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }

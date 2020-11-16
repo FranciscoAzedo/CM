@@ -51,4 +51,10 @@ public abstract class SharedPreferencesManager {
         editor.putStringSet(key, stringSet);
         editor.commit();
     }
+
+    public static void clearSharedPreferences(Context context, String key) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(context.getString(R.string.app_name),
+                Context.MODE_PRIVATE).edit();
+        editor.remove(key).commit();
+    }
 }
