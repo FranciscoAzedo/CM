@@ -1,6 +1,5 @@
 package com.example.challenge2;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.FragmentActivity;
@@ -12,7 +11,6 @@ import com.example.challenge2.model.Repository.SharedPreferencesManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -31,14 +29,6 @@ public abstract class Utils {
     public static final String CHANGE_NOTE_CONTENT_MODE = "CHANGE NOTE CONTENT";
     public static final String CHANGE_NOTE_TITLE_AND_CONTENT_MODE = "CHANGE NOTE TITLE AND CONTENT";
     public static final String DELETE_NOTE_MODE = "DELETE NOTE";
-
-    public static boolean fileExist(String fileName, Context context) {
-//        File file = context.getFileStreamPath(fileName);
-
-        String path = context.getFilesDir().getAbsolutePath() + "/" + fileName;
-        File file = new File(path);
-        return file.exists();
-    }
 
     public static void updateNotes(String operation, FragmentActivity fragmentActivity, Bundle bundle) throws FileNotFoundException {
         if (operation != null)

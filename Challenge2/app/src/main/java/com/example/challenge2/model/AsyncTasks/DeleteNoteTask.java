@@ -10,7 +10,6 @@ import com.example.challenge2.model.Repository.FileSystemManager;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.UUID;
 
 public class DeleteNoteTask extends AsyncTask<Void, Void, Void> {

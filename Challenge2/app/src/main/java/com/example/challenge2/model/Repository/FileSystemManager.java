@@ -6,17 +6,8 @@ import android.util.Log;
 import com.example.challenge2.Utils;
 import com.example.challenge2.model.NoteContent;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.UUID;
@@ -24,24 +15,12 @@ import java.util.UUID;
 public abstract class FileSystemManager {
 
     public static void saveNoteContent(Context context, NoteContent noteContent) throws FileNotFoundException {
-//        boolean fileExists = Utils.fileExist(Utils.NOTE_CONTENT_FILE_NAME, context);
-//
-//        if(fileExists) {
-//             noteContents = readNoteFile(context);
-//            if (noteContents == null)
-//                noteContents = new ArrayList<>();
-//        }
-
-//        ArrayList<NoteContent> noteContents = new ArrayList<>();
         ArrayList<NoteContent> noteContents = readNoteFile(context);
         if (noteContents == null) {
             noteContents = new ArrayList<>();
         }
         noteContents.add(noteContent);
-
-        FileSystemManager.printNoteContentFile(context);
         writeNoteContentToFile(context, noteContents);
-        FileSystemManager.printNoteContentFile(context);
     }
 
     public static NoteContent readNoteContent(Context context, UUID noteUUID) throws FileNotFoundException {
@@ -75,7 +54,7 @@ public abstract class FileSystemManager {
 
     private static ArrayList<NoteContent> readNoteFile(Context context) {
 
-        Scanner scanner = null;
+        Scanner scanner;
         try {
             scanner = new Scanner(context.openFileInput(Utils.NOTE_CONTENT_FILE_NAME));
         } catch (FileNotFoundException e) {
@@ -106,7 +85,6 @@ public abstract class FileSystemManager {
         ArrayList<NoteContent> noteContents = readNoteFile(context);
         if(noteContents == null) {
             return;
-//            throw new FileNotFoundException();
         }
         for (NoteContent noteContent: noteContents) {
             Log.d(" Note Content", noteContent.toString());

@@ -13,7 +13,6 @@ import com.example.challenge2.view.fragment.NoteDetailedFragment;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.UUID;
 
 public class ReadNoteTask extends AsyncTask<Void, Void, Void> {
