@@ -120,7 +120,8 @@ public class NoteListFragment extends Fragment {
                     // Caso em que é inserda alguma pesquisa
                 else
                     for (String noteTittle : noteTitlesList)
-                        if (noteTittle.equalsIgnoreCase(s.toString()) || noteTittle.contains(s))
+                        if (Utils.getNoteTitle(noteTittle).equalsIgnoreCase(s.toString())
+                                || Utils.getNoteTitle(noteTittle).contains(s))
                             noteTitlesSearchList.add(noteTittle);
             }
 
@@ -191,21 +192,25 @@ public class NoteListFragment extends Fragment {
                 .setTitle(R.string.change_dialog_title)
                 .setView(edittext)
                 .setPositiveButton(R.string.change_dialog_confirm, (dialog, whichButton) -> {
-                    // Obter o novo título digitado
-                    String newTitle = edittext.getText().toString();
 
-                    if (!newTitle.isEmpty()) {
+                    try {
+                        // Obter o novo título digitado
+                        String newTitle = edittext.getText().toString()
+                                + Utils.SPLIT_STRING_PATTERN
+                                + Utils.getUUIDFromTitle(noteTitlesSearchList.get(index));
 
-                        Bundle bundle = new Bundle();
-                        bundle.putString("title", noteTitlesSearchList.get(index));
+                        if (!newTitle.isEmpty()) {
 
-                        // Gerar título com ID
-//                        String uuidNoteTitle = newTitle + Utils.SPLIT_STRING_PATTERN + Utils.generateUUID();
+                            Bundle bundle = new Bundle();
+                            bundle.putString(Utils.NOTE_TITLE_KEY, newTitle);
+                            Utils.updateNotes(Utils.CHANGE_NOTE_TITLE_MODE, getActivity(), bundle);
 
-                        // [SUBSTITUIR] Falta o código agora para alterar na nota
-                        noteTitlesSearchList.set(index, newTitle);
-                        noteTitlesSearchList.set(index, newTitle);
-
+                            // [SUBSTITUIR] Falta o código agora para alterar na nota
+                            updateNoteTitle(newTitle, index);
+                        }
+                    } catch (FileNotFoundException exception) {
+                        notifyException(exception);
+                    } finally {
                         // Atualizar o Adapter
                         rvNotesListAdapter.notifyDataSetChanged();
                     }
@@ -226,8 +231,11 @@ public class NoteListFragment extends Fragment {
                     try {
                         // Apagar a nota
                         Bundle bundle = new Bundle();
-                        bundle.putString("title", noteTitlesSearchList.get(index));
-                        Utils.updateNotes("DELETE NOTE", getActivity(), bundle);
+                        bundle.putString(Utils.NOTE_TITLE_KEY, noteTitlesSearchList.get(index));
+                        bundle.putString(Utils.NOTE_UUID_KEY, String.valueOf(Utils.getUUIDFromTitle(noteTitlesSearchList.get(index))));
+                        Utils.updateNotes(Utils.DELETE_NOTE_MODE, getActivity(), bundle);
+
+                        // Remover nota da lista
                         noteTitlesList.remove(noteTitlesSearchList.remove(index));
                         tvTotalNotes.setText(getString(R.string.total_notes, String.valueOf(noteTitlesSearchList.size())));
 
@@ -243,6 +251,30 @@ public class NoteListFragment extends Fragment {
                 }).setNegativeButton(R.string.delete_dialog_cancel, (dialog, which) -> {
             dialog.dismiss();
         }).show();
+    }
+
+    private void notifyException(Exception exception) {
+        Log.e("EXCEPTION", "Exception " + exception + "has occurred!");
+        Snackbar.make(getActivity().getWindow().getDecorView().findViewById(R.id.RelativeLayout),
+                R.string.read_note_error,
+                Snackbar.LENGTH_SHORT)
+                .show();
+    }
+
+    private void updateNoteTitle(String noteTitle, int index) {
+        for (String currentNoteTitle : noteTitlesList)
+            if (currentNoteTitle.contains(String.valueOf(Utils.getUUIDFromTitle(noteTitle)))) {
+                noteTitlesList.remove(currentNoteTitle);
+                noteTitlesList.add(noteTitle);
+                break;
+            }
+        if (Utils.getNoteTitle(noteTitle).contains(etSearch.getText().toString()))
+            noteTitlesSearchList.set(index, noteTitle);
+        else {
+            noteTitlesSearchList.remove(index);
+            // Atualizar o numero de notas na pesquisa
+            tvTotalNotes.setText(getString(R.string.total_notes, String.valueOf(noteTitlesSearchList.size())));
+        }
     }
 
     @Override

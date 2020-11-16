@@ -140,8 +140,9 @@ public class NoteDetailedFragment extends Fragment {
             try {
                 // Colocar no bundle informação de nota a apagar
                 Bundle bundle = new Bundle();
-                bundle.putString("title", noteTitle);
-                Utils.updateNotes("DELETE NOTE", getActivity(), bundle);
+                bundle.putString(Utils.NOTE_TITLE_KEY, noteTitle);
+                bundle.putString(Utils.NOTE_UUID_KEY, String.valueOf(Utils.getUUIDFromTitle(noteTitle)));
+                Utils.updateNotes(Utils.DELETE_NOTE_MODE, getActivity(), bundle);
             } catch (FileNotFoundException exception) {
                 notifyException(exception);
             } finally {

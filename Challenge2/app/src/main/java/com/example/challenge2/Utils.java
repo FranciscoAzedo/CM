@@ -4,9 +4,9 @@ import android.os.Bundle;
 
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.challenge2.model.AsyncTasks.DeleteNoteTask;
 import com.example.challenge2.model.AsyncTasks.SaveNoteTask;
 import com.example.challenge2.model.NoteContent;
-import com.example.challenge2.model.Repository.FileSystemManager;
 import com.example.challenge2.model.Repository.SharedPreferencesManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -22,6 +22,7 @@ public abstract class Utils {
     public static final String TITLE_LIST_KEY = "titles";
     public static final String NOTE_TITLE_KEY = "noteTitle";
     public static final String NOTE_CONTENT_KEY = "noteContent";
+    public static final String NOTE_UUID_KEY = "noteUUID";
     public static final String EDIT_MODE_KEY = "edit";
     public static final String CREATE_NOTE_MODE = "CREATE NOTE";
     public static final String CHANGE_NOTE_TITLE_MODE = "CHANGE NOTE TITLE";
@@ -58,7 +59,7 @@ public abstract class Utils {
     }
 
     public static UUID getUUIDFromTitle(String noteTitle) {
-        return UUID.fromString(noteTitle.split(String.valueOf(Utils.SPLIT_STRING_PATTERN))[1]);
+        return UUID.fromString(noteTitle.split(Utils.SPLIT_STRING_PATTERN)[1]);
     }
 
     public static String serializeListOfNoteContents(ArrayList<NoteContent> noteContents) {
@@ -103,7 +104,7 @@ public abstract class Utils {
         ).execute();
     }
 
-    private static void updateNoteContent(FragmentActivity fragmentActivity, Bundle bundle) throws FileNotFoundException {
+    private static void updateNoteContent(FragmentActivity fragmentActivity, Bundle bundle) {
         new SaveNoteTask(
                 fragmentActivity,
                 (NoteContent) bundle.getSerializable(NOTE_CONTENT_KEY),
@@ -111,12 +112,10 @@ public abstract class Utils {
         ).execute();
     }
 
-    private static void deleteNoteContent(FragmentActivity fragmentActivity, Bundle bundle) throws FileNotFoundException {
-
-        NoteContent noteContent = (NoteContent) bundle.getSerializable(NOTE_CONTENT_KEY);
-        FileSystemManager.removeNoteContent(
+    private static void deleteNoteContent(FragmentActivity fragmentActivity, Bundle bundle) {
+        new DeleteNoteTask(
                 fragmentActivity,
-                noteContent.getNoteUUID()
-        );
+                UUID.fromString(bundle.getString(NOTE_UUID_KEY))
+        ).execute();
     }
 }
