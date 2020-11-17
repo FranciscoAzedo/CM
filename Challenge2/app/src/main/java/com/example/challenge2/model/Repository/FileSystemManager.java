@@ -1,7 +1,6 @@
 package com.example.challenge2.model.Repository;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.example.challenge2.Utils;
 import com.example.challenge2.model.NoteContent;
@@ -12,8 +11,19 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.UUID;
 
+/**
+ * Classe FileSystemManager responsável por gerir os acessos de leitura/escrita a ficheiros
+ * armazenados na memória do dispositivo
+ */
 public abstract class FileSystemManager {
 
+    /**
+     * Método que guarda o conteúdo de uma nova nota no ficheiro
+     *
+     * @param context     contexto da aplicação
+     * @param noteContent conteúdo da nota
+     * @throws FileNotFoundException exceção caso o ficheiro de notas não seja encontrado
+     */
     public static void saveNoteContent(Context context, NoteContent noteContent) throws FileNotFoundException {
         ArrayList<NoteContent> noteContents = readNoteFile(context);
         if (noteContents == null) {
@@ -23,6 +33,15 @@ public abstract class FileSystemManager {
         writeNoteContentToFile(context, noteContents);
     }
 
+    /**
+     * Método para ler o conteúdo de uma nota do ficheiro de acordo com o seu Identificador
+     * Único Universal
+     *
+     * @param context  contexto da aplicação
+     * @param noteUUID identificador único universal da nota a ser lida
+     * @return conteúdo da nota lida
+     * @throws FileNotFoundException exceção caso o ficheiro de notas não seja encontrado
+     */
     public static NoteContent readNoteContent(Context context, UUID noteUUID) throws FileNotFoundException {
         ArrayList<NoteContent> noteContents = readNoteFile(context);
         for (NoteContent noteContent : noteContents)
@@ -31,6 +50,13 @@ public abstract class FileSystemManager {
         return null;
     }
 
+    /**
+     * Método para atualizar o conteúdo de uma nota no ficheiro
+     *
+     * @param context     contexto da aplicação
+     * @param noteContent conteúdo da nota
+     * @throws FileNotFoundException exceção caso o ficheiro de notas não seja encontrado
+     */
     public static void updateNoteContent(Context context, NoteContent noteContent) throws FileNotFoundException {
         ArrayList<NoteContent> noteContents = readNoteFile(context);
         for (NoteContent actualNoteContent : noteContents)
@@ -41,6 +67,13 @@ public abstract class FileSystemManager {
         writeNoteContentToFile(context, noteContents);
     }
 
+    /**
+     * Método para eliminar uma nota do ficheiro
+     *
+     * @param context  contexto da aplicação
+     * @param noteUUID identificador único universal da nota a ser eliminada
+     * @throws FileNotFoundException exceção caso o ficheiro de notas não seja encontrado
+     */
     public static void removeNoteContent(Context context, UUID noteUUID) throws FileNotFoundException {
         ArrayList<NoteContent> noteContents = readNoteFile(context);
 
@@ -52,6 +85,12 @@ public abstract class FileSystemManager {
         writeNoteContentToFile(context, noteContents);
     }
 
+    /**
+     * Método que lê o ficheiro onde são armazenadas as notas
+     *
+     * @param context contexto da aplicação
+     * @return lista das notas existentes no ficheiro
+     */
     private static ArrayList<NoteContent> readNoteFile(Context context) {
 
         Scanner scanner;
@@ -68,26 +107,16 @@ public abstract class FileSystemManager {
         return Utils.deserializeListOfNoteContents(notesContent.toString());
     }
 
+    /**
+     * Método que escreve uma lista de conteúdos de notas no ficheiro
+     *
+     * @param context      contexto da aplicação
+     * @param noteContents lista dos conteúdos de notas
+     * @throws FileNotFoundException exceção caso o ficheiro de notas não seja encontrado
+     */
     private static void writeNoteContentToFile(Context context, ArrayList<NoteContent> noteContents) throws FileNotFoundException {
-
         PrintStream printStream = new PrintStream(context.openFileOutput(Utils.NOTE_CONTENT_FILE_NAME, Context.MODE_PRIVATE));
         printStream.println(Utils.serializeListOfNoteContents(noteContents));
         printStream.close();
-    }
-
-    public static void emptyNoteContentFile(Context context) throws FileNotFoundException {
-        PrintStream printStream = new PrintStream(context.openFileOutput(Utils.NOTE_CONTENT_FILE_NAME, Context.MODE_PRIVATE));
-        printStream.print("");
-        printStream.close();
-    }
-
-    public static void printNoteContentFile(Context context) throws FileNotFoundException {
-        ArrayList<NoteContent> noteContents = readNoteFile(context);
-        if(noteContents == null) {
-            return;
-        }
-        for (NoteContent noteContent: noteContents) {
-            Log.d(" Note Content", noteContent.toString());
-        }
     }
 }

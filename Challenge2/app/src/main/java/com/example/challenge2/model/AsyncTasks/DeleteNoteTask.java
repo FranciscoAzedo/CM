@@ -12,11 +12,15 @@ import com.google.android.material.snackbar.Snackbar;
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
+/**
+ * Classe DeleteNoteTask que representa a AsyncTask responsável por eliminar uma nota armazenada
+ * em memória
+ */
 public class DeleteNoteTask extends AsyncTask<Void, Void, Void> {
 
+    private final FragmentActivity activity;
+    private final UUID noteUUID;
     private Exception exception;
-    private FragmentActivity activity;
-    private UUID noteUUID;
 
     // Construtor da async task
     public DeleteNoteTask(FragmentActivity activity, UUID noteUUID) {

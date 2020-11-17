@@ -3,7 +3,8 @@
 
     <!-- Background -->
     <solid android:color="@color/blue_light" />
+
     <!-- Corners -->
-    <corners android:radius="18dp" />
+    <corners android:radius="@dimen/radius_medium" />
 
 </shape>

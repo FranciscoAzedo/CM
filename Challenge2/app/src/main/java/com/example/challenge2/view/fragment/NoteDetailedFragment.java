@@ -132,21 +132,19 @@ public class NoteDetailedFragment extends Fragment {
 
     private void saveNote() {
 
-        if(etNoteTitle.getText().toString().equals("")) {
+        if (etNoteTitle.getText().toString().equals("")) {
             Snackbar.make(getActivity().getWindow().getDecorView().findViewById(R.id.RelativeLayout),
-                   "Title can not be empty",
+                    "Title can not be empty",
                     Snackbar.LENGTH_SHORT)
                     .show();
             return;
-        }
-        else if(etNoteTitle.getText().toString().contains("###")) {
+        } else if (etNoteTitle.getText().toString().contains("###")) {
             Snackbar.make(getActivity().getWindow().getDecorView().findViewById(R.id.RelativeLayout),
                     "Char sequence \"###\" is invalid",
                     Snackbar.LENGTH_SHORT)
                     .show();
             return;
-        }
-        else if(etNoteTitle.getText().toString().endsWith("#")) {
+        } else if (etNoteTitle.getText().toString().endsWith("#")) {
             Snackbar.make(getActivity().getWindow().getDecorView().findViewById(R.id.RelativeLayout),
                     "Title can not end with \"#\"",
                     Snackbar.LENGTH_SHORT)

@@ -1,11 +1,16 @@
 <resources>
+
     <string name="app_name">Challenge2</string>
     <string name="title_activity_note">NoteActivity</string>
 
     <!-- Present Fragment -->
     <string name="fragment_title">All Notes</string>
     <string name="total_notes">%1$s notes</string>
-    <string name="search_hint">Search notes by title...</string>
+    <string name="search_hint">Search notes by title…</string>
+
+    <!-- Detailed Fragment -->
+    <string name="title_edit_hint">Insert the note title…</string>
+    <string name="content_edit_hint">Insert the note content…</string>
 
     <!-- Add Fragment -->
     <string name="button_save_description">Save</string>
@@ -19,7 +24,7 @@
 
     <!-- Alert Dialog to Change Note's Title -->
     <string name="change_dialog_title">Change Note Title</string>
-    <string name="change_dialog_edit_hint">Insert the new note title...</string>
+    <string name="change_dialog_edit_hint">Insert the new note title…</string>
     <string name="change_dialog_confirm">Save</string>
     <string name="change_dialog_cancel">Cancel</string>
 
@@ -27,11 +32,11 @@
     <string name="long_press_change">Change Title</string>
     <string name="long_press_delete">Delete</string>
 
-    <!-- Strings used for fragments for navigation -->
+    <!-- Fragments Navigation -->
     <string name="note_list_fragment_label">Note List Fragment</string>
     <string name="note_detailed_fragment_label">Note Detailed Fragment</string>
 
-    <!-- Strings used for fragments for navigation -->
+    <!-- Note's Management -->
     <string name="save_note_error">An error occurred during save note process</string>
     <string name="read_note_error">An error occurred during read note process</string>
 

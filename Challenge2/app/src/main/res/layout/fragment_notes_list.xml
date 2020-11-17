@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray_lighter"
-    android:paddingHorizontal="16dp"
-    android:paddingVertical="32dp"
+    android:paddingHorizontal="@dimen/padding_horizontal"
+    android:paddingVertical="@dimen/padding_vertical"
     tools:context=".view.fragment.NoteListFragment">
 
     <!-- Title -->
@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:text="@string/fragment_title"
         android:textColor="@android:color/black"
-        android:textSize="32sp"
+        android:textSize="@dimen/text_title"
         android:textStyle="bold" />
 
     <!-- Total Notes -->
@@ -30,7 +30,7 @@
         android:layout_marginTop="4dp"
         android:text="@string/total_notes"
         android:textColor="@android:color/darker_gray"
-        android:textSize="12sp"
+        android:textSize="@dimen/text_notes_total"
         android:textStyle="bold" />
 
     <!-- Search Bar -->
@@ -46,8 +46,8 @@
 
         <!-- Search Icon -->
         <ImageView
-            android:layout_width="14dp"
-            android:layout_height="14dp"
+            android:layout_width="@dimen/square_button_s"
+            android:layout_height="@dimen/square_button_s"
             android:layout_gravity="center"
             android:src="@drawable/ic_search" />
 
@@ -65,7 +65,7 @@
             android:padding="0dp"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:textSize="16sp" />
+            android:textSize="@dimen/text_note_search" />
 
     </LinearLayout>
 
@@ -87,8 +87,8 @@
     <!-- Add Button -->
     <ImageView
         android:id="@+id/iv_add"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/square_button_l"
+        android:layout_height="@dimen/square_button_l"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:src="@drawable/ic_add" />

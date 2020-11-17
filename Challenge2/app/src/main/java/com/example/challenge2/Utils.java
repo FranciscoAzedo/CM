@@ -30,6 +30,14 @@ public abstract class Utils {
     public static final String CHANGE_NOTE_TITLE_AND_CONTENT_MODE = "CHANGE NOTE TITLE AND CONTENT";
     public static final String DELETE_NOTE_MODE = "DELETE NOTE";
 
+    /**
+     * Método que gere as operações de atualizar uma nota
+     *
+     * @param operation        operação a realizar
+     * @param fragmentActivity
+     * @param bundle
+     * @throws FileNotFoundException exceção caso o ficheiro de notas não seja encontrado
+     */
     public static void updateNotes(String operation, FragmentActivity fragmentActivity, Bundle bundle) throws FileNotFoundException {
         if (operation != null)
             switch (operation) {
@@ -54,24 +62,54 @@ public abstract class Utils {
             }
     }
 
+    /**
+     * Método para obter o título através do Identificador Único Universal de uma nota
+     *
+     * @param uuidNoteTitle identificador único universal da nota
+     * @return título da nota
+     */
     public static String getNoteTitle(String uuidNoteTitle) {
         return uuidNoteTitle != null ? uuidNoteTitle.split(Utils.SPLIT_STRING_PATTERN)[0] : null;
     }
 
+    /**
+     * Método para obter o Identificador Único Universal através do título de uma nota
+     *
+     * @param noteTitle título da nota
+     * @return identificador único universal
+     */
     public static UUID getUUIDFromTitle(String noteTitle) {
         return UUID.fromString(noteTitle.split(Utils.SPLIT_STRING_PATTERN)[1]);
     }
 
+    /**
+     * Método que serializa os conteúdos de uma lista de notas
+     *
+     * @param noteContents lista de conteúdos de notas
+     * @return lista de conteúdos de notas serializado
+     */
     public static String serializeListOfNoteContents(ArrayList<NoteContent> noteContents) {
         return new Gson().toJson(noteContents, new TypeToken<ArrayList<NoteContent>>() {
         }.getType());
     }
 
+    /**
+     * Método que deserializa os conteúdos de uma lista de notas
+     *
+     * @param noteContents lista de conteúdos de notas serializado
+     * @return lista de conteúdos de notas
+     */
     public static ArrayList<NoteContent> deserializeListOfNoteContents(String noteContents) {
         return new Gson().fromJson(noteContents, new TypeToken<ArrayList<NoteContent>>() {
         }.getType());
     }
 
+    /**
+     * Método que armazena um novo título nas Shared Preferences
+     *
+     * @param fragmentActivity
+     * @param bundle
+     */
     private static void createTitleSharedPreference(FragmentActivity fragmentActivity, Bundle bundle) {
         SharedPreferencesManager.saveSharedPreference(
                 fragmentActivity,
@@ -80,6 +118,12 @@ public abstract class Utils {
         );
     }
 
+    /**
+     * Método que atualiza um título das Shared Preferences
+     *
+     * @param fragmentActivity
+     * @param bundle
+     */
     private static void updateTitleSharedPreference(FragmentActivity fragmentActivity, Bundle bundle) {
         SharedPreferencesManager.updateSharedPreference(
                 fragmentActivity,
@@ -88,6 +132,12 @@ public abstract class Utils {
         );
     }
 
+    /**
+     * Método que elimina um título das Shared Preferences
+     *
+     * @param fragmentActivity
+     * @param bundle
+     */
     private static void deleteTitleSharedPreference(FragmentActivity fragmentActivity, Bundle bundle) {
         SharedPreferencesManager.removeSharedPreference(
                 fragmentActivity,
@@ -96,6 +146,12 @@ public abstract class Utils {
         );
     }
 
+    /**
+     * Método que armazena o conteúdo de uma nova nota no armazenamento do dispositivo
+     *
+     * @param fragmentActivity
+     * @param bundle
+     */
     private static void createNoteContent(FragmentActivity fragmentActivity, Bundle bundle) {
         new SaveNoteTask(
                 fragmentActivity,
@@ -104,6 +160,12 @@ public abstract class Utils {
         ).execute();
     }
 
+    /**
+     * Método que atualiza o conteúdo de uma nota do armazenamento do dispositivo
+     *
+     * @param fragmentActivity
+     * @param bundle
+     */
     private static void updateNoteContent(FragmentActivity fragmentActivity, Bundle bundle) {
         new SaveNoteTask(
                 fragmentActivity,
@@ -112,6 +174,12 @@ public abstract class Utils {
         ).execute();
     }
 
+    /**
+     * Método que elimina o conteúdo de uma nota do armazenamento do dispositivo
+     *
+     * @param fragmentActivity
+     * @param bundle
+     */
     private static void deleteNoteContent(FragmentActivity fragmentActivity, Bundle bundle) {
         new DeleteNoteTask(
                 fragmentActivity,

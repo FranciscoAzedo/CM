@@ -58,8 +58,10 @@ public class NoteListFragment extends Fragment {
         return new NoteListFragment();
     }
 
+    /**
+     * Método que inicializa o Fragment com as notas gaurdadas pela aplicação
+     */
     private void initArguments() {
-        // Inicializar as notas gaurdadas pela aplicação
         noteTitlesList = new ArrayList<>(SharedPreferencesManager.getSharedPreference(getActivity(), "titles"));
         noteTitlesSearchList = new ArrayList<>(noteTitlesList);
     }
@@ -79,13 +81,13 @@ public class NoteListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // References to View Elements
         tvTotalNotes = view.findViewById(R.id.tv_total_notes);
         etSearch = view.findViewById(R.id.et_search);
         rvNotesList = view.findViewById(R.id.recycler_notes);
         ivAdd = view.findViewById(R.id.iv_add);
 
         // Indicar o número de notas mostradas
-
         tvTotalNotes.setText(getString(R.string.total_notes, String.valueOf(noteTitlesSearchList.size())));
 
         // Setup da Recycler View
@@ -94,10 +96,9 @@ public class NoteListFragment extends Fragment {
         rvNotesListAdapter = new NoteListAdapter(noteTitlesSearchList);
         rvNotesList.setAdapter(rvNotesListAdapter);
 
-
         // Listener para que quando haja um click mude para o Fragment de criar notas
         ivAdd.setOnClickListener(v -> {
-            getParentFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .replace(R.id.frame_note, new NoteDetailedFragment())
                     .addToBackStack(getString(R.string.note_detailed_fragment_label))
                     .commit();
@@ -117,7 +118,7 @@ public class NoteListFragment extends Fragment {
                 if (s.length() == 0)
                     noteTitlesSearchList.addAll(noteTitlesList);
 
-                    // Caso em que é inserda alguma pesquisa
+                    // Caso em que é inserida alguma pesquisa
                 else
                     for (String noteTittle : noteTitlesList)
                         if (Utils.getNoteTitle(noteTittle).equalsIgnoreCase(s.toString())
@@ -135,17 +136,14 @@ public class NoteListFragment extends Fragment {
         });
 
         // Listener para quando houver um clique, ou longo clique, num elemento da lista de notas
-        rvNotesListAdapter.setOnItemClickListener(new NoteListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int index) {
-                Bundle bundle = new Bundle();
-                bundle.putBoolean(Utils.EDIT_MODE_KEY, true);
-                bundle.putString(Utils.NOTE_TITLE_KEY, noteTitlesSearchList.get(index));
-                bundle.putSerializable(Utils.NOTE_CONTENT_KEY, new NoteContent(null, null));
+        rvNotesListAdapter.setOnItemClickListener(index -> {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(Utils.EDIT_MODE_KEY, true);
+            bundle.putString(Utils.NOTE_TITLE_KEY, noteTitlesSearchList.get(index));
+            bundle.putSerializable(Utils.NOTE_CONTENT_KEY, new NoteContent(null, null));
 
-                new ReadNoteTask(getActivity(), Utils.getUUIDFromTitle(noteTitlesSearchList.get(index)), bundle).execute();
-                mListener.OnNotesListFragmentInteraction(bundle);
-            }
+            new ReadNoteTask(getActivity(), Utils.getUUIDFromTitle(noteTitlesSearchList.get(index)), bundle).execute();
+            mListener.OnNotesListFragmentInteraction(bundle);
         });
     }
 
@@ -158,14 +156,16 @@ public class NoteListFragment extends Fragment {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        int index = -1;
+        int index;
 
+        // Obter o índex da nota sob o qual o utilizador fez long press
         try {
             index = rvNotesListAdapter.getPositionLongPressed();
         } catch (Exception e) {
             return super.onContextItemSelected(item);
         }
 
+        // Obter a operação desejada pelo utilizador
         switch (item.getItemId()) {
             case R.id.menu_change_title:
                 editNote(index);
@@ -205,7 +205,6 @@ public class NoteListFragment extends Fragment {
                             bundle.putString(Utils.NOTE_TITLE_KEY, newTitle);
                             Utils.updateNotes(Utils.CHANGE_NOTE_TITLE_MODE, getActivity(), bundle);
 
-                            // [SUBSTITUIR] Falta o código agora para alterar na nota
                             updateNoteTitle(newTitle, index);
                         }
                     } catch (FileNotFoundException exception) {

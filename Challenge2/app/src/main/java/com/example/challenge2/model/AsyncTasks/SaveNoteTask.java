@@ -12,12 +12,15 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.FileNotFoundException;
 
+/**
+ * Classe SaveNoteTask que representa a AsyncTask responsável por guardar uma nota em memória
+ */
 public class SaveNoteTask extends AsyncTask<Void, Void, Void> {
 
     private Exception exception;
-    private Boolean update;
-    private FragmentActivity activity;
-    private NoteContent noteContent;
+    private final Boolean update;
+    private final FragmentActivity activity;
+    private final NoteContent noteContent;
 
     // Construtor da async task
     public SaveNoteTask(FragmentActivity activity, NoteContent noteContent, Boolean update) {
@@ -47,7 +50,7 @@ public class SaveNoteTask extends AsyncTask<Void, Void, Void> {
                 FileSystemManager.updateNoteContent(activity, noteContent);
             else
                 FileSystemManager.saveNoteContent(activity, noteContent);
-        } catch ( FileNotFoundException exception) {
+        } catch (FileNotFoundException exception) {
             this.exception = exception;
         }
         return null;

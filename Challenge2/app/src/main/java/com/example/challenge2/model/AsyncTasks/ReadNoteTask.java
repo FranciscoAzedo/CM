@@ -15,13 +15,16 @@ import com.google.android.material.snackbar.Snackbar;
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
+/**
+ * Classe ReadNoteTask que representa a AsyncTask responsável por ler uma nota armazenada em memória
+ */
 public class ReadNoteTask extends AsyncTask<Void, Void, Void> {
 
     private Exception exception;
-    private FragmentActivity activity;
-    private UUID noteUUID;
+    private final FragmentActivity activity;
+    private final UUID noteUUID;
     private NoteContent noteContent;
-    private Bundle bundle;
+    private final Bundle bundle;
 
     // Construtor da async task
     public ReadNoteTask(FragmentActivity activity, UUID noteUUID, Bundle bundle) {
