@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Change Title Item -->
+    <item
+        android:id="@+id/menu_change_title"
+        android:title="@string/long_press_change" />
+
+    <!-- Delete Item -->
+    <item
+        android:id="@+id/menu_delete"
+        android:title="@string/long_press_delete" />
+
+</menu>

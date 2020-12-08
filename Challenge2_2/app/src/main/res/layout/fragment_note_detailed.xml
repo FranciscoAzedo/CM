@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_lighter"
+    android:paddingHorizontal="@dimen/padding_horizontal"
+    android:paddingVertical="@dimen/padding_vertical"
+    tools:context=".view.fragment.NoteDetailedFragment">
+
+    <!-- Back -->
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="@dimen/square_button_m"
+        android:layout_height="@dimen/square_button_m"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_back" />
+
+    <!-- Scroll View -->
+    <ScrollView
+        android:id="@+id/scroll_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottom_bar_note"
+        android:layout_below="@id/iv_back"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp">
+
+        <!-- Linear Layout to handle both items inside the Scroll View -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Note Title -->
+            <EditText
+                android:id="@+id/et_note_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_round_border_white"
+                android:hint="@string/title_edit_hint"
+                android:inputType="text"
+                android:padding="10dp"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_title"
+                android:textStyle="bold" />
+
+            <!-- Note Content -->
+            <EditText
+                android:id="@+id/et_note_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/background_round_border_white"
+                android:hint="@string/content_edit_hint"
+                android:inputType="textMultiLine"
+                android:padding="10dp"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_note_content" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Bottom Bar -->
+    <LinearLayout
+        android:id="@+id/bottom_bar_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center">
+
+        <!-- Save Button -->
+        <LinearLayout
+            android:id="@+id/ll_save_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <!-- Save Button Icon -->
+            <ImageView
+                android:layout_width="@dimen/square_button_m"
+                android:layout_height="@dimen/square_button_m"
+                android:src="@drawable/ic_checked" />
+
+            <!-- Save Button Description -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/button_save_description"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_description_images" />
+
+        </LinearLayout>
+
+        <!-- Delete Button -->
+        <LinearLayout
+            android:id="@+id/ll_delete_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="128dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <!-- Delete Button Icon -->
+            <ImageView
+                android:layout_width="@dimen/square_button_m"
+                android:layout_height="@dimen/square_button_m"
+                android:src="@drawable/ic_bin" />
+
+            <!-- Delete Button Description -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/button_delete_description"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_description_images" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

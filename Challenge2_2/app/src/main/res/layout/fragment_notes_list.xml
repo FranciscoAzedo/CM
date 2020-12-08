@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_lighter"
+    android:paddingHorizontal="@dimen/padding_horizontal"
+    android:paddingVertical="@dimen/padding_vertical"
+    tools:context=".view.fragment.NoteListFragment">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fragment_title"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_title"
+        android:textStyle="bold" />
+
+    <!-- Total Notes -->
+    <TextView
+        android:id="@+id/tv_total_notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_title"
+        android:layout_alignStart="@id/tv_title"
+        android:layout_alignEnd="@id/tv_title"
+        android:layout_marginTop="4dp"
+        android:text="@string/total_notes"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="@dimen/text_notes_total"
+        android:textStyle="bold" />
+
+    <!-- Search Bar -->
+    <LinearLayout
+        android:id="@+id/rl_search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_total_notes"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/background_round_corner_blue"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="2dp">
+
+        <!-- Search Icon -->
+        <ImageView
+            android:layout_width="@dimen/square_button_s"
+            android:layout_height="@dimen/square_button_s"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_search" />
+
+        <!-- Search Text Box -->
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="@android:color/transparent"
+            android:hint="@string/search_hint"
+            android:inputType="text"
+            android:lines="1"
+            android:maxLines="1"
+            android:padding="0dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="@dimen/text_note_search" />
+
+    </LinearLayout>
+
+    <!-- Scroll View -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_search_bar"
+        android:layout_marginVertical="12dp">
+
+        <!-- Notes Recycler View -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </ScrollView>
+
+    <!-- Add Button -->
+    <ImageView
+        android:id="@+id/iv_add"
+        android:layout_width="@dimen/square_button_l"
+        android:layout_height="@dimen/square_button_l"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_add" />
+
+</RelativeLayout>

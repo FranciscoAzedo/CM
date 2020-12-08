@@ -1,0 +1,23 @@
+<resources>
+
+    <!-- Dimensions Padding Fragments -->
+    <dimen name="padding_horizontal">16dp</dimen>
+    <dimen name="padding_vertical">32dp</dimen>
+
+    <!-- Dimensions Buttons -->
+    <dimen name="square_button_s">14dp</dimen>
+    <dimen name="square_button_m">24dp</dimen>
+    <dimen name="square_button_l">48dp</dimen>
+
+    <!-- Dimensions Text -->
+    <dimen name="text_description_images">10sp</dimen>
+    <dimen name="text_notes_total">12sp</dimen>
+    <dimen name="text_note_content">14sp</dimen>
+    <dimen name="text_note_search">16sp</dimen>
+    <dimen name="text_title">28sp</dimen>
+
+    <!-- Dimensions Radius -->
+    <dimen name="radius_small">10dp</dimen>
+    <dimen name="radius_medium">18dp</dimen>
+
+</resources>
