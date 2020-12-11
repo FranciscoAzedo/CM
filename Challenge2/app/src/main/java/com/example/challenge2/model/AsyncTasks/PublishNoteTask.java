@@ -5,35 +5,32 @@ import android.os.Bundle;
 
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.challenge2.MqttHelper;
 import com.example.challenge2.R;
 import com.example.challenge2.Utils;
-import com.example.challenge2.view.NoteActivity;
-import com.example.challenge2.view.NotificationManager;
+import com.example.challenge2.model.Note;
 import com.google.android.material.snackbar.Snackbar;
 
-public class DeleteNoteTask extends AsyncTask<Void, Void, Void> {
+public class PublishNoteTask extends AsyncTask<Void, Void, Void> {
 
     private final FragmentActivity activity;
     private final Bundle bundle;
-    private final NotificationManager notificationManager;
+    private final MqttHelper mqttHelper;
     private boolean result;
 
-    public DeleteNoteTask(FragmentActivity activity, Bundle bundle) {
+    public PublishNoteTask(FragmentActivity activity, Bundle bundle) {
         this.activity = activity;
         this.bundle = bundle;
-        this.notificationManager = (NoteActivity) bundle.getSerializable(Utils.ACTIVITY_KEY);
+        this.mqttHelper = (MqttHelper) bundle.getSerializable(Utils.MQTT_HELPER_KEY);
     }
 
     @Override
     protected void onPostExecute(Void arg) {
         int message;
-
-        if (result) {
-            message = R.string.delete_note_success;
-            notificationManager.notifyDeletedNote(bundle);
-        } else {
-            message = R.string.delete_note_error;
-        }
+        if (result)
+            message = R.string.published_note_success;
+        else
+            message = R.string.published_note_error;
 
         Snackbar.make(activity.getWindow().getDecorView().findViewById(R.id.RelativeLayout),
                 message,
@@ -43,7 +40,13 @@ public class DeleteNoteTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... args) {
-        result = Utils.updateNotes(Utils.DELETE_NOTE_MODE, bundle);
+        Note note = (Note) bundle.getSerializable(Utils.NOTE_KEY);
+        if (note != null) {
+            mqttHelper.publishToTopic(Utils.PUBLISH_TOPIC_KEY, Utils.serializeNote(note).getBytes());
+            result = true;
+        } else {
+            result = false;
+        }
         return null;
     }
 }

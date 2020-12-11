@@ -1,58 +1,60 @@
 package com.example.challenge2.model.AsyncTasks;
 
 import android.os.AsyncTask;
-import android.util.Log;
+import android.os.Bundle;
 
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.challenge2.R;
-import com.example.challenge2.model.NoteContent;
-import com.example.challenge2.model.Repository.FileSystemManager;
+import com.example.challenge2.Utils;
+import com.example.challenge2.view.NoteActivity;
+import com.example.challenge2.view.NotificationManager;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.FileNotFoundException;
-
-/**
- * Classe SaveNoteTask que representa a AsyncTask responsável por guardar uma nota em memória
- */
 public class SaveNoteTask extends AsyncTask<Void, Void, Void> {
 
-    private Exception exception;
-    private final Boolean update;
     private final FragmentActivity activity;
-    private final NoteContent noteContent;
+    private final Bundle bundle;
+    private final NotificationManager notificationManager;
+    private boolean result;
 
-    // Construtor da async task
-    public SaveNoteTask(FragmentActivity activity, NoteContent noteContent, Boolean update) {
+    public SaveNoteTask(FragmentActivity activity, Bundle bundle) {
         this.activity = activity;
-        this.noteContent = noteContent;
-        this.update = update;
+        this.bundle = bundle;
+        this.notificationManager = (NoteActivity) bundle.getSerializable(Utils.ACTIVITY_KEY);
     }
 
-    // Método executado no final da async task
     @Override
     protected void onPostExecute(Void arg) {
-        if (exception != null) {
-            Log.e("EXCEPTION", "Exception " + exception + "has occurred!");
-            // Criar e mostrar snackbar de erro
-            Snackbar sbError = Snackbar.make(activity.getWindow().getDecorView().findViewById(R.id.RelativeLayout),
-                    R.string.save_note_error,
-                    Snackbar.LENGTH_SHORT);
-            sbError.show();
+        int message;
+        if (result) {
+            new PublishNoteTask(activity, bundle).execute();
+            if (bundle.getString(Utils.OPERATION_KEY).equals(Utils.CREATE_NOTE_MODE)) {
+                message = R.string.create_note_success;
+                notificationManager.notifyNewNote(bundle);
+            } else {
+                message = R.string.update_note_success;
+                notificationManager.notifyUpdateNote(bundle);
+            }
+        } else {
+            if (bundle.getString(Utils.OPERATION_KEY).equals(Utils.CREATE_NOTE_MODE))
+                message = R.string.create_note_error;
+            else
+                message = R.string.update_note_error;
         }
+
+        Snackbar.make(activity.getWindow().getDecorView().findViewById(R.id.RelativeLayout),
+                message,
+                Snackbar.LENGTH_SHORT)
+                .show();
     }
 
-    // Método executado quando a async task é chamada
     @Override
     protected Void doInBackground(Void... args) {
-        try {
-            if (update)
-                FileSystemManager.updateNoteContent(activity, noteContent);
-            else
-                FileSystemManager.saveNoteContent(activity, noteContent);
-        } catch (FileNotFoundException exception) {
-            this.exception = exception;
-        }
+        if (bundle.getString(Utils.OPERATION_KEY).equals(Utils.CREATE_NOTE_MODE))
+            result = Utils.updateNotes(Utils.CREATE_NOTE_MODE, bundle);
+        else
+            result = Utils.updateNotes(Utils.CHANGE_NOTE_MODE, bundle);
         return null;
     }
 }

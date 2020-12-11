@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +14,18 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.challenge2.MqttHelper;
 import com.example.challenge2.R;
 import com.example.challenge2.Utils;
-import com.example.challenge2.model.NoteContent;
+import com.example.challenge2.model.AsyncTasks.DeleteNoteTask;
+import com.example.challenge2.model.AsyncTasks.SaveNoteTask;
+import com.example.challenge2.model.Note;
+import com.example.challenge2.model.Repository.NoteKeeperDBHelper;
+import com.example.challenge2.view.NoteActivity;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.FileNotFoundException;
-import java.util.UUID;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 public class NoteDetailedFragment extends Fragment {
 
@@ -36,58 +40,37 @@ public class NoteDetailedFragment extends Fragment {
     // Fragment listener
     private OnNoteDetailsFragmentInteractionListener mListener;
 
+    private ArrayList<Note> noteTitlesList = new ArrayList<>();
+    private ArrayList<Note> noteTitlesSearchList = new ArrayList<>();
+
     private Boolean edit = false;
-    private String noteTitle;
-    private NoteContent noteContent;
+    private Note note;
+    private NoteKeeperDBHelper noteKeeperDBHelper;
+    private MqttHelper mqttHelper;
 
     public static NoteDetailedFragment newInstance() {
         return new NoteDetailedFragment();
     }
 
-    private void initArguments() {
-        if (getArguments() != null) {
-            noteTitle = getArguments().getString(Utils.NOTE_TITLE_KEY);
-            noteContent = (NoteContent) getArguments().getSerializable(Utils.NOTE_CONTENT_KEY);
-            edit = getArguments().getBoolean(Utils.EDIT_MODE_KEY);
-        }
-    }
-
     @Override
-    public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
-        // Initialize arguments
-        initArguments();
-
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_note_detailed, container, false);
-    }
-
-    public void updateView() {
-        initArguments();
-        etNoteTitle.setText(Utils.getNoteTitle(noteTitle));
-        etNoteContent.setText(noteContent != null ? noteContent.getContent() : null);
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Obter referências dos elementos visuais
-        ivBack = view.findViewById(R.id.iv_back);
-        etNoteTitle = view.findViewById(R.id.et_note_title);
-        etNoteContent = view.findViewById(R.id.et_note_content);
-        llSave = view.findViewById(R.id.ll_save_note);
-        llDelete = view.findViewById(R.id.ll_delete_note);
-
-        // Preencher informações da nota
-        etNoteTitle.setText(Utils.getNoteTitle(noteTitle));
-        etNoteContent.setText(noteContent != null ? noteContent.getContent() : null);
+        initArguments();
+        initViewElements(view);
+        populateView();
 
         // Listener para quando existir um clique para voltar atrás
         ivBack.setOnClickListener(v -> {
             // Voltar ao fragment anterior
-            mListener.OnNoteDetailsFragmentInteraction();
+            Bundle listenerBundle = new Bundle();
+            listenerBundle.putSerializable(Utils.LIST_NOTES_KEY, noteTitlesList);
+            listenerBundle.putSerializable(Utils.LIST_SEARCH_NOTES_KEY, noteTitlesSearchList);
+            mListener.OnNoteDetailsFragmentInteraction(listenerBundle);
         });
 
         // Listener para quando existir um clique para guardar a nota atual
@@ -102,108 +85,15 @@ public class NoteDetailedFragment extends Fragment {
         });
     }
 
-    private AlertDialog popConfirmationNoteDelete() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.delete_dialog_title)
-                .setMessage(R.string.delete_dialog_content)
-                .setPositiveButton(R.string.delete_dialog_confirm, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        deleteNote();
-                    }
-                })
-                .setNegativeButton(R.string.delete_dialog_cancel, null);
-        return builder.create();
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateView();
     }
 
-    private void deleteNote() {
-        try {
-            // Colocar no bundle informação de nota a apagar
-            Bundle bundle = new Bundle();
-            bundle.putString(Utils.NOTE_TITLE_KEY, noteTitle);
-            bundle.putString(Utils.NOTE_UUID_KEY, String.valueOf(Utils.getUUIDFromTitle(noteTitle)));
-            Utils.updateNotes(Utils.DELETE_NOTE_MODE, getActivity(), bundle);
-        } catch (FileNotFoundException exception) {
-            notifyException(exception);
-        } finally {
-            // Voltar ao fragment anterior
-            mListener.OnNoteDetailsFragmentInteraction();
-        }
-    }
-
-    private void saveNote() {
-
-        if (etNoteTitle.getText().toString().equals("")) {
-            Snackbar.make(getActivity().getWindow().getDecorView().findViewById(R.id.RelativeLayout),
-                    "Title can not be empty",
-                    Snackbar.LENGTH_SHORT)
-                    .show();
-            return;
-        } else if (etNoteTitle.getText().toString().contains("###")) {
-            Snackbar.make(getActivity().getWindow().getDecorView().findViewById(R.id.RelativeLayout),
-                    "Char sequence \"###\" is invalid",
-                    Snackbar.LENGTH_SHORT)
-                    .show();
-            return;
-        } else if (etNoteTitle.getText().toString().endsWith("#")) {
-            Snackbar.make(getActivity().getWindow().getDecorView().findViewById(R.id.RelativeLayout),
-                    "Title can not end with \"#\"",
-                    Snackbar.LENGTH_SHORT)
-                    .show();
-            return;
-        }
-
-        try {
-            String updateNoteMode = null;
-            Bundle bundle = new Bundle();
-
-            // Se se estiver a editar uma nota
-            if (edit) {
-                // Se o título for diferente
-                if (!Utils.getNoteTitle(noteTitle).equals(etNoteTitle.getText().toString())) {
-                    // Se o conteudo for diferente
-                    if (!noteContent.getContent().equals(etNoteContent.getText().toString()))
-                        updateNoteMode = Utils.CHANGE_NOTE_TITLE_AND_CONTENT_MODE;
-                    else
-                        updateNoteMode = Utils.CHANGE_NOTE_TITLE_MODE;
-                }
-                // Se o conteudo for diferente
-                else if (!noteContent.getContent().equals(etNoteContent.getText().toString()))
-                    updateNoteMode = Utils.CHANGE_NOTE_CONTENT_MODE;
-
-                noteContent.setContent(etNoteContent.getText().toString());
-                noteTitle = etNoteTitle.getText().toString() + Utils.SPLIT_STRING_PATTERN + Utils.getUUIDFromTitle(noteTitle);
-            }
-
-            // Se se estiver a criar uma nota
-            else {
-                updateNoteMode = Utils.CREATE_NOTE_MODE;
-                UUID noteUUID = UUID.randomUUID();
-                noteContent = new NoteContent(noteUUID, etNoteContent.getText().toString());
-
-                // Gerar título com ID
-                noteTitle = etNoteTitle.getText().toString() + Utils.SPLIT_STRING_PATTERN + noteUUID;
-            }
-
-            bundle.putString(Utils.NOTE_TITLE_KEY, noteTitle);
-            bundle.putSerializable(Utils.NOTE_CONTENT_KEY, noteContent);
-
-            // Guardar dados
-            Utils.updateNotes(updateNoteMode, getActivity(), bundle);
-
-        } catch (FileNotFoundException exception) {
-            notifyException(exception);
-        } finally {
-            // Voltar ao fragment anterior
-            mListener.OnNoteDetailsFragmentInteraction();
-        }
-    }
-
-    private void notifyException(Exception exception) {
-        Log.e("EXCEPTION", "Exception " + exception + "has occurred!");
-        Snackbar.make(getActivity().getWindow().getDecorView().findViewById(R.id.RelativeLayout),
-                R.string.read_note_error,
-                Snackbar.LENGTH_SHORT)
-                .show();
+    public void updateView() {
+        initArguments();
+        populateView();
     }
 
     @Override
@@ -223,7 +113,109 @@ public class NoteDetailedFragment extends Fragment {
         mListener = null;
     }
 
+    private void initArguments() {
+        if (getArguments() != null) {
+            edit = getArguments().getBoolean(Utils.EDIT_MODE_KEY);
+            note = (Note) getArguments().getSerializable(Utils.NOTE_KEY);
+            noteKeeperDBHelper = (NoteKeeperDBHelper) getArguments().getSerializable(Utils.DATABASE_HELPER_KEY);
+            mqttHelper = (MqttHelper) getArguments().getSerializable(Utils.MQTT_HELPER_KEY);
+            noteTitlesList = (ArrayList<Note>) getArguments().getSerializable(Utils.LIST_NOTES_KEY);
+            noteTitlesSearchList = (ArrayList<Note>) getArguments().getSerializable(Utils.LIST_SEARCH_NOTES_KEY);
+        } else {
+            note = new Note();
+            noteKeeperDBHelper = new NoteKeeperDBHelper(getActivity());
+            mqttHelper = new MqttHelper(noteKeeperDBHelper, new NoteActivity());
+            noteTitlesList = new ArrayList<>();
+            noteTitlesSearchList = new ArrayList<>();
+        }
+    }
+
+    private void initViewElements(View view) {
+        ivBack = view.findViewById(R.id.iv_back);
+        etNoteTitle = view.findViewById(R.id.et_note_title);
+        etNoteContent = view.findViewById(R.id.et_note_content);
+        llSave = view.findViewById(R.id.ll_save_note);
+        llDelete = view.findViewById(R.id.ll_delete_note);
+    }
+
+    private void populateView() {
+        if (edit) {
+            etNoteTitle.setText(note.getTitle());
+            etNoteContent.setText(note.getContent());
+        } else {
+            etNoteTitle.setText("");
+            etNoteContent.setText("");
+        }
+    }
+
+    private void deleteNote() {
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Utils.DATABASE_HELPER_KEY, noteKeeperDBHelper);
+        bundle.putSerializable(Utils.ACTIVITY_KEY, (Serializable) getActivity());
+        bundle.putSerializable(Utils.NOTE_KEY, note);
+
+        new DeleteNoteTask(getActivity(), bundle).execute();
+
+        Bundle listenerBundle = new Bundle();
+        listenerBundle.putSerializable(Utils.LIST_NOTES_KEY, noteTitlesList);
+        listenerBundle.putSerializable(Utils.LIST_SEARCH_NOTES_KEY, noteTitlesSearchList);
+        mListener.OnNoteDetailsFragmentInteraction(listenerBundle);
+    }
+
+    private AlertDialog popConfirmationNoteDelete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.delete_dialog_title)
+                .setMessage(R.string.delete_dialog_content)
+                .setPositiveButton(R.string.delete_dialog_confirm, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        deleteNote();
+                    }
+                })
+                .setNegativeButton(R.string.delete_dialog_cancel, null);
+        return builder.create();
+    }
+
+    private void saveNote() {
+
+        if (etNoteTitle.getText().toString().equals("")) {
+            Snackbar.make(getActivity().getWindow().getDecorView().findViewById(R.id.RelativeLayout),
+                    R.string.empty_title_error,
+                    Snackbar.LENGTH_SHORT)
+                    .show();
+            return;
+        } else if (etNoteContent.getText().toString().equals("")) {
+            Snackbar.make(getActivity().getWindow().getDecorView().findViewById(R.id.RelativeLayout),
+                    R.string.empty_content_error,
+                    Snackbar.LENGTH_SHORT)
+                    .show();
+            return;
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Utils.DATABASE_HELPER_KEY, noteKeeperDBHelper);
+        bundle.putSerializable(Utils.MQTT_HELPER_KEY, mqttHelper);
+        bundle.putString(Utils.NOTE_TITLE_KEY, etNoteTitle.getText().toString());
+        bundle.putString(Utils.NOTE_CONTENT_KEY, etNoteContent.getText().toString());
+        bundle.putSerializable(Utils.ACTIVITY_KEY, (Serializable) getActivity());
+        bundle.putSerializable(Utils.NOTE_KEY, note);
+
+        if (edit) {
+            bundle.putString(Utils.OPERATION_KEY, Utils.CHANGE_NOTE_MODE);
+        } else {
+            bundle.putString(Utils.OPERATION_KEY, Utils.CREATE_NOTE_MODE);
+        }
+
+        new SaveNoteTask(getActivity(), bundle).execute();
+
+
+        Bundle listenerBundle = new Bundle();
+        listenerBundle.putSerializable(Utils.LIST_NOTES_KEY, noteTitlesList);
+        listenerBundle.putSerializable(Utils.LIST_SEARCH_NOTES_KEY, noteTitlesSearchList);
+        mListener.OnNoteDetailsFragmentInteraction(listenerBundle);
+    }
+
     public interface OnNoteDetailsFragmentInteractionListener {
-        void OnNoteDetailsFragmentInteraction();
+        void OnNoteDetailsFragmentInteraction(Bundle bundle);
     }
 }

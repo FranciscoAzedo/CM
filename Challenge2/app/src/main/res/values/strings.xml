@@ -5,6 +5,7 @@
 
     <!-- Present Fragment -->
     <string name="fragment_title">All Notes</string>
+    <string name="topics">Topics</string>
     <string name="total_notes">%1$s notes</string>
     <string name="search_hint">Search notes by title…</string>
 
@@ -21,10 +22,17 @@
     <string name="delete_dialog_content">Are your sure you want to delete the selected note?</string>
     <string name="delete_dialog_confirm">Sure</string>
     <string name="delete_dialog_cancel">No</string>
+    <string name="delete_dialog_topic_title">Delete Topic</string>
+    <string name="delete_dialog_topic_content">Are your sure you want to delete the selected topic?</string>
+    <string name="delete_dialog_topic_confirm">Yes</string>
+    <string name="delete_dialog_topic_cancel">No</string>
+    <string name="subscription_dialog_title">Note Received</string>
+    <string name="subscription_dialog_content">Want to save a note with the title %1$s</string>
 
     <!-- Alert Dialog to Change Note's Title -->
     <string name="change_dialog_title">Change Note Title</string>
     <string name="change_dialog_edit_hint">Insert the new note title…</string>
+    <string name="change_dialog_add_topic_hint">Insert the name of the topic</string>
     <string name="change_dialog_confirm">Save</string>
     <string name="change_dialog_cancel">Cancel</string>
 
@@ -39,5 +47,21 @@
     <!-- Note's Management -->
     <string name="save_note_error">An error occurred during save note process</string>
     <string name="read_note_error">An error occurred during read note process</string>
+    <string name="delete_note_success">Note deleted successfully</string>
+    <string name="delete_note_error">An error occurred during delete note process</string>
+    <string name="create_note_success">Note created successfully</string>
+    <string name="create_note_error">An error occurred during create note process</string>
+    <string name="update_note_success">Note updated successfully</string>
+    <string name="update_note_error">An error occurred during update note process</string>
+    <string name="empty_title_error">Title can not be empty</string>
+    <string name="empty_content_error">Content can not be empty</string>
+    <string name="create_topic_success">Topic added successfully</string>
+    <string name="create_topic_error">An error occurred during add topic process</string>
+    <string name="delete_topic_success">Topic deleted successfully</string>
+    <string name="delete_topic_error">An error occurred during delete topic process</string>
+    <string name="connection_topic_success">Connection with server success</string>
+    <string name="connection_topic_error">An error occurred during connecting to the server</string>
+    <string name="published_note_success">Note published successfully</string>
+    <string name="published_note_error">An error occurred during publish note process</string>
 
 </resources>

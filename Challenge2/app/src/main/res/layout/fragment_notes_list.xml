@@ -84,6 +84,15 @@
 
     </ScrollView>
 
+    <Button
+        android:id="@+id/btn_connections"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="@color/cardview_shadow_start_color"
+        android:text="@string/topics" />
+
     <!-- Add Button -->
     <ImageView
         android:id="@+id/iv_add"

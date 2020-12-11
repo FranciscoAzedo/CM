@@ -11,17 +11,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.challenge2.R;
-import com.example.challenge2.Utils;
+import com.example.challenge2.model.Note;
 
 import java.util.ArrayList;
 
 public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteListViewHolder> {
 
-    private final ArrayList<String> notesList;
+    private final ArrayList<Note> notesList;
     private OnItemClickListener listener;
     private int positionLongPressed;
 
-    public NoteListAdapter(ArrayList<String> notesList) {
+    public NoteListAdapter(ArrayList<Note> notesList) {
         this.notesList = notesList;
     }
 
@@ -38,7 +38,7 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.NoteLi
 
     @Override
     public void onBindViewHolder(@NonNull NoteListViewHolder holder, int index) {
-        final String currentNote = Utils.getNoteTitle(notesList.get(index));
+        final String currentNote = notesList.get(index).getTitle();
 
         holder.tvTitle.setText(currentNote);
 
