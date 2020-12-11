@@ -41,7 +41,7 @@ public class PublishNoteTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... args) {
         Note note = (Note) bundle.getSerializable(Utils.NOTE_KEY);
-        if (note != null) {
+        if (mqttHelper != null && note != null) {
             mqttHelper.publishToTopic(Utils.PUBLISH_TOPIC_KEY, Utils.serializeNote(note).getBytes());
             result = true;
         } else {

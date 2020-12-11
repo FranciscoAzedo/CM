@@ -28,8 +28,6 @@ public class MqttHelper implements Serializable {
     private final NotificationManager notificationManager;
     public MqttAndroidClient mqttAndroidClient;
 
-//    private final String subscriptionTopic = "test/response/#";
-
     public MqttHelper(NoteKeeperDBHelper noteKeeperDBHelper, NoteActivity noteActivity) {
         this.noteKeeperDBHelper = noteKeeperDBHelper;
         this.notificationManager = noteActivity;
@@ -52,12 +50,14 @@ public class MqttHelper implements Serializable {
 
             @Override
             public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-                Note note = Utils.deserializeAnimal(new String(mqttMessage.getPayload()));
-                Bundle bundle = new Bundle();
-                bundle.putString(Utils.OPERATION_KEY, Utils.CREATE_NOTE_MODE);
-                bundle.putString(Utils.NOTE_TITLE_KEY, note.getTitle());
-                bundle.putString(Utils.NOTE_CONTENT_KEY, note.getContent());
-                notificationManager.notifySubscription(bundle);
+                if (!topic.equalsIgnoreCase(Utils.PUBLISH_TOPIC_KEY)) {
+                    Note note = Utils.deserializeAnimal(new String(mqttMessage.getPayload()));
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Utils.OPERATION_KEY, Utils.CREATE_NOTE_MODE);
+                    bundle.putString(Utils.NOTE_TITLE_KEY, note.getTitle());
+                    bundle.putString(Utils.NOTE_CONTENT_KEY, note.getContent());
+                    notificationManager.notifySubscription(bundle);
+                }
             }
 
             @Override
@@ -86,7 +86,6 @@ public class MqttHelper implements Serializable {
                     Bundle bundle = new Bundle();
                     bundle.putBoolean(Utils.CONNECTION_STATUS_KEY, true);
                     notificationManager.notifyConnection(bundle);
-
                     Log.d("MQTT", "Connected successfully to: " + serverUri);
                 }
 
@@ -95,7 +94,6 @@ public class MqttHelper implements Serializable {
                     Bundle bundle = new Bundle();
                     bundle.putBoolean(Utils.CONNECTION_STATUS_KEY, false);
                     notificationManager.notifyConnection(bundle);
-
                     Log.d("MQTT", "Failed to connect to: " + serverUri + exception.toString());
                 }
             });
