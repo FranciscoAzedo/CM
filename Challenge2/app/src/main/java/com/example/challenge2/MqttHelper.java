@@ -58,6 +58,7 @@ public class MqttHelper implements Serializable {
                     bundle.putString(Utils.NOTE_CONTENT_KEY, note.getContent());
                     notificationManager.notifySubscription(bundle);
                 }
+                Log.d("RECEIVED", new String(mqttMessage.getPayload()));
             }
 
             @Override
@@ -127,6 +128,7 @@ public class MqttHelper implements Serializable {
         try {
             IMqttDeliveryToken publish = mqttAndroidClient.publish(subscriptionTopic, message, 0, true);
             Log.d("RESULTADO", publish.toString());
+            Log.d("PUBLISHED", new String(message));
         } catch (MqttException e) {
             e.printStackTrace();
         }
