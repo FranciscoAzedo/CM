@@ -16,4 +16,9 @@
         android:icon="@drawable/ic_baseline_history_24"
         android:title="@string/title_history" />
 
+    <item
+        android:id="@+id/navigation_subscriptions"
+        android:icon="@drawable/ic_baseline_topic_24"
+        android:title="@string/title_subscriptions" />
+
 </menu>

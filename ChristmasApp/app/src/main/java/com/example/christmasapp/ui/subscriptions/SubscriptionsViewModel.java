@@ -1,16 +1,16 @@
-package com.example.christmasapp.ui.dashboard;
+package com.example.christmasapp.ui.subscriptions;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class MapViewModel extends ViewModel {
+public class SubscriptionsViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public MapViewModel() {
+    public SubscriptionsViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is dashboard fragment");
+        mText.setValue("This is subscriptions fragment");
     }
 
     public LiveData<String> getText() {

@@ -1,4 +1,4 @@
-package com.example.christmasapp.ui.home;
+package com.example.christmasapp.ui.history;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,17 +14,17 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.christmasapp.R;
 
-public class PointsOfInterestFragment extends Fragment {
+public class HistoryFragment extends Fragment {
 
-    private PointsOfInterestViewModel pointsOfInterestViewModel;
+    private HistoryViewModel historyViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        pointsOfInterestViewModel =
-                new ViewModelProvider(this).get(PointsOfInterestViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        pointsOfInterestViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        historyViewModel =
+                new ViewModelProvider(this).get(HistoryViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_history, container, false);
+        final TextView textView = root.findViewById(R.id.text_history);
+        historyViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

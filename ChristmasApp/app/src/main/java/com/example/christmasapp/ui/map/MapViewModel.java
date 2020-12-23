@@ -1,16 +1,16 @@
-package com.example.christmasapp.ui.home;
+package com.example.christmasapp.ui.map;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class PointsOfInterestViewModel extends ViewModel {
+public class MapViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public PointsOfInterestViewModel() {
+    public MapViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+        mText.setValue("This is map fragment");
     }
 
     public LiveData<String> getText() {

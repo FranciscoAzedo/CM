@@ -7,19 +7,25 @@
 
     <fragment
         android:id="@+id/navigation_points_of_interest"
-        android:name="com.example.christmasapp.ui.home.PointsOfInterestFragment"
+        android:name="com.example.christmasapp.ui.points_of_interest.PointsOfInterestFragment"
         android:label="@string/title_points_of_interest"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_points_of_interest" />
 
     <fragment
         android:id="@+id/navigation_map"
-        android:name="com.example.christmasapp.ui.dashboard.MapFragment"
+        android:name="com.example.christmasapp.ui.map.MapFragment"
         android:label="@string/title_map"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_map" />
 
     <fragment
         android:id="@+id/navigation_history"
-        android:name="com.example.christmasapp.ui.notifications.HistoryFragment"
+        android:name="com.example.christmasapp.ui.history.HistoryFragment"
         android:label="@string/title_history"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_history" />
+
+    <fragment
+        android:id="@+id/navigation_subscriptions"
+        android:name="com.example.christmasapp.ui.subscriptions.SubscriptionsFragment"
+        android:label="@string/title_subscriptions"
+        tools:layout="@layout/fragment_subscriptions" />
 </navigation>
