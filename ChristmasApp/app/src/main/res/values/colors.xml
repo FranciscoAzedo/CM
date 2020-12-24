@@ -11,4 +11,7 @@
     <color name="background_bar">#1E5434</color>
     <color name="tab_background_selected">#FFFFFFFF</color>
     <color name="tab_background_unselected">#808080</color>
+    <color name="badge_background">#D64419</color>
+    <color name="fragment_background">#E2E2E2</color>
+    <color name="empty_notifications_text">#848484</color>
 </resources>

@@ -15,6 +15,8 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper implements Serializable {
 
+    private static DatabaseHelper databaseHelper = null;
+
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "CHRISTMAS_APP.db";
 
@@ -22,11 +24,11 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Serializable {
 
     private static final String NOTIFICATION_TABLE_NAME = "notification";
     private static final String COLUMN_NOTIFICATION_TITLE = "NOTIFICATION_TITLE";
-    private static final String COLUMN_NOTIFICATION_CONTENT = "NOTIFICATION_CONTENT";
+    private static final String COLUMN_NOTIFICATION_DESCRIPTION = "NOTIFICATION_DESCRIPTION";
     private static final String NOTIFICATION_TABLE_CREATE = "CREATE TABLE " + NOTIFICATION_TABLE_NAME + " ("
             + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
             + COLUMN_NOTIFICATION_TITLE + " TEXT, "
-            + COLUMN_NOTIFICATION_CONTENT + " TEXT);";
+            + COLUMN_NOTIFICATION_DESCRIPTION + " TEXT);";
 
     private static final String TOPIC_TABLE_NAME = "topic";
     private static final String COLUMN_TOPIC_NAME = "TOPIC_NAME";
@@ -35,7 +37,15 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Serializable {
             + COLUMN_TOPIC_NAME + " TEXT);";
 
 
-    public DatabaseHelper(Context context) {
+    public static DatabaseHelper getInstance(Context context) {
+        if (databaseHelper == null)
+        {
+            databaseHelper = new DatabaseHelper(context);
+        }
+        return databaseHelper;
+    }
+
+    private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -76,7 +86,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Serializable {
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(COLUMN_NOTIFICATION_TITLE, notification.getTitle());
-        contentValues.put(COLUMN_NOTIFICATION_CONTENT, notification.getDescription());
+        contentValues.put(COLUMN_NOTIFICATION_DESCRIPTION, notification.getDescription());
 
         final int result = (int) database.insert(NOTIFICATION_TABLE_NAME, null, contentValues);
         database.close();
@@ -87,7 +97,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Serializable {
     public boolean deleteNotification(Notification notification) {
         SQLiteDatabase database = this.getWritableDatabase();
 
-        int result = database.delete(NOTIFICATION_TABLE_NAME, "ID=" + notification.getId() + " AND " + COLUMN_NOTIFICATION_TITLE + "='" + notification.getTitle() + "' AND " + COLUMN_NOTIFICATION_CONTENT + "='" + notification.getDescription() + "'", null);
+        int result = database.delete(NOTIFICATION_TABLE_NAME, "ID=" + notification.getId() + " AND " + COLUMN_NOTIFICATION_TITLE + "='" + notification.getTitle() + "' AND " + COLUMN_NOTIFICATION_DESCRIPTION + "='" + notification.getDescription() + "'", null);
 
         return result != 0;
     }

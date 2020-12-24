@@ -1,5 +1,6 @@
 package com.example.christmasapp.ui.points_of_interest;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,8 @@ public class PointsOfInterestFragment extends Fragment {
 
     private PointsOfInterestViewModel pointsOfInterestViewModel;
 
+    private PointsOfInterestFragment.PointsOfInterestFragmentListener pointsOfInterestFragmentListener;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         pointsOfInterestViewModel =
@@ -31,5 +34,32 @@ public class PointsOfInterestFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        pointsOfInterestFragmentListener.pointsOfInterestActive(this);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof PointsOfInterestFragmentListener) {
+            pointsOfInterestFragmentListener = (PointsOfInterestFragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnNotesListFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        pointsOfInterestFragmentListener = null;
+    }
+
+    public interface PointsOfInterestFragmentListener {
+        void pointsOfInterestActive(PointsOfInterestFragment pointsOfInterestFragment);
     }
 }

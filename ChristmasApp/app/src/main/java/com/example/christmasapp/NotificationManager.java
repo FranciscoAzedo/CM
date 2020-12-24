@@ -5,8 +5,6 @@ import android.os.Bundle;
 public interface NotificationManager {
     void notifyConnection(Bundle bundle);
 
-    void notifyLoadedNotes(Bundle bundle);
-
     void notifyNewNote(Bundle bundle);
 
     void notifyUpdateNote(Bundle bundle);
@@ -14,6 +12,8 @@ public interface NotificationManager {
     void notifyDeletedNote(Bundle bundle);
 
     void newNotification(Bundle bundle);
+
+    void notifyLoadedNotifications(Bundle bundle);
 
     void notifyLoadedTopics(Bundle bundle);
 

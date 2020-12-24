@@ -4,4 +4,10 @@
     <string name="title_map">Map</string>
     <string name="title_history">History</string>
     <string name="title_subscriptions">Subscriptions</string>
+    <string name="notifications">Notifications</string>
+
+    <string name="create_notification_success">Notification created successfully</string>
+    <string name="create_notification_error">An error occurred during create notification process</string>
+
+    <string name="empty_notifications">No notifications to show</string>
 </resources>

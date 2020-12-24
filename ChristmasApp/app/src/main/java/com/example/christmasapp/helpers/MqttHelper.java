@@ -1,13 +1,15 @@
 package com.example.christmasapp.helpers;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.example.christmasapp.ChristmasActivity;
 import com.example.christmasapp.NotificationManager;
 import com.example.christmasapp.data.Utils;
-import com.example.christmasapp.data.model.Notification;
+import com.example.christmasapp.data.model.NotificationDTO;
+import com.example.christmasapp.tasks.SaveNotificationTask;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -23,18 +25,27 @@ import java.io.Serializable;
 
 public class MqttHelper implements Serializable {
 
+    private static MqttHelper mqttHelper = null;
+
     private final String serverUri = "tcp://broker.mqttdashboard.com:1883";
-    private final String clientId = "clientId-PpPdTaXO2b";
-    private final DatabaseHelper databaseHelper;
+    private final String clientId = "ChristmasAppUC";
     private final NotificationManager notificationManager;
+    private final ChristmasActivity christmasActivity;
     public MqttAndroidClient mqttAndroidClient;
 
-    public MqttHelper(DatabaseHelper databaseHelper, ChristmasActivity mainActivity) {
-        this.databaseHelper = databaseHelper;
-        this.notificationManager = mainActivity;
+    public static MqttHelper getInstance(ChristmasActivity christmasActivity) {
+        if (mqttHelper == null)
+        {
+            mqttHelper = new MqttHelper(christmasActivity);
+        }
+        return mqttHelper;
+    }
 
-        mqttAndroidClient = new MqttAndroidClient(mainActivity.getBaseContext(), serverUri, clientId);
+    private MqttHelper(ChristmasActivity christmasActivity) {
+        this.christmasActivity = christmasActivity;
+        this.notificationManager = christmasActivity;
 
+        mqttAndroidClient = new MqttAndroidClient(christmasActivity.getBaseContext(), serverUri, clientId);
 
         mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override
@@ -50,16 +61,13 @@ public class MqttHelper implements Serializable {
             }
 
             @Override
-            public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-
-//                    Notification notification = Utils.deserializeNotification(new String(mqttMessage.getPayload()));
+            public void messageArrived(String topic, MqttMessage mqttMessage) {
+                    NotificationDTO notificationDTO = Utils.deserializeNotification(new String(mqttMessage.getPayload()));
                     Bundle bundle = new Bundle();
-//                    bundle.putString(Utils.OPERATION_KEY, Utils.CREATE_NOTIFICATION_MODE);
-//                    bundle.putString(Utils.NOTIFICATION_TITLE_KEY, notification.getTitle());
-//                    bundle.putString(Utils.NOTIFICATION_DESCRIPTION_KEY, notification.getDescription());
-                    notificationManager.newNotification(bundle);
-
-                Log.d("RECEIVED", new String(mqttMessage.getPayload()));
+                    bundle.putString(Utils.OPERATION_KEY, Utils.CREATE_NOTIFICATION_MODE);
+                    bundle.putSerializable(Utils.NOTIFICATION_KEY, notificationDTO);
+                    bundle.putSerializable(Utils.ACTIVITY_KEY, christmasActivity);
+                    new SaveNotificationTask(bundle).execute();
             }
 
             @Override
@@ -88,7 +96,6 @@ public class MqttHelper implements Serializable {
                     Bundle bundle = new Bundle();
                     bundle.putBoolean(Utils.CONNECTION_STATUS_KEY, true);
                     notificationManager.notifyConnection(bundle);
-                    Log.d("MQTT", "Connected successfully to: " + serverUri);
                 }
 
                 @Override
@@ -96,7 +103,6 @@ public class MqttHelper implements Serializable {
                     Bundle bundle = new Bundle();
                     bundle.putBoolean(Utils.CONNECTION_STATUS_KEY, false);
                     notificationManager.notifyConnection(bundle);
-                    Log.d("MQTT", "Failed to connect to: " + serverUri + exception.toString());
                 }
             });
         } catch (MqttException ex) {
@@ -128,8 +134,6 @@ public class MqttHelper implements Serializable {
     public void publishToTopic(String subscriptionTopic, byte[] message) {
         try {
             IMqttDeliveryToken publish = mqttAndroidClient.publish(subscriptionTopic, message, 0, true);
-            Log.d("RESULTADO", publish.toString());
-            Log.d("PUBLISHED", new String(message));
         } catch (MqttException e) {
             e.printStackTrace();
         }

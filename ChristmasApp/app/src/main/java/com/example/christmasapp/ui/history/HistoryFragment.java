@@ -1,5 +1,6 @@
 package com.example.christmasapp.ui.history;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +14,13 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.christmasapp.R;
+import com.example.christmasapp.tasks.ReadNotificationTask;
 
 public class HistoryFragment extends Fragment {
 
     private HistoryViewModel historyViewModel;
+
+    private HistoryFragmentListener historyFragmentListener;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -31,5 +35,32 @@ public class HistoryFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        historyFragmentListener.historyActive(this);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof HistoryFragmentListener) {
+            historyFragmentListener = (HistoryFragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnNotesListFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        historyFragmentListener = null;
+    }
+
+    public interface HistoryFragmentListener {
+        void historyActive(HistoryFragment historyFragment);
     }
 }
