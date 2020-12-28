@@ -9,7 +9,9 @@ public interface NotificationManager {
 
     void notifyUpdateNote(Bundle bundle);
 
-    void notifyDeletedNote(Bundle bundle);
+    void notifyUpdatedNotification(Bundle bundle);
+
+    void notifyDeletedNotification(Bundle bundle);
 
     void newNotification(Bundle bundle);
 

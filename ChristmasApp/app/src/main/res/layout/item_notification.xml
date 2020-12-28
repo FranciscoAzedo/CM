@@ -9,7 +9,20 @@
     android:layout_marginHorizontal="6dp"
     android:layout_marginVertical="4dp">
 
+
     <!-- Note Title -->
+    <ImageView
+        android:id="@+id/iv_read"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/iv_delete"
+        app:layout_constraintBottom_toBottomOf="@id/tv_notification_description"
+        android:layout_width="@dimen/delete_button"
+        android:layout_height="@dimen/delete_button"
+        android:src="@drawable/ic_baseline_mark_email_read_24"
+        android:layout_marginRight="10dp"/>
+
+    <!-- Add Button -->
+
     <ImageView
         android:id="@+id/iv_delete"
         app:layout_constraintTop_toTopOf="parent"
@@ -18,24 +31,24 @@
         android:layout_width="@dimen/delete_button"
         android:layout_height="@dimen/delete_button"
         android:src="@drawable/ic_baseline_delete_24"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginRight="5dp"/>
 
-    <!-- Add Button -->
     <TextView
         android:id="@+id/tv_notification_title"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="@id/iv_delete"
+        app:layout_constraintRight_toRightOf="@id/iv_read"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="16sp"
-        android:paddingBottom="10dp"/>
+        android:paddingBottom="10dp"
+        android:layout_marginLeft="10dp"/>
 
     <TextView
         android:id="@+id/tv_notification_description"
         app:layout_constraintTop_toBottomOf="@id/tv_notification_title"
-        app:layout_constraintRight_toRightOf="@id/iv_delete"
+        app:layout_constraintRight_toRightOf="@id/iv_read"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

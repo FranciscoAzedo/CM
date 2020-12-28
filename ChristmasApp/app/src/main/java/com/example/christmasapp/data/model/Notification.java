@@ -6,10 +6,12 @@ public class Notification implements Serializable {
     private int id;
     private String title;
     private String description;
+    private Boolean read;
 
-    public Notification(String title, String description) {
+    public Notification(String title, String description, Boolean read) {
         this.title = title;
         this.description = description;
+        this.read = read;
     }
 
     public Notification() {
@@ -38,5 +40,13 @@ public class Notification implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Boolean getRead() {
+        return read;
+    }
+
+    public void setRead(Boolean read) {
+        this.read = read;
     }
 }

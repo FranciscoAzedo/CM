@@ -25,10 +25,12 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Serializable {
     private static final String NOTIFICATION_TABLE_NAME = "notification";
     private static final String COLUMN_NOTIFICATION_TITLE = "NOTIFICATION_TITLE";
     private static final String COLUMN_NOTIFICATION_DESCRIPTION = "NOTIFICATION_DESCRIPTION";
+    private static final String COLUMN_NOTIFICATION_READ = "NOTIFICATION_READ";
     private static final String NOTIFICATION_TABLE_CREATE = "CREATE TABLE " + NOTIFICATION_TABLE_NAME + " ("
             + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
             + COLUMN_NOTIFICATION_TITLE + " TEXT, "
-            + COLUMN_NOTIFICATION_DESCRIPTION + " TEXT);";
+            + COLUMN_NOTIFICATION_DESCRIPTION + " TEXT, "
+            + COLUMN_NOTIFICATION_READ + " INTEGER);";
 
     private static final String TOPIC_TABLE_NAME = "topic";
     private static final String COLUMN_TOPIC_NAME = "TOPIC_NAME";
@@ -72,6 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Serializable {
                 notification.setId(cursor.getInt(0));
                 notification.setTitle(cursor.getString(1));
                 notification.setDescription(cursor.getString(2));
+                notification.setRead(cursor.getInt(3) > 0);
                 notificationList.add(notification);
             } while (cursor.moveToNext());
         }
@@ -87,6 +90,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Serializable {
 
         contentValues.put(COLUMN_NOTIFICATION_TITLE, notification.getTitle());
         contentValues.put(COLUMN_NOTIFICATION_DESCRIPTION, notification.getDescription());
+        contentValues.put(COLUMN_NOTIFICATION_READ, notification.getRead()? 1 : 0);
 
         final int result = (int) database.insert(NOTIFICATION_TABLE_NAME, null, contentValues);
         database.close();
@@ -94,10 +98,24 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Serializable {
         return result;
     }
 
+    public boolean readNotification(Notification notification) {
+        int result;
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(COLUMN_NOTIFICATION_TITLE, notification.getTitle());
+        contentValues.put(COLUMN_NOTIFICATION_DESCRIPTION, notification.getDescription());
+        contentValues.put(COLUMN_NOTIFICATION_READ, 1);
+
+        result = database.update(NOTIFICATION_TABLE_NAME, contentValues, "ID = " + notification.getId(), null);
+
+        return result != 0;
+    }
+
     public boolean deleteNotification(Notification notification) {
         SQLiteDatabase database = this.getWritableDatabase();
 
-        int result = database.delete(NOTIFICATION_TABLE_NAME, "ID=" + notification.getId() + " AND " + COLUMN_NOTIFICATION_TITLE + "='" + notification.getTitle() + "' AND " + COLUMN_NOTIFICATION_DESCRIPTION + "='" + notification.getDescription() + "'", null);
+        int result = database.delete(NOTIFICATION_TABLE_NAME, "ID=" + notification.getId(), null);
 
         return result != 0;
     }

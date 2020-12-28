@@ -78,9 +78,13 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     }
 
     @Override
-    public void notifyDeletedNote(Bundle bundle) {
-        SubscriptionsFragment subscriptionsFragment = (SubscriptionsFragment) bundle.getSerializable(Utils.SUBSCRIPTION_FRAGMENT_KEY);
-        new ReadNotificationTask(subscriptionsFragment).execute();
+    public void notifyUpdatedNotification(Bundle bundle) {
+        updateNotificationsView(bundle);
+    }
+
+    @Override
+    public void notifyDeletedNotification(Bundle bundle) {
+        updateNotificationsView(bundle);
     }
 
     @Override
@@ -146,5 +150,10 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     public void pointsOfInterestActive(PointsOfInterestFragment pointsOfInterestFragment) {
         this.pointsOfInterestFragment = pointsOfInterestFragment;
         this.active = pointsOfInterestFragment;
+    }
+
+    private void updateNotificationsView(Bundle bundle){
+        SubscriptionsFragment subscriptionsFragment = (SubscriptionsFragment) bundle.getSerializable(Utils.SUBSCRIPTION_FRAGMENT_KEY);
+        new ReadNotificationTask(subscriptionsFragment).execute();
     }
 }
