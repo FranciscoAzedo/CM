@@ -9,4 +9,5 @@
     <string name="create_notification_error">An error occurred during create notification process</string>
 
     <string name="empty_notifications">No notifications to show</string>
+    <string name="empty_subscriptions">No subscriptions to show</string>
 </resources>

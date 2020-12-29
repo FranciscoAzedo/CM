@@ -7,6 +7,7 @@ import com.example.christmasapp.data.Utils;
 import com.example.christmasapp.helpers.DatabaseHelper;
 import com.example.christmasapp.helpers.MqttHelper;
 import com.example.christmasapp.tasks.ReadNotificationTask;
+import com.example.christmasapp.tasks.ReadTopicTask;
 import com.example.christmasapp.ui.map.MapFragment;
 import com.example.christmasapp.ui.subscriptions.SubscriptionsFragment;
 import com.example.christmasapp.ui.points_of_interest.PointsOfInterestFragment;
@@ -64,7 +65,10 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
 
     @Override
     public void notifyConnection(Bundle bundle) {
-        MqttHelper.getInstance(this).subscribeToTopic("CM_TP_2020");
+        Boolean connectionStatus = bundle.getBoolean(Utils.CONNECTION_STATUS_KEY);
+
+        if (connectionStatus)
+            updateTopicsList();
     }
 
     @Override
@@ -104,16 +108,25 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
 
     @Override
     public void notifyNewTopic(Bundle bundle) {
+        if (active instanceof SubscriptionsFragment)
+            updateTopicsList();
 
+//        else {
+//            BadgeDrawable badgeDrawable = navView.getOrCreateBadge(R.id.navigation_subscriptions);
+//            badgeDrawable.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.badge_background));
+//            badgeDrawable.setBadgeTextColor(Color.WHITE);
+//            badgeDrawable.setMaxCharacterCount(2);
+//            badgeDrawable.setNumber(++notificationCounter);
+//            badgeDrawable.setVisible(true);
+//        }
     }
 
     @Override
     public void notifyDeletedTopic(Bundle bundle) {
-
+        updateTopicsList();
     }
 
     private void addNewNotification(){
-
         if (active instanceof NotificationsFragment)
             new ReadNotificationTask(notificationsFragment).execute();
         else {
@@ -156,4 +169,10 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         NotificationsFragment notificationsFragment = (NotificationsFragment) bundle.getSerializable(Utils.NOTIFICATION_FRAGMENT_KEY);
         new ReadNotificationTask(notificationsFragment).execute();
     }
+    private void updateTopicsList(){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Utils.ACTIVITY_KEY, this);
+        new ReadTopicTask(subscriptionsFragment, bundle).execute();
+    }
+
 }

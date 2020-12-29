@@ -156,7 +156,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Serializable {
     public boolean deleteTopic(Topic topic) {
         SQLiteDatabase database = this.getWritableDatabase();
 
-        int result = database.delete(TOPIC_TABLE_NAME, "ID=" + topic.getId() + " AND " + COLUMN_TOPIC_NAME + "='" + topic.getName() + "'", null);
+        int result = database.delete(TOPIC_TABLE_NAME, "ID=" + topic.getId(), null);
 
         return result != 0;
     }

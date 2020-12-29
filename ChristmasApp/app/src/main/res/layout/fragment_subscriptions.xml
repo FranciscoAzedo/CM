@@ -8,17 +8,28 @@
     android:background="@color/fragment_background"
     tools:context=".ui.subscriptions.SubscriptionsFragment">
 
-    <TextView
-        android:id="@+id/text_subscriptions"
+    <!-- Scroll View -->
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="4dp"
+        android:layout_alignParentTop="true">
+
+        <!-- Notes Recycler View -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_subscriptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/empty_subscriptions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="@string/empty_subscriptions"
+        android:textSize="@dimen/text_title"
+        android:textColor="@color/empty_subscriptions_text" />
 </RelativeLayout>

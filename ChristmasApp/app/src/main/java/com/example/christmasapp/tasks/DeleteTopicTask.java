@@ -9,15 +9,14 @@ import com.example.christmasapp.data.Utils;
 import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.helpers.MqttHelper;
 
-public class SaveTopicTask extends AsyncTask<Void, Void, Void> {
-
+public class DeleteTopicTask extends AsyncTask<Void, Void, Void> {
 
     private final Bundle bundle;
     private final NotificationManager notificationManager;
     private final MqttHelper mqttHelper;
     private boolean result;
 
-    public SaveTopicTask(Bundle bundle) {
+    public DeleteTopicTask(Bundle bundle) {
         this.bundle = bundle;
         this.notificationManager = (ChristmasActivity) bundle.getSerializable(Utils.ACTIVITY_KEY);
         this.mqttHelper = MqttHelper.getInstance((ChristmasActivity) bundle.getSerializable(Utils.ACTIVITY_KEY));
@@ -27,14 +26,14 @@ public class SaveTopicTask extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void arg) {
         if (result) {
             Topic topic = (Topic) bundle.getSerializable(Utils.TOPIC_KEY);
-            mqttHelper.subscribeToTopic(topic.getName());
-            notificationManager.notifyNewTopic(bundle);
+            mqttHelper.unSubscribeToTopic(topic.getName());
+            notificationManager.notifyDeletedTopic(bundle);
         }
     }
 
     @Override
     protected Void doInBackground(Void... args) {
-        result = Utils.updateTopics(Utils.CREATE_TOPIC_MODE, bundle);
+        result = Utils.updateTopics(Utils.DELETE_TOPIC_MODE, bundle);
         return null;
     }
 }

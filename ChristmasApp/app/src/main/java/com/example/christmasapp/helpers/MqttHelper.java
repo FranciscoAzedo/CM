@@ -1,7 +1,5 @@
 package com.example.christmasapp.helpers;
 
-
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -110,7 +108,6 @@ public class MqttHelper implements Serializable {
         }
     }
 
-
     public void subscribeToTopic(String subscriptionTopic) {
         try {
             mqttAndroidClient.subscribe(subscriptionTopic, 0, null, new IMqttActionListener() {
@@ -131,11 +128,31 @@ public class MqttHelper implements Serializable {
         }
     }
 
-    public void publishToTopic(String subscriptionTopic, byte[] message) {
+    public void unSubscribeToTopic(String subscriptionTopic) {
         try {
-            IMqttDeliveryToken publish = mqttAndroidClient.publish(subscriptionTopic, message, 0, true);
-        } catch (MqttException e) {
-            e.printStackTrace();
+            mqttAndroidClient.unsubscribe(subscriptionTopic, null,  new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    Log.w("Mqtt", "Unsubscribed!");
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    Log.w("Mqtt", "Unsubscribed fail!");
+                }
+            });
+
+        } catch (MqttException ex) {
+            System.err.println("Exception whilst unsubscribe");
+            ex.printStackTrace();
         }
     }
+
+//    public void publishToTopic(String subscriptionTopic, byte[] message) {
+//        try {
+//            IMqttDeliveryToken publish = mqttAndroidClient.publish(subscriptionTopic, message, 0, true);
+//        } catch (MqttException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

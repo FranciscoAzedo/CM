@@ -67,7 +67,7 @@ public class NotificationsFragment extends Fragment implements Serializable {
     }
 
     private void initViewElements(View view) {
-        tvNotificationsEmpty = view.findViewById(R.id.empty_Notifications);
+        tvNotificationsEmpty = view.findViewById(R.id.empty_notifications);
         rvNotificationsList = view.findViewById(R.id.recycler_notifications);
     }
 
