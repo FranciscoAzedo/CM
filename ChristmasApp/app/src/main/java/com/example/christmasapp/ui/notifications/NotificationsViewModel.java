@@ -1,16 +1,16 @@
-package com.example.christmasapp.ui.history;
+package com.example.christmasapp.ui.notifications;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class HistoryViewModel extends ViewModel {
+public class NotificationsViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public HistoryViewModel() {
+    public NotificationsViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is history fragment");
+        mText.setValue("This is notifications fragment");
     }
 
     public LiveData<String> getText() {

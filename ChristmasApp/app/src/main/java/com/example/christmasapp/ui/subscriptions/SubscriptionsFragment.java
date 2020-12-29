@@ -10,79 +10,43 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.LayoutManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.christmasapp.R;
-import com.example.christmasapp.data.model.Notification;
-import com.example.christmasapp.tasks.ReadNotificationTask;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+public class SubscriptionsFragment extends Fragment {
 
-public class SubscriptionsFragment extends Fragment implements Serializable {
+    private SubscriptionsViewModel subscriptionsViewModel;
 
-    private List<Notification> notificationsList = new ArrayList<>();
+    private SubscriptionsFragmentListener subscriptionsFragmentListener;
 
-    private SubscriptionFragmentListener subscriptionFragmentListener;
-
-    private RecyclerView rvNotificationsList;
-    private TextView tvNotificationsEmpty;
-    private NotificationListAdapter rvNotificationsListAdapter;
-    private LayoutManager rvNotificationsListLayoutManager;
-
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_subscriptions, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initViewElements(view);
-        populateView();
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        subscriptionsViewModel =
+                new ViewModelProvider(this).get(SubscriptionsViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_subscriptions, container, false);
+        final TextView textView = root.findViewById(R.id.text_subscriptions);
+        subscriptionsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                textView.setText(s);
+            }
+        });
+        return root;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        new ReadNotificationTask(this).execute();
-        subscriptionFragmentListener.notificationsActive(this);
-    }
-
-    public void updateNotifications(List<Notification> notifications) {
-        this.notificationsList.clear();
-        this.notificationsList.addAll(notifications);
-        getActivity().runOnUiThread(() -> {
-            if (this.notificationsList.isEmpty()) {
-                rvNotificationsList.setVisibility(View.GONE);
-                tvNotificationsEmpty.setVisibility(View.VISIBLE);
-            } else {
-                rvNotificationsList.setVisibility(View.VISIBLE);
-                tvNotificationsEmpty.setVisibility(View.GONE);
-            }
-            rvNotificationsListAdapter.notifyDataSetChanged();
-        });
-    }
-
-    private void initViewElements(View view) {
-        tvNotificationsEmpty = view.findViewById(R.id.empty_Notifications);
-        rvNotificationsList = view.findViewById(R.id.recycler_notifications);
-    }
-
-    private void populateView() {
-        rvNotificationsListLayoutManager = new LinearLayoutManager(getContext());
-        rvNotificationsList.setLayoutManager(rvNotificationsListLayoutManager);
-        rvNotificationsListAdapter = new NotificationListAdapter(notificationsList, this);
-        rvNotificationsList.setAdapter(rvNotificationsListAdapter);
+        subscriptionsFragmentListener.subscriptionsActive(this);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof SubscriptionFragmentListener) {
-            subscriptionFragmentListener = (SubscriptionFragmentListener) context;
+        if (context instanceof SubscriptionsFragmentListener) {
+            subscriptionsFragmentListener = (SubscriptionsFragmentListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnNotesListFragmentInteractionListener");
@@ -92,10 +56,10 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
     @Override
     public void onDetach() {
         super.onDetach();
-        subscriptionFragmentListener = null;
+        subscriptionsFragmentListener = null;
     }
 
-    public interface SubscriptionFragmentListener {
-        void notificationsActive(SubscriptionsFragment subscriptionsFragment);
+    public interface SubscriptionsFragmentListener {
+        void subscriptionsActive(SubscriptionsFragment subscriptionsFragment);
     }
 }

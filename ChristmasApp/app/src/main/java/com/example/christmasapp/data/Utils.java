@@ -11,7 +11,7 @@ public abstract class Utils {
 
     public static final String ACTIVITY_KEY = "ACTIVITY";
 
-    public static final String SUBSCRIPTION_FRAGMENT_KEY = "SUBSCRIPTION FRAGMENT";
+    public static final String NOTIFICATION_FRAGMENT_KEY = "NOTIFICATION FRAGMENT";
     
     public static final String CONNECTION_STATUS_KEY = "CONNECTION STATUS";
     

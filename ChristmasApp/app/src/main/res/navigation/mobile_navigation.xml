@@ -18,14 +18,14 @@
         tools:layout="@layout/fragment_map" />
 
     <fragment
-        android:id="@+id/navigation_history"
-        android:name="com.example.christmasapp.ui.history.HistoryFragment"
-        android:label="@string/title_history"
-        tools:layout="@layout/fragment_history" />
-
-    <fragment
         android:id="@+id/navigation_subscriptions"
         android:name="com.example.christmasapp.ui.subscriptions.SubscriptionsFragment"
         android:label="@string/title_subscriptions"
         tools:layout="@layout/fragment_subscriptions" />
+
+    <fragment
+        android:id="@+id/navigation_notifications"
+        android:name="com.example.christmasapp.ui.notifications.NotificationsFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_notifications" />
 </navigation>

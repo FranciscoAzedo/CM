@@ -1,4 +1,4 @@
-package com.example.christmasapp.ui.subscriptions;
+package com.example.christmasapp.ui.notifications;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -18,7 +17,6 @@ import com.example.christmasapp.R;
 import com.example.christmasapp.data.Utils;
 import com.example.christmasapp.data.model.Notification;
 import com.example.christmasapp.tasks.DeleteNotificationTask;
-import com.example.christmasapp.tasks.ReadNotificationTask;
 import com.example.christmasapp.tasks.UpdateNotificationTask;
 
 import java.io.Serializable;
@@ -27,11 +25,11 @@ import java.util.List;
 public class NotificationListAdapter extends RecyclerView.Adapter<NotificationListAdapter.NotificationListViewHolder> {
 
     private final List<Notification> notificationList;
-    private final SubscriptionsFragment subscriptionsFragment;
+    private final NotificationsFragment notificationsFragment;
 
-    public NotificationListAdapter(List<Notification> notificationList, SubscriptionsFragment subscriptionsFragment) {
+    public NotificationListAdapter(List<Notification> notificationList, NotificationsFragment notificationsFragment) {
         this.notificationList = notificationList;
-        this.subscriptionsFragment = subscriptionsFragment;
+        this.notificationsFragment = notificationsFragment;
     }
 
     @NonNull
@@ -63,16 +61,16 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationLi
         holder.ivRead.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putSerializable(Utils.NOTIFICATION_KEY, notificationList.get(index));
-            bundle.putSerializable(Utils.SUBSCRIPTION_FRAGMENT_KEY, subscriptionsFragment);
-            bundle.putSerializable(Utils.ACTIVITY_KEY, (Serializable) subscriptionsFragment.getActivity());
+            bundle.putSerializable(Utils.NOTIFICATION_FRAGMENT_KEY, notificationsFragment);
+            bundle.putSerializable(Utils.ACTIVITY_KEY, (Serializable) notificationsFragment.getActivity());
             new UpdateNotificationTask(bundle).execute();
         });
 
         holder.ivDelete.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putSerializable(Utils.NOTIFICATION_KEY, notificationList.get(index));
-            bundle.putSerializable(Utils.SUBSCRIPTION_FRAGMENT_KEY, subscriptionsFragment);
-            bundle.putSerializable(Utils.ACTIVITY_KEY, (Serializable) subscriptionsFragment.getActivity());
+            bundle.putSerializable(Utils.NOTIFICATION_FRAGMENT_KEY, notificationsFragment);
+            bundle.putSerializable(Utils.ACTIVITY_KEY, (Serializable) notificationsFragment.getActivity());
             new DeleteNotificationTask(bundle).execute();
         });
     }

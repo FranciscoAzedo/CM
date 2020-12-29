@@ -2,9 +2,8 @@
     <string name="app_name">Christmas App</string>
     <string name="title_points_of_interest">Points Of Interest</string>
     <string name="title_map">Map</string>
-    <string name="title_history">History</string>
     <string name="title_subscriptions">Subscriptions</string>
-    <string name="notifications">Notifications</string>
+    <string name="title_notifications">Notifications</string>
 
     <string name="create_notification_success">Notification created successfully</string>
     <string name="create_notification_error">An error occurred during create notification process</string>

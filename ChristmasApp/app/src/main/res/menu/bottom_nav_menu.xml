@@ -12,13 +12,13 @@
         android:title="@string/title_map" />
 
     <item
-        android:id="@+id/navigation_history"
-        android:icon="@drawable/ic_baseline_history_24"
-        android:title="@string/title_history" />
+        android:id="@+id/navigation_subscriptions"
+        android:icon="@drawable/ic_baseline_subscriptions_24"
+        android:title="@string/title_subscriptions" />
 
     <item
-        android:id="@+id/navigation_subscriptions"
-        android:icon="@drawable/ic_baseline_topic_24"
-        android:title="@string/title_subscriptions" />
+        android:id="@+id/navigation_notifications"
+        android:icon="@drawable/ic_baseline_notifications_24"
+        android:title="@string/title_notifications" />
 
 </menu>

@@ -7,10 +7,10 @@ import com.example.christmasapp.data.Utils;
 import com.example.christmasapp.helpers.DatabaseHelper;
 import com.example.christmasapp.helpers.MqttHelper;
 import com.example.christmasapp.tasks.ReadNotificationTask;
-import com.example.christmasapp.ui.history.HistoryFragment;
 import com.example.christmasapp.ui.map.MapFragment;
-import com.example.christmasapp.ui.points_of_interest.PointsOfInterestFragment;
 import com.example.christmasapp.ui.subscriptions.SubscriptionsFragment;
+import com.example.christmasapp.ui.points_of_interest.PointsOfInterestFragment;
+import com.example.christmasapp.ui.notifications.NotificationsFragment;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -25,10 +25,10 @@ import androidx.navigation.ui.NavigationUI;
 import java.io.Serializable;
 
 public class ChristmasActivity extends AppCompatActivity implements NotificationManager,
-                                                            HistoryFragment.HistoryFragmentListener,
-                                                            MapFragment.MapFragmentListener,
+        MapFragment.MapFragmentListener,
+        SubscriptionsFragment.SubscriptionsFragmentListener,
                                                             PointsOfInterestFragment.PointsOfInterestFragmentListener,
-                                                            SubscriptionsFragment.SubscriptionFragmentListener,
+        NotificationsFragment.NotificationFragmentListener,
                                                             Serializable {
 
     private BottomNavigationView navView;
@@ -36,9 +36,9 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     private BadgeDrawable badgeDrawable;
     private int notificationCounter = 0;
 
-    private SubscriptionsFragment subscriptionsFragment;
-    private HistoryFragment historyFragment;
+    private NotificationsFragment notificationsFragment;
     private MapFragment mapFragment;
+    private SubscriptionsFragment subscriptionsFragment;
     private PointsOfInterestFragment pointsOfInterestFragment;
     private Fragment active;
 
@@ -50,12 +50,12 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_points_of_interest, R.id.navigation_map, R.id.navigation_history, R.id.navigation_subscriptions)
+                R.id.navigation_points_of_interest, R.id.navigation_map, R.id.navigation_subscriptions, R.id.navigation_notifications)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-        badgeDrawable = navView.getOrCreateBadge(R.id.navigation_subscriptions);
+        badgeDrawable = navView.getOrCreateBadge(R.id.navigation_notifications);
         badgeDrawable.setVisible(false);
 
         DatabaseHelper.getInstance(this);
@@ -114,10 +114,10 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
 
     private void addNewNotification(){
 
-        if (active instanceof SubscriptionsFragment)
-            new ReadNotificationTask(subscriptionsFragment).execute();
+        if (active instanceof NotificationsFragment)
+            new ReadNotificationTask(notificationsFragment).execute();
         else {
-            BadgeDrawable badgeDrawable = navView.getOrCreateBadge(R.id.navigation_subscriptions);
+            BadgeDrawable badgeDrawable = navView.getOrCreateBadge(R.id.navigation_notifications);
             badgeDrawable.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.badge_background));
             badgeDrawable.setBadgeTextColor(Color.WHITE);
             badgeDrawable.setMaxCharacterCount(2);
@@ -127,17 +127,11 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     }
 
     @Override
-    public void notificationsActive(SubscriptionsFragment subscriptionsFragment) {
-        this.subscriptionsFragment = subscriptionsFragment;
-        this.active = subscriptionsFragment;
+    public void notificationsActive(NotificationsFragment notificationsFragment) {
+        this.notificationsFragment = notificationsFragment;
+        this.active = notificationsFragment;
         notificationCounter = 0;
         badgeDrawable.setVisible(false);
-    }
-
-    @Override
-    public void historyActive(HistoryFragment historyFragment) {
-        this.historyFragment = historyFragment;
-        this.active = historyFragment;
     }
 
     @Override
@@ -147,13 +141,19 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     }
 
     @Override
+    public void subscriptionsActive(SubscriptionsFragment subscriptionsFragment) {
+        this.subscriptionsFragment = subscriptionsFragment;
+        this.active = subscriptionsFragment;
+    }
+
+    @Override
     public void pointsOfInterestActive(PointsOfInterestFragment pointsOfInterestFragment) {
         this.pointsOfInterestFragment = pointsOfInterestFragment;
         this.active = pointsOfInterestFragment;
     }
 
     private void updateNotificationsView(Bundle bundle){
-        SubscriptionsFragment subscriptionsFragment = (SubscriptionsFragment) bundle.getSerializable(Utils.SUBSCRIPTION_FRAGMENT_KEY);
-        new ReadNotificationTask(subscriptionsFragment).execute();
+        NotificationsFragment notificationsFragment = (NotificationsFragment) bundle.getSerializable(Utils.NOTIFICATION_FRAGMENT_KEY);
+        new ReadNotificationTask(notificationsFragment).execute();
     }
 }
