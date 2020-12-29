@@ -8,6 +8,12 @@
     android:background="@color/fragment_background"
     tools:context=".ui.map.MapFragment">
 
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/google_map"
+        android:name="com.google.android.gms.maps.SupportMapFragment" />
+
     <TextView
         android:id="@+id/text_map"
         android:layout_width="match_parent"

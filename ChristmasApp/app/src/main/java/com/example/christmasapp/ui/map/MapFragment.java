@@ -14,6 +14,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.christmasapp.R;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapFragment extends Fragment {
 
@@ -23,17 +29,46 @@ public class MapFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        mapViewModel =
-                new ViewModelProvider(this).get(MapViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_map, container, false);
-        final TextView textView = root.findViewById(R.id.text_map);
-        mapViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
+
+        SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
+
+        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
+            public void onMapReady(GoogleMap googleMap) {
+                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        //When clicked on map
+                        //Initialize marker options
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        //Set position of mark
+                        markerOptions.position(latLng);
+                        markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+                        //Remove all marker
+                        googleMap.clear();
+
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                latLng, 10
+                        ));
+                        googleMap.addMarker(markerOptions);
+                    }
+                });
             }
         });
-        return root;
+
+        return view;
+//        mapViewModel =
+//                new ViewModelProvider(this).get(MapViewModel.class);
+//        View root = inflater.inflate(R.layout.fragment_map, container, false);
+//        final TextView textView = root.findViewById(R.id.text_map);
+//        mapViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+//            @Override
+//            public void onChanged(@Nullable String s) {
+//                textView.setText(s);
+//            }
+//        });
+//        return root;
     }
 
     @Override
