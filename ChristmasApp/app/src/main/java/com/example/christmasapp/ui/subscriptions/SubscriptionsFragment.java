@@ -15,7 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.LayoutManager;
 
 import com.example.christmasapp.R;
-import com.example.christmasapp.data.Utils;
+import com.example.christmasapp.utils.Constants;
+import com.example.christmasapp.utils.Utils;
 import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.tasks.ReadTopicTask;
 
@@ -50,7 +51,7 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
     public void onResume() {
         super.onResume();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(Utils.ACTIVITY_KEY, (Serializable) getActivity());
+        bundle.putSerializable(Constants.ACTIVITY_KEY, (Serializable) getActivity());
         new ReadTopicTask(this, bundle).execute();
         subscriptionsFragmentListener.subscriptionsActive(this);
     }

@@ -2,6 +2,7 @@ package com.example.christmasapp.ui.points_of_interest;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +15,21 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.christmasapp.R;
+import com.example.christmasapp.data.model.PointOfInterest;
+import com.example.christmasapp.tasks.ReadPointOfInterestTask;
+import com.example.christmasapp.utils.Constants;
+import com.example.christmasapp.utils.JsonReader;
+
+import java.io.IOException;
+import java.util.List;
 
 public class PointsOfInterestFragment extends Fragment {
 
     private PointsOfInterestViewModel pointsOfInterestViewModel;
 
     private PointsOfInterestFragment.PointsOfInterestFragmentListener pointsOfInterestFragmentListener;
+
+    private List<PointOfInterest> pointOfInterestList;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -33,7 +43,13 @@ public class PointsOfInterestFragment extends Fragment {
                 textView.setText(s);
             }
         });
+
+        fetchPointsOfInterest();
         return root;
+    }
+
+    private void fetchPointsOfInterest() {
+        new ReadPointOfInterestTask().execute();
     }
 
     @Override

@@ -14,7 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.christmasapp.R;
-import com.example.christmasapp.data.Utils;
+import com.example.christmasapp.utils.Constants;
+import com.example.christmasapp.utils.Utils;
 import com.example.christmasapp.data.model.Notification;
 import com.example.christmasapp.tasks.DeleteNotificationTask;
 import com.example.christmasapp.tasks.UpdateNotificationTask;
@@ -60,17 +61,17 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationLi
 
         holder.ivRead.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
-            bundle.putSerializable(Utils.NOTIFICATION_KEY, notificationList.get(index));
-            bundle.putSerializable(Utils.NOTIFICATION_FRAGMENT_KEY, notificationsFragment);
-            bundle.putSerializable(Utils.ACTIVITY_KEY, (Serializable) notificationsFragment.getActivity());
+            bundle.putSerializable(Constants.NOTIFICATION_KEY, notificationList.get(index));
+            bundle.putSerializable(Constants.NOTIFICATION_FRAGMENT_KEY, notificationsFragment);
+            bundle.putSerializable(Constants.ACTIVITY_KEY, (Serializable) notificationsFragment.getActivity());
             new UpdateNotificationTask(bundle).execute();
         });
 
         holder.ivDelete.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
-            bundle.putSerializable(Utils.NOTIFICATION_KEY, notificationList.get(index));
-            bundle.putSerializable(Utils.NOTIFICATION_FRAGMENT_KEY, notificationsFragment);
-            bundle.putSerializable(Utils.ACTIVITY_KEY, (Serializable) notificationsFragment.getActivity());
+            bundle.putSerializable(Constants.NOTIFICATION_KEY, notificationList.get(index));
+            bundle.putSerializable(Constants.NOTIFICATION_FRAGMENT_KEY, notificationsFragment);
+            bundle.putSerializable(Constants.ACTIVITY_KEY, (Serializable) notificationsFragment.getActivity());
             new DeleteNotificationTask(bundle).execute();
         });
     }

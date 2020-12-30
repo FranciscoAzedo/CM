@@ -3,7 +3,8 @@ package com.example.christmasapp;
 import android.graphics.Color;
 import android.os.Bundle;
 
-import com.example.christmasapp.data.Utils;
+import com.example.christmasapp.utils.Constants;
+import com.example.christmasapp.utils.Utils;
 import com.example.christmasapp.helpers.DatabaseHelper;
 import com.example.christmasapp.helpers.MqttHelper;
 import com.example.christmasapp.tasks.ReadNotificationTask;
@@ -65,7 +66,7 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
 
     @Override
     public void notifyConnection(Bundle bundle) {
-        Boolean connectionStatus = bundle.getBoolean(Utils.CONNECTION_STATUS_KEY);
+        Boolean connectionStatus = bundle.getBoolean(Constants.CONNECTION_STATUS_KEY);
 
         if (connectionStatus)
             updateTopicsList();
@@ -166,12 +167,12 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     }
 
     private void updateNotificationsView(Bundle bundle){
-        NotificationsFragment notificationsFragment = (NotificationsFragment) bundle.getSerializable(Utils.NOTIFICATION_FRAGMENT_KEY);
+        NotificationsFragment notificationsFragment = (NotificationsFragment) bundle.getSerializable(Constants.NOTIFICATION_FRAGMENT_KEY);
         new ReadNotificationTask(notificationsFragment).execute();
     }
     private void updateTopicsList(){
         Bundle bundle = new Bundle();
-        bundle.putSerializable(Utils.ACTIVITY_KEY, this);
+        bundle.putSerializable(Constants.ACTIVITY_KEY, this);
         new ReadTopicTask(subscriptionsFragment, bundle).execute();
     }
 

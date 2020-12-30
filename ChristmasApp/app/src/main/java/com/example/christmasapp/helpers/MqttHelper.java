@@ -5,7 +5,8 @@ import android.util.Log;
 
 import com.example.christmasapp.ChristmasActivity;
 import com.example.christmasapp.NotificationManager;
-import com.example.christmasapp.data.Utils;
+import com.example.christmasapp.utils.Constants;
+import com.example.christmasapp.utils.Utils;
 import com.example.christmasapp.data.model.NotificationDTO;
 import com.example.christmasapp.tasks.SaveNotificationTask;
 
@@ -54,7 +55,7 @@ public class MqttHelper implements Serializable {
             @Override
             public void connectionLost(Throwable throwable) {
                 Bundle bundle = new Bundle();
-                bundle.putBoolean(Utils.CONNECTION_STATUS_KEY, false);
+                bundle.putBoolean(Constants.CONNECTION_STATUS_KEY, false);
                 notificationManager.notifyConnection(bundle);
             }
 
@@ -62,9 +63,9 @@ public class MqttHelper implements Serializable {
             public void messageArrived(String topic, MqttMessage mqttMessage) {
                     NotificationDTO notificationDTO = Utils.deserializeNotification(new String(mqttMessage.getPayload()));
                     Bundle bundle = new Bundle();
-                    bundle.putString(Utils.OPERATION_KEY, Utils.CREATE_NOTIFICATION_MODE);
-                    bundle.putSerializable(Utils.NOTIFICATION_KEY, notificationDTO);
-                    bundle.putSerializable(Utils.ACTIVITY_KEY, christmasActivity);
+                    bundle.putString(Constants.OPERATION_KEY, Constants.CREATE_NOTIFICATION_MODE);
+                    bundle.putSerializable(Constants.NOTIFICATION_KEY, notificationDTO);
+                    bundle.putSerializable(Constants.ACTIVITY_KEY, christmasActivity);
                     new SaveNotificationTask(bundle).execute();
             }
 
@@ -92,14 +93,14 @@ public class MqttHelper implements Serializable {
                     disconnectedBufferOptions.setDeleteOldestMessages(false);
                     mqttAndroidClient.setBufferOpts(disconnectedBufferOptions);
                     Bundle bundle = new Bundle();
-                    bundle.putBoolean(Utils.CONNECTION_STATUS_KEY, true);
+                    bundle.putBoolean(Constants.CONNECTION_STATUS_KEY, true);
                     notificationManager.notifyConnection(bundle);
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     Bundle bundle = new Bundle();
-                    bundle.putBoolean(Utils.CONNECTION_STATUS_KEY, false);
+                    bundle.putBoolean(Constants.CONNECTION_STATUS_KEY, false);
                     notificationManager.notifyConnection(bundle);
                 }
             });

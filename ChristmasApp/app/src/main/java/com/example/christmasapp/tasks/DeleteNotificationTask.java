@@ -5,7 +5,8 @@ import android.os.Bundle;
 
 import com.example.christmasapp.ChristmasActivity;
 import com.example.christmasapp.NotificationManager;
-import com.example.christmasapp.data.Utils;
+import com.example.christmasapp.utils.Constants;
+import com.example.christmasapp.utils.Utils;
 
 public class DeleteNotificationTask extends AsyncTask<Void, Void, Void> {
 
@@ -15,7 +16,7 @@ public class DeleteNotificationTask extends AsyncTask<Void, Void, Void> {
 
     public DeleteNotificationTask(Bundle bundle) {
         this.bundle = bundle;
-        this.notificationManager = (ChristmasActivity) bundle.getSerializable(Utils.ACTIVITY_KEY);
+        this.notificationManager = (ChristmasActivity) bundle.getSerializable(Constants.ACTIVITY_KEY);
     }
 
     @Override
@@ -26,7 +27,7 @@ public class DeleteNotificationTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... args) {
-        result = Utils.updateNotifications(Utils.DELETE_NOTIFICATION_MODE, bundle);
+        result = Utils.updateNotifications(Constants.DELETE_NOTIFICATION_MODE, bundle);
         return null;
     }
 }

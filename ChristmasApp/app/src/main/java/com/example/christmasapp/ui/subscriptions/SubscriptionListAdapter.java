@@ -12,7 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.christmasapp.R;
-import com.example.christmasapp.data.Utils;
+import com.example.christmasapp.utils.Constants;
+import com.example.christmasapp.utils.Utils;
 import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.tasks.DeleteTopicTask;
 
@@ -42,9 +43,9 @@ public class SubscriptionListAdapter extends RecyclerView.Adapter<SubscriptionLi
 
         holder.ivDelete.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
-            bundle.putSerializable(Utils.TOPIC_KEY, topicsList.get(index));
-            bundle.putSerializable(Utils.SUBSCRIPTION_FRAGMENT_KEY, subscriptionsFragment);
-            bundle.putSerializable(Utils.ACTIVITY_KEY, (Serializable) subscriptionsFragment.getActivity());
+            bundle.putSerializable(Constants.TOPIC_KEY, topicsList.get(index));
+            bundle.putSerializable(Constants.SUBSCRIPTION_FRAGMENT_KEY, subscriptionsFragment);
+            bundle.putSerializable(Constants.ACTIVITY_KEY, (Serializable) subscriptionsFragment.getActivity());
             new DeleteTopicTask(bundle).execute();
         });
     }

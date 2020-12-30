@@ -4,7 +4,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.example.christmasapp.ChristmasActivity;
-import com.example.christmasapp.data.Utils;
+import com.example.christmasapp.utils.Constants;
+import com.example.christmasapp.utils.Utils;
 import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.helpers.DatabaseHelper;
 import com.example.christmasapp.helpers.MqttHelper;
@@ -24,7 +25,7 @@ public class ReadTopicTask extends AsyncTask<Void, Void, Void> {
     public ReadTopicTask(SubscriptionsFragment subscriptionsFragment, Bundle bundle) {
         this.databaseHelper = DatabaseHelper.getInstance(null);
         this.subscriptionsFragment = subscriptionsFragment;
-        this.mqttHelper = MqttHelper.getInstance((ChristmasActivity) bundle.getSerializable(Utils.ACTIVITY_KEY));
+        this.mqttHelper = MqttHelper.getInstance((ChristmasActivity) bundle.getSerializable(Constants.ACTIVITY_KEY));
     }
 
     @Override
