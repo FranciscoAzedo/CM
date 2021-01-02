@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,11 +38,11 @@ public class PointsOfInterestFragment extends Fragment {
         pointsOfInterestViewModel =
                 new ViewModelProvider(this).get(PointsOfInterestViewModel.class);
         View root = inflater.inflate(R.layout.fragment_points_of_interest, container, false);
-        final TextView textView = root.findViewById(R.id.text_points_of_interest);
+//        final TextView textView = root.findViewById(R.id.text_points_of_interest);
         pointsOfInterestViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+//                textView.setText(s);
             }
         });
 
@@ -49,7 +51,7 @@ public class PointsOfInterestFragment extends Fragment {
     }
 
     private void fetchPointsOfInterest() {
-        new ReadPointOfInterestTask().execute();
+        new ReadPointOfInterestTask(this).execute();
     }
 
     @Override
@@ -73,6 +75,16 @@ public class PointsOfInterestFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         pointsOfInterestFragmentListener = null;
+    }
+
+    public void updatePointOfInterest(List<PointOfInterest> pointOfInterestList) {
+        RelativeLayout relativeLayout = getView().findViewById(R.id.poiRelativeLayout);
+        for(PointOfInterest pointOfInterest : pointOfInterestList) {
+            Log.d("ENTREI", "CARALHO");
+            ImageView imageView = new ImageView(getContext());
+            imageView.setImageBitmap(pointOfInterest.getBitmap());
+            relativeLayout.addView(imageView);
+        }
     }
 
     public interface PointsOfInterestFragmentListener {
