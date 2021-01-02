@@ -2,49 +2,41 @@ package com.example.christmasapp.ui.points_of_interest;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.christmasapp.R;
 import com.example.christmasapp.data.model.PointOfInterest;
 import com.example.christmasapp.tasks.ReadPointOfInterestTask;
-import com.example.christmasapp.utils.Constants;
-import com.example.christmasapp.utils.JsonReader;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PointsOfInterestFragment extends Fragment {
 
     private PointsOfInterestViewModel pointsOfInterestViewModel;
-
     private PointsOfInterestFragment.PointsOfInterestFragmentListener pointsOfInterestFragmentListener;
+    private PoIRecycleViewAdapter poIRecycleViewAdapter;
 
-    private List<PointOfInterest> pointOfInterestList;
+    private List<PointOfInterest> pointOfInterestList = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         pointsOfInterestViewModel =
                 new ViewModelProvider(this).get(PointsOfInterestViewModel.class);
         View root = inflater.inflate(R.layout.fragment_points_of_interest, container, false);
-//        final TextView textView = root.findViewById(R.id.text_points_of_interest);
-        pointsOfInterestViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-            }
-        });
+
+        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
+        poIRecycleViewAdapter = new PoIRecycleViewAdapter(getContext(), pointOfInterestList);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
+        recyclerView.setAdapter(poIRecycleViewAdapter);
 
         fetchPointsOfInterest();
         return root;
@@ -78,13 +70,9 @@ public class PointsOfInterestFragment extends Fragment {
     }
 
     public void updatePointOfInterest(List<PointOfInterest> pointOfInterestList) {
-        RelativeLayout relativeLayout = getView().findViewById(R.id.poiRelativeLayout);
-        for(PointOfInterest pointOfInterest : pointOfInterestList) {
-            Log.d("ENTREI", "CARALHO");
-            ImageView imageView = new ImageView(getContext());
-            imageView.setImageBitmap(pointOfInterest.getBitmap());
-            relativeLayout.addView(imageView);
-        }
+        this.pointOfInterestList.clear();
+        this.pointOfInterestList.addAll(pointOfInterestList);
+        poIRecycleViewAdapter.notifyDataSetChanged();
     }
 
     public interface PointsOfInterestFragmentListener {

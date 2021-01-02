@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import com.example.christmasapp.utils.Constants;
-import com.example.christmasapp.utils.Utils;
 import com.example.christmasapp.helpers.DatabaseHelper;
 import com.example.christmasapp.helpers.MqttHelper;
 import com.example.christmasapp.tasks.ReadNotificationTask;
@@ -60,6 +59,9 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         badgeDrawable = navView.getOrCreateBadge(R.id.navigation_notifications);
         badgeDrawable.setVisible(false);
 
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
         DatabaseHelper.getInstance(this);
         MqttHelper.getInstance(this);
     }
