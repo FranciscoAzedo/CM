@@ -1,16 +1,27 @@
 package com.example.christmasapp.utils;
 
+import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.RequiresApi;
 
 import com.example.christmasapp.data.model.Notification;
 import com.example.christmasapp.data.model.NotificationDTO;
-import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.helpers.DatabaseHelper;
+import com.example.christmasapp.helpers.SharedPreferencesHelper;
 import com.google.gson.Gson;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
+import java.util.Date;
+
 public abstract class Utils {
-
-
 
     public static boolean updateNotifications(String operation, Bundle bundle) {
         if (operation != null)
@@ -62,16 +73,55 @@ public abstract class Utils {
     }
 
     private static boolean createTopic(Bundle bundle) {
-        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(null);
-        Topic topic = (Topic) bundle.getSerializable(Constants.TOPIC_KEY);
-        topic.setId(databaseHelper.addTopic(topic));
-        bundle.putSerializable(Constants.TOPIC_KEY, topic);
-        return topic.getId() != -1;
+        SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(null);
+        sharedPreferencesHelper.saveSharedPreference(Constants.SHARED_PREFERENCES_TOPIC_KEY,
+                                                        bundle.getString(Constants.TOPIC_KEY));
+        return true;
     }
 
     private static boolean deleteTopic(Bundle bundle) {
-        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(null);
-        Topic topic = (Topic) bundle.getSerializable(Constants.TOPIC_KEY);
-        return databaseHelper.deleteTopic(topic);
+        SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(null);
+        sharedPreferencesHelper.removeSharedPreference(Constants.SHARED_PREFERENCES_TOPIC_KEY,
+                bundle.getString(Constants.TOPIC_KEY));
+        return true;
+    }
+
+    public static String getNotificationTime(Notification notification) {
+        Date currentTime = Calendar.getInstance().getTime();
+        String timeValue = "";
+
+        try {
+            long differenceLong = currentTime.getTime() - notification.getDate().getTime();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            Date differenceDate = simpleDateFormat.parse(simpleDateFormat.format(differenceLong));
+            Calendar differenceCalendar = Calendar.getInstance();
+            differenceCalendar.setTime(differenceDate);
+
+            if (differenceCalendar.get(Calendar.YEAR) > 1970){
+                timeValue += (differenceCalendar.get(Calendar.YEAR) - 1970) + " years ago";
+            } else {
+                if (differenceCalendar.get(Calendar.MONTH) > 0){
+                    timeValue += differenceCalendar.get(Calendar.MONTH) + " months ago";
+                } else {
+                    if (differenceCalendar.get(Calendar.DAY_OF_MONTH) > 1){
+                        timeValue += (differenceCalendar.get(Calendar.DAY_OF_MONTH) - 1) + " days ago";
+                    } else {
+                        if (differenceCalendar.get(Calendar.HOUR_OF_DAY) > 0){
+                            timeValue += differenceCalendar.get(Calendar.HOUR_OF_DAY) + " hours ago";
+                        } else {
+                            if (differenceCalendar.get(Calendar.MINUTE) > 0){
+                                timeValue += differenceCalendar.get(Calendar.MINUTE) + " minutes ago";
+                            } else {
+                                timeValue += "just now";
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return timeValue;
     }
 }

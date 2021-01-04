@@ -30,6 +30,7 @@ public class NotificationsFragment extends Fragment implements Serializable {
 
     private RecyclerView rvNotificationsList;
     private TextView tvNotificationsEmpty;
+    private TextView tvNotificationsCount;
     private NotificationListAdapter rvNotificationsListAdapter;
     private LayoutManager rvNotificationsListLayoutManager;
 
@@ -57,9 +58,12 @@ public class NotificationsFragment extends Fragment implements Serializable {
         getActivity().runOnUiThread(() -> {
             if (this.notificationsList.isEmpty()) {
                 rvNotificationsList.setVisibility(View.GONE);
+                tvNotificationsCount.setVisibility(View.GONE);
                 tvNotificationsEmpty.setVisibility(View.VISIBLE);
             } else {
                 rvNotificationsList.setVisibility(View.VISIBLE);
+                tvNotificationsCount.setVisibility(View.VISIBLE);
+                tvNotificationsCount.setText(notifications.size() + " notification(s)");
                 tvNotificationsEmpty.setVisibility(View.GONE);
             }
             rvNotificationsListAdapter.notifyDataSetChanged();
@@ -68,6 +72,7 @@ public class NotificationsFragment extends Fragment implements Serializable {
 
     private void initViewElements(View view) {
         tvNotificationsEmpty = view.findViewById(R.id.empty_notifications);
+        tvNotificationsCount = view.findViewById(R.id.count_notifications);
         rvNotificationsList = view.findViewById(R.id.recycler_notifications);
     }
 

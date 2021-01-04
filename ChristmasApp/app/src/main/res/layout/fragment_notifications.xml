@@ -7,12 +7,50 @@
     android:background="@color/fragment_background"
     tools:context=".ui.notifications.NotificationsFragment">
 
+    <TextView
+        android:id="@+id/title_notifications"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/padding_horizontal"
+        android:layout_marginBottom="@dimen/notification_bar"
+        android:layout_marginStart="@dimen/padding_vertical"
+        android:layout_marginEnd="@dimen/padding_horizontal"
+        android:text="@string/title_notifications"
+        android:textSize="@dimen/big_text_title"
+        android:textColor="@color/background_bar" />
+
+    <TextView
+        android:id="@+id/count_notifications"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_notifications"
+        android:layout_marginStart="@dimen/padding_vertical"
+        android:layout_marginBottom="@dimen/padding_horizontal"
+        android:textSize="@dimen/small_text_title"
+        android:textColor="@color/empty_subscriptions_text" />
+
+<!--    <TextView-->
+<!--        android:id="@+id/count_new_notifications"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentTop="true"-->
+<!--        android:layout_toRightOf="@id/title_notifications"-->
+<!--        android:textStyle="bold"-->
+<!--        android:layout_marginTop="@dimen/padding_horizontal"-->
+<!--        android:paddingVertical="@dimen/padding_horizontal"-->
+<!--        android:paddingHorizontal="@dimen/square_button_back"-->
+<!--        android:background="@drawable/background_round_corner_green"-->
+<!--        android:text="99"-->
+<!--        android:textSize="@dimen/small_text_title"-->
+<!--        android:textColor="@color/white" />-->
+
     <!-- Scroll View -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_alignParentTop="true">
+        android:layout_below="@id/count_notifications">
 
         <!-- Notes Recycler View -->
         <androidx.recyclerview.widget.RecyclerView

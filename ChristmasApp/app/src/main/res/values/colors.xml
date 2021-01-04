@@ -7,6 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="dark_grey">#3B3B3B</color>
 
     <color name="background_bar">#FF6AA84F</color>
     <color name="tab_background_selected">#FFFFFFFF</color>
@@ -15,4 +16,5 @@
     <color name="fragment_background">#FFFFFFFF</color>
     <color name="empty_notifications_text">#848484</color>
     <color name="empty_subscriptions_text">#848484</color>
+    <color name="notifications_background">#E8E8E8</color>
 </resources>

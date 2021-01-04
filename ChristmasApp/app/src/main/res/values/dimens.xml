@@ -12,9 +12,16 @@
     <dimen name="delete_button">18dp</dimen>
 
     <!-- Dimensions Text -->
+    <dimen name="small_text_title">16sp</dimen>
     <dimen name="text_title">28sp</dimen>
+    <dimen name="big_text_title">40sp</dimen>
 
     <!-- Dimensions Radius -->
     <dimen name="radius_small">10dp</dimen>
     <dimen name="radius_medium">18dp</dimen>
+    <dimen name="radius_high">30dp</dimen>
+
+    <dimen name="notification_bar">5dp</dimen>
+
+    <dimen name="notification_type">50dp</dimen>
 </resources>

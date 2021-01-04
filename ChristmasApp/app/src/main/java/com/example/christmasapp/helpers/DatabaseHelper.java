@@ -7,10 +7,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.christmasapp.data.model.Notification;
-import com.example.christmasapp.data.model.Topic;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper implements Serializable {
@@ -25,11 +29,13 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Serializable {
     private static final String NOTIFICATION_TABLE_NAME = "notification";
     private static final String COLUMN_NOTIFICATION_TITLE = "NOTIFICATION_TITLE";
     private static final String COLUMN_NOTIFICATION_DESCRIPTION = "NOTIFICATION_DESCRIPTION";
+    private static final String COLUMN_NOTIFICATION_DATE = "NOTIFICATION_DATE";
     private static final String COLUMN_NOTIFICATION_READ = "NOTIFICATION_READ";
     private static final String NOTIFICATION_TABLE_CREATE = "CREATE TABLE " + NOTIFICATION_TABLE_NAME + " ("
             + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
             + COLUMN_NOTIFICATION_TITLE + " TEXT, "
             + COLUMN_NOTIFICATION_DESCRIPTION + " TEXT, "
+            + COLUMN_NOTIFICATION_DATE + " DATE, "
             + COLUMN_NOTIFICATION_READ + " INTEGER);";
 
     private static final String TOPIC_TABLE_NAME = "topic";
@@ -70,12 +76,17 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Serializable {
 
         if (cursor.moveToFirst()) {
             do {
-                Notification notification = new Notification();
-                notification.setId(cursor.getInt(0));
-                notification.setTitle(cursor.getString(1));
-                notification.setDescription(cursor.getString(2));
-                notification.setRead(cursor.getInt(3) > 0);
-                notificationList.add(notification);
+                try {
+                    Notification notification = new Notification();
+                    notification.setId(cursor.getInt(0));
+                    notification.setTitle(cursor.getString(1));
+                    notification.setDescription(cursor.getString(2));
+                    notification.setDate(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(cursor.getString(3)));
+                    notification.setRead(cursor.getInt(4) > 0);
+                    notificationList.add(notification);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             } while (cursor.moveToNext());
         }
 
@@ -90,6 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Serializable {
 
         contentValues.put(COLUMN_NOTIFICATION_TITLE, notification.getTitle());
         contentValues.put(COLUMN_NOTIFICATION_DESCRIPTION, notification.getDescription());
+        contentValues.put(COLUMN_NOTIFICATION_DATE, new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Calendar.getInstance().getTime()));
         contentValues.put(COLUMN_NOTIFICATION_READ, notification.getRead()? 1 : 0);
 
         final int result = (int) database.insert(NOTIFICATION_TABLE_NAME, null, contentValues);
@@ -120,44 +132,44 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Serializable {
         return result != 0;
     }
 
-    public List<Topic> getAllTopics() {
-        List<Topic> topicList = new ArrayList<>();
-        SQLiteDatabase database = this.getReadableDatabase();
-        String getAllNotificationsQuery = GET_ALL_FROM_TABLE_QUERY + TOPIC_TABLE_NAME;
-
-        Cursor cursor = database.rawQuery(getAllNotificationsQuery, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                Topic topic = new Topic();
-                topic.setId(cursor.getInt(0));
-                topic.setName(cursor.getString(1));
-                topicList.add(topic);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        database.close();
-        return topicList;
-    }
-
-    public int addTopic(Topic topic) {
-        SQLiteDatabase database = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put(COLUMN_TOPIC_NAME, topic.getName());
-
-        final int result = (int) database.insert(TOPIC_TABLE_NAME, null, contentValues);
-        database.close();
-
-        return result;
-    }
-
-    public boolean deleteTopic(Topic topic) {
-        SQLiteDatabase database = this.getWritableDatabase();
-
-        int result = database.delete(TOPIC_TABLE_NAME, "ID=" + topic.getId(), null);
-
-        return result != 0;
-    }
+//    public List<Topic> getAllTopics() {
+//        List<Topic> topicList = new ArrayList<>();
+//        SQLiteDatabase database = this.getReadableDatabase();
+//        String getAllNotificationsQuery = GET_ALL_FROM_TABLE_QUERY + TOPIC_TABLE_NAME;
+//
+//        Cursor cursor = database.rawQuery(getAllNotificationsQuery, null);
+//
+//        if (cursor.moveToFirst()) {
+//            do {
+//                Topic topic = new Topic();
+//                topic.setId(cursor.getInt(0));
+//                topic.setName(cursor.getString(1));
+//                topicList.add(topic);
+//            } while (cursor.moveToNext());
+//        }
+//
+//        cursor.close();
+//        database.close();
+//        return topicList;
+//    }
+//
+//    public int addTopic(Topic topic) {
+//        SQLiteDatabase database = this.getWritableDatabase();
+//        ContentValues contentValues = new ContentValues();
+//
+//        contentValues.put(COLUMN_TOPIC_NAME, topic.getName());
+//
+//        final int result = (int) database.insert(TOPIC_TABLE_NAME, null, contentValues);
+//        database.close();
+//
+//        return result;
+//    }
+//
+//    public boolean deleteTopic(Topic topic) {
+//        SQLiteDatabase database = this.getWritableDatabase();
+//
+//        int result = database.delete(TOPIC_TABLE_NAME, "ID=" + topic.getId(), null);
+//
+//        return result != 0;
+//    }
 }

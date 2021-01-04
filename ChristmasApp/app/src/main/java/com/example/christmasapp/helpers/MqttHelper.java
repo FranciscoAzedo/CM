@@ -131,18 +131,7 @@ public class MqttHelper implements Serializable {
 
     public void unSubscribeToTopic(String subscriptionTopic) {
         try {
-            mqttAndroidClient.unsubscribe(subscriptionTopic, null,  new IMqttActionListener() {
-                @Override
-                public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.w("Mqtt", "Unsubscribed!");
-                }
-
-                @Override
-                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.w("Mqtt", "Unsubscribed fail!");
-                }
-            });
-
+            mqttAndroidClient.unsubscribe(subscriptionTopic);
         } catch (MqttException ex) {
             System.err.println("Exception whilst unsubscribe");
             ex.printStackTrace();

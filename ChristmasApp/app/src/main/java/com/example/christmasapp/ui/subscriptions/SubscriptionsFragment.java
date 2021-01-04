@@ -16,17 +16,16 @@ import androidx.recyclerview.widget.RecyclerView.LayoutManager;
 
 import com.example.christmasapp.R;
 import com.example.christmasapp.utils.Constants;
-import com.example.christmasapp.utils.Utils;
-import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.tasks.ReadTopicTask;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class SubscriptionsFragment extends Fragment implements Serializable {
 
-    private List<Topic> topicsList = new ArrayList<>();
+    private List<String> topicsList = new ArrayList<>();
 
     private SubscriptionsFragmentListener subscriptionsFragmentListener;
 
@@ -56,7 +55,7 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
         subscriptionsFragmentListener.subscriptionsActive(this);
     }
 
-    public void updateSubscriptions(List<Topic> topics) {
+    public void updateSubscriptions(Set<String> topics) {
         this.topicsList.clear();
         this.topicsList.addAll(topics);
         getActivity().runOnUiThread(() -> {

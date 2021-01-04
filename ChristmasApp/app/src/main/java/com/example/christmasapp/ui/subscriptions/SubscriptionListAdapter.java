@@ -13,8 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.christmasapp.R;
 import com.example.christmasapp.utils.Constants;
-import com.example.christmasapp.utils.Utils;
-import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.tasks.DeleteTopicTask;
 
 import java.io.Serializable;
@@ -22,10 +20,10 @@ import java.util.List;
 
 public class SubscriptionListAdapter extends RecyclerView.Adapter<SubscriptionListAdapter.SubscriptionListViewHolder> {
 
-    private final List<Topic> topicsList;
+    private final List<String> topicsList;
     private final SubscriptionsFragment subscriptionsFragment;
 
-    public SubscriptionListAdapter(List<Topic> topicsList, SubscriptionsFragment subscriptionsFragment) {
+    public SubscriptionListAdapter(List<String> topicsList, SubscriptionsFragment subscriptionsFragment) {
         this.topicsList = topicsList;
         this.subscriptionsFragment = subscriptionsFragment;
     }
@@ -39,7 +37,7 @@ public class SubscriptionListAdapter extends RecyclerView.Adapter<SubscriptionLi
 
     @Override
     public void onBindViewHolder(@NonNull SubscriptionListViewHolder holder, int index) {
-        holder.tvTitle.setText(topicsList.get(index).getName());
+        holder.tvTitle.setText(topicsList.get(index));
 
         holder.ivDelete.setOnClickListener(v -> {
             Bundle bundle = new Bundle();

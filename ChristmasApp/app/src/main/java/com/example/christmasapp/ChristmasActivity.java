@@ -3,6 +3,8 @@ package com.example.christmasapp;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import com.example.christmasapp.helpers.SharedPreferencesHelper;
+import com.example.christmasapp.tasks.SaveTopicTask;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.helpers.DatabaseHelper;
 import com.example.christmasapp.helpers.MqttHelper;
@@ -64,11 +66,16 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         }
         DatabaseHelper.getInstance(this);
         MqttHelper.getInstance(this);
+        SharedPreferencesHelper.getInstance(this);
     }
 
     @Override
     public void notifyConnection(Bundle bundle) {
         Boolean connectionStatus = bundle.getBoolean(Constants.CONNECTION_STATUS_KEY);
+
+//        bundle.putSerializable(Constants.ACTIVITY_KEY, this);
+//        bundle.putString(Constants.TOPIC_KEY, "CM_TP_2020");
+//        new SaveTopicTask(bundle).execute();
 
         if (connectionStatus)
             updateTopicsList();
