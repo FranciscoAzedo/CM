@@ -18,7 +18,7 @@ public abstract class Constants {
     public static final String TOPIC_KEY = "TOPIC";
     public static final String CREATE_TOPIC_MODE = "CREATE TOPIC";
     public static final String DELETE_TOPIC_MODE = "DELETE TOPIC";
-    public static final String SHARED_PREFERENCES_TOPIC_KEY = " SHARED PREFERENCES TOPIC TOPIC";
+    public static final String SHARED_PREFERENCES_TOPIC_KEY = " SHARED PREFERENCES TOPIC";
 
     public static final String JSON_API_URL = "https://api.jsonbin.io/b/5feb8b1cd73ed63cc0f3fa2d/5";
 }

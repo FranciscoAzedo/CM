@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi;
 
 import com.example.christmasapp.data.model.Notification;
 import com.example.christmasapp.data.model.NotificationDTO;
+import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.helpers.DatabaseHelper;
 import com.example.christmasapp.helpers.SharedPreferencesHelper;
 import com.google.gson.Gson;
@@ -75,14 +76,14 @@ public abstract class Utils {
     private static boolean createTopic(Bundle bundle) {
         SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(null);
         sharedPreferencesHelper.saveSharedPreference(Constants.SHARED_PREFERENCES_TOPIC_KEY,
-                                                        bundle.getString(Constants.TOPIC_KEY));
+                                                        (Topic) bundle.getSerializable(Constants.TOPIC_KEY));
         return true;
     }
 
     private static boolean deleteTopic(Bundle bundle) {
         SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(null);
         sharedPreferencesHelper.removeSharedPreference(Constants.SHARED_PREFERENCES_TOPIC_KEY,
-                bundle.getString(Constants.TOPIC_KEY));
+                                                        (Topic) bundle.getSerializable(Constants.TOPIC_KEY));
         return true;
     }
 

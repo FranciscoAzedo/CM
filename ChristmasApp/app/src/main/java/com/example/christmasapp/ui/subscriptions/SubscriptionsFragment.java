@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.LayoutManager;
 
 import com.example.christmasapp.R;
+import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.tasks.ReadTopicTask;
 
@@ -25,14 +26,15 @@ import java.util.Set;
 
 public class SubscriptionsFragment extends Fragment implements Serializable {
 
-    private List<String> topicsList = new ArrayList<>();
+    private List<Topic> topicsList = new ArrayList<>();
 
     private SubscriptionsFragmentListener subscriptionsFragmentListener;
 
-    private RecyclerView rvNotificationsList;
-    private TextView tvNotificationsEmpty;
+    private RecyclerView rvSubscriptionsList;
+    private TextView tvSubscriptionsEmpty;
+    private TextView tvSubscriptionsCount;
     private SubscriptionListAdapter rvSubscriptionsListAdapter;
-    private LayoutManager rvNotificationsListLayoutManager;
+    private LayoutManager rvSubscriptionsListLayoutManager;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -55,31 +57,35 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
         subscriptionsFragmentListener.subscriptionsActive(this);
     }
 
-    public void updateSubscriptions(Set<String> topics) {
+    public void updateSubscriptions(Set<Topic> topics) {
         this.topicsList.clear();
         this.topicsList.addAll(topics);
         getActivity().runOnUiThread(() -> {
             if (this.topicsList.isEmpty()) {
-                rvNotificationsList.setVisibility(View.GONE);
-                tvNotificationsEmpty.setVisibility(View.VISIBLE);
+                rvSubscriptionsList.setVisibility(View.GONE);
+                tvSubscriptionsCount.setVisibility(View.GONE);
+                tvSubscriptionsEmpty.setVisibility(View.VISIBLE);
             } else {
-                rvNotificationsList.setVisibility(View.VISIBLE);
-                tvNotificationsEmpty.setVisibility(View.GONE);
+                rvSubscriptionsList.setVisibility(View.VISIBLE);
+                tvSubscriptionsCount.setVisibility(View.VISIBLE);
+                tvSubscriptionsCount.setText(topicsList.size() + " subscription(s)");
+                tvSubscriptionsEmpty.setVisibility(View.GONE);
             }
             rvSubscriptionsListAdapter.notifyDataSetChanged();
         });
     }
 
     private void initViewElements(View view) {
-        tvNotificationsEmpty = view.findViewById(R.id.empty_subscriptions);
-        rvNotificationsList = view.findViewById(R.id.recycler_subscriptions);
+        tvSubscriptionsEmpty = view.findViewById(R.id.empty_subscriptions);
+        tvSubscriptionsCount = view.findViewById(R.id.count_subscriptions);
+        rvSubscriptionsList = view.findViewById(R.id.recycler_subscriptions);
     }
 
     private void populateView() {
-        rvNotificationsListLayoutManager = new LinearLayoutManager(getContext());
-        rvNotificationsList.setLayoutManager(rvNotificationsListLayoutManager);
+        rvSubscriptionsListLayoutManager = new LinearLayoutManager(getContext());
+        rvSubscriptionsList.setLayoutManager(rvSubscriptionsListLayoutManager);
         rvSubscriptionsListAdapter = new SubscriptionListAdapter(topicsList, this);
-        rvNotificationsList.setAdapter(rvSubscriptionsListAdapter);
+        rvSubscriptionsList.setAdapter(rvSubscriptionsListAdapter);
     }
 
     @Override

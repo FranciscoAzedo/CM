@@ -49,7 +49,7 @@ public class ReadPointOfInterestTask extends AsyncTask<Void, Void, Void> {
         for (PointOfInterest pointOfInterest : pointOfInterestList) {
             URL url = new URL(pointOfInterest.getImageUrl());
             Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-            pointOfInterest.setBitmap(bitmap);;
+            pointOfInterest.setBitmap(bitmap);
         }
     }
 

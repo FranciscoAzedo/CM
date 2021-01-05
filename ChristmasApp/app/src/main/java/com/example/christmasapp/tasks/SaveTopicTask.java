@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.example.christmasapp.ChristmasActivity;
 import com.example.christmasapp.NotificationManager;
+import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.utils.Utils;
 import com.example.christmasapp.helpers.MqttHelper;
@@ -26,8 +27,8 @@ public class SaveTopicTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void arg) {
         if (result) {
-            String topic = bundle.getString(Constants.TOPIC_KEY);
-            mqttHelper.subscribeToTopic(topic);
+            Topic topic = (Topic) bundle.getSerializable(Constants.TOPIC_KEY);
+            mqttHelper.subscribeToTopic(topic.getName());
             notificationManager.notifyNewTopic(bundle);
         }
     }

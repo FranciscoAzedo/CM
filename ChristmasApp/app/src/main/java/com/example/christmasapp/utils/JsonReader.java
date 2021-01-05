@@ -1,6 +1,7 @@
 package com.example.christmasapp.utils;
 
 import com.example.christmasapp.data.model.PointOfInterest;
+import com.example.christmasapp.data.model.Topic;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -13,7 +14,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class JsonReader {
 
@@ -29,6 +32,28 @@ public class JsonReader {
         finally {
             inputStream.close();
         }
+    }
+
+    public static Set<Topic> serializeTopicList(Set<String> deserializedTopics){
+        Set<Topic> topicList = new HashSet<>();
+        for (String topic : deserializedTopics)
+            topicList.add(deserializeTopic(topic));
+        return topicList;
+    }
+
+    public static Set<String> deserializeTopicList(Set<Topic> serializedTopics){
+        Set<String> topicList = new HashSet<>();
+        for (Topic topic : serializedTopics)
+            topicList.add(serializeTopic(topic));
+        return topicList;
+    }
+
+    private static String serializeTopic(Topic topic) {
+        return new Gson().toJson(topic, Topic.class);
+    }
+
+    private static Topic deserializeTopic(String topic) {
+        return new Gson().fromJson(topic, Topic.class);
     }
 
     private static String readAll(BufferedReader bufferedReader) throws IOException {

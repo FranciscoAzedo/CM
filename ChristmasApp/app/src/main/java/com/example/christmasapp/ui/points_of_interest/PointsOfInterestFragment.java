@@ -14,8 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.christmasapp.R;
 import com.example.christmasapp.data.model.PointOfInterest;
+import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.tasks.ReadPointOfInterestTask;
+import com.example.christmasapp.tasks.SaveTopicTask;
+import com.example.christmasapp.utils.Constants;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +77,16 @@ public class PointsOfInterestFragment extends Fragment {
         this.pointOfInterestList.clear();
         this.pointOfInterestList.addAll(pointOfInterestList);
         poIRecycleViewAdapter.notifyDataSetChanged();
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constants.ACTIVITY_KEY, (Serializable) getActivity());
+        Topic topic = new Topic("CM_TP_2020", pointOfInterestList.get(0).getImageUrl());
+        bundle.putSerializable(Constants.TOPIC_KEY, topic);
+        new SaveTopicTask(bundle).execute();
+
+//        Topic topic2 = new Topic("CM_TP_2020_TEST", pointOfInterestList.get(1).getImageUrl());
+//        bundle.putSerializable(Constants.TOPIC_KEY, topic2);
+//        new SaveTopicTask(bundle).execute();
     }
 
     public interface PointsOfInterestFragmentListener {
