@@ -1,9 +1,6 @@
 package com.example.christmasapp.utils;
 
-import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.RequiresApi;
 
 import com.example.christmasapp.data.model.Notification;
 import com.example.christmasapp.data.model.NotificationDTO;
@@ -12,13 +9,8 @@ import com.example.christmasapp.helpers.DatabaseHelper;
 import com.example.christmasapp.helpers.SharedPreferencesHelper;
 import com.google.gson.Gson;
 
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 
