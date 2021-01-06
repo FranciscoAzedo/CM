@@ -26,6 +26,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.navigation.ui.AppBarConfiguration;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class ChristmasActivity extends AppCompatActivity implements NotificationManager,
         MapFragment.MapFragmentListener,
@@ -41,10 +42,10 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
 
     private NotificationsFragment notificationsFragment = new NotificationsFragment();
 
-    private PointsOfInterestFragment pointsOfInterestFragment;
-    private MapFragment mapFragment;
-    private SubscriptionsFragment subscriptionsFragment;
-    private Fragment activeFragment = pointsOfInterestFragment;
+    private PointsOfInterestFragment pointsOfInterestFragment = new PointsOfInterestFragment();
+    private MapFragment mapFragment = new MapFragment();
+    private SubscriptionsFragment subscriptionsFragment = new SubscriptionsFragment();
+    private Fragment active = pointsOfInterestFragment;
     private EventDetailedFragment eventDetailedFragment = new EventDetailedFragment();
     private MonumentDetailedFragment monumentDetailedFragment = new MonumentDetailedFragment();
 
@@ -54,23 +55,17 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         navView = findViewById(R.id.nav_view);
 
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 //
 //
-//        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, mapFragment, "map_frag").hide(mapFragment).commit();
-//        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, notificationsFragment, "not_frag").hide(notificationsFragment).commit();
-//        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, subscriptionsFragment, "sub_frag").hide(subscriptionsFragment).commit();
-//        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, eventDetailedFragment, "eve_frag").hide(eventDetailedFragment).commit();
-//        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, monumentDetailedFragment, "mon_frag").hide(monumentDetailedFragment).commit();
-//        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, pointsOfInterestFragment, "pointsOfInterestFragment").commit();
-
-        fragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment, PointsOfInterestFragment.newInstance(), "pointsOfInterestFragment")
-                .addToBackStack(null)
-                .commit();
+        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, mapFragment, "map_frag").hide(mapFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, notificationsFragment, "not_frag").hide(notificationsFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, subscriptionsFragment, "sub_frag").hide(subscriptionsFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, eventDetailedFragment, "eve_frag").hide(eventDetailedFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, monumentDetailedFragment, "mon_frag").hide(monumentDetailedFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, pointsOfInterestFragment, "poi_frag").commit();
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -78,6 +73,13 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
                 R.id.navigation_points_of_interest, R.id.navigation_map, R.id.navigation_subscriptions)
                 .build();
 
+//        NavHostFragment navHostFragment =
+//                (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+//        NavController navController = navHostFragment.getNavController();
+//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+//        NavigationUI.setupWithNavController(navView, navController);
+//        badgeDrawable = navView.getOrCreateBadge(R.id.navigation_notifications);
+//        badgeDrawable.setVisible(false);
 
         if(getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -90,42 +92,24 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
-                switch (item.getItemId()) {
-                    case R.id.navigation_points_of_interest:
-                        if ((pointsOfInterestFragment = (PointsOfInterestFragment) fragmentManager.findFragmentByTag("pointsOfInterestFragment")) == null)
-                            pointsOfInterestFragment = PointsOfInterestFragment.newInstance();
+        switch (item.getItemId()) {
+            case R.id.navigation_points_of_interest:
+                fragmentManager.beginTransaction().hide(active).show(pointsOfInterestFragment).commit();
+                active = pointsOfInterestFragment;
+                return true;
 
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.nav_host_fragment, pointsOfInterestFragment, "pointsOfInterestFragment")
-                                .addToBackStack("pointsOfInterestFragment")
-                                .commit();
-                        activeFragment = pointsOfInterestFragment;
-                        return true;
+            case R.id.navigation_map:
+                fragmentManager.beginTransaction().hide(active).show(mapFragment).commit();
+                active = mapFragment;
+                return true;
 
-                    case R.id.navigation_map:
-                        if ((mapFragment = (MapFragment) fragmentManager.findFragmentByTag("mapFragment")) == null)
-                            mapFragment = MapFragment.newInstance();
-
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.nav_host_fragment, mapFragment, "mapFragment")
-                                .addToBackStack("mapFragment")
-                                .commit();
-                        activeFragment = mapFragment;
-                        return true;
-
-                    case R.id.navigation_subscriptions:
-                        if ((subscriptionsFragment = (SubscriptionsFragment) fragmentManager.findFragmentByTag("subscriptionsFragment")) == null)
-                            subscriptionsFragment = SubscriptionsFragment.newInstance();
-
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.nav_host_fragment, subscriptionsFragment, "subscriptionsFragment")
-                                .addToBackStack(null)
-                                .commit();
-                        activeFragment = subscriptionsFragment;
-                        return true;
-                }
-                return false;
-            };
+            case R.id.navigation_subscriptions:
+                fragmentManager.beginTransaction().hide(active).show(subscriptionsFragment).commit();
+                active = subscriptionsFragment;
+                return true;
+        }
+        return false;
+    };
 
 
     @Override
@@ -193,7 +177,7 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
 
     @Override
     public void notifyNewTopic(Bundle bundle) {
-        if (activeFragment instanceof SubscriptionsFragment)
+        if (active instanceof SubscriptionsFragment)
             updateTopicsList();
 
 //        else {
@@ -212,7 +196,7 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     }
 
     private void addNewNotification(){
-        if (activeFragment instanceof NotificationsFragment)
+        if (active instanceof NotificationsFragment)
             new ReadNotificationTask(notificationsFragment).execute();
         else {
             BadgeDrawable badgeDrawable = navView.getOrCreateBadge(R.id.navigation_notifications);
@@ -227,7 +211,7 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     @Override
     public void notificationsActive(NotificationsFragment notificationsFragment) {
         this.notificationsFragment = notificationsFragment;
-        this.activeFragment = notificationsFragment;
+        this.active = notificationsFragment;
         notificationCounter = 0;
 //        badgeDrawable.setVisible(false);
     }
@@ -235,33 +219,33 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     @Override
     public void mapActive(MapFragment mapFragment) {
         this.mapFragment = mapFragment;
-        this.activeFragment = mapFragment;
+        this.active = mapFragment;
     }
 
     @Override
     public void subscriptionsActive(SubscriptionsFragment subscriptionsFragment) {
         this.subscriptionsFragment = subscriptionsFragment;
-        this.activeFragment = subscriptionsFragment;
+        this.active = subscriptionsFragment;
     }
 
     @Override
     public void notificationsActive(SubscriptionsFragment subscriptionsFragment) {
         this.subscriptionsFragment = subscriptionsFragment;
-        fragmentManager.beginTransaction().hide(activeFragment).show(notificationsFragment).commit();
-        this.activeFragment = notificationsFragment;
+        fragmentManager.beginTransaction().hide(active).show(notificationsFragment).commit();
+        this.active = notificationsFragment;
     }
 
     @Override
     public void pointsOfInterestActive(PointsOfInterestFragment pointsOfInterestFragment) {
         this.pointsOfInterestFragment = pointsOfInterestFragment;
-        this.activeFragment = pointsOfInterestFragment;
+        this.active = pointsOfInterestFragment;
     }
 
     @Override
     public void toMonumentDetails(PointsOfInterestFragment pointsOfInterestFragment, PointOfInterest poi) {
         this.pointsOfInterestFragment = pointsOfInterestFragment;
-        fragmentManager.beginTransaction().hide(activeFragment).show(monumentDetailedFragment).commit();
-        this.activeFragment = monumentDetailedFragment;
+        fragmentManager.beginTransaction().hide(active).show(monumentDetailedFragment).commit();
+        this.active = monumentDetailedFragment;
     }
 
     @Override
@@ -270,9 +254,9 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, (Serializable) poi);
         eventDetailedFragment.setArguments(bundle);
-        fragmentManager.beginTransaction().hide(activeFragment).show(eventDetailedFragment).commit();
+        fragmentManager.beginTransaction().hide(active).show(eventDetailedFragment).commit();
 
-        this.activeFragment = eventDetailedFragment;
+        this.active = eventDetailedFragment;
     }
 
     private void updateNotificationsView(Bundle bundle){
