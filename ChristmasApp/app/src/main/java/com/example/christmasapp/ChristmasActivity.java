@@ -2,6 +2,7 @@ package com.example.christmasapp;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.example.christmasapp.data.database.NotificationsDbHelper;
 import com.example.christmasapp.helpers.SharedPreferencesHelper;
@@ -17,9 +18,12 @@ import com.example.christmasapp.ui.subscriptions.notifications.NotificationsFrag
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -39,30 +43,42 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     private BadgeDrawable badgeDrawable;
     private int notificationCounter = 0;
 
-    private NotificationsFragment notificationsFragment;
-    private MapFragment mapFragment;
-    private SubscriptionsFragment subscriptionsFragment;
-    private PointsOfInterestFragment pointsOfInterestFragment;
-    private Fragment active;
+    private NotificationsFragment notificationsFragment = new NotificationsFragment();
+
+    private PointsOfInterestFragment pointsOfInterestFragment = new PointsOfInterestFragment();
+    private MapFragment mapFragment = new MapFragment();
+    private SubscriptionsFragment subscriptionsFragment = new SubscriptionsFragment();
+    private Fragment active = pointsOfInterestFragment;
+
+    private FragmentManager fragmentManager = getSupportFragmentManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         navView = findViewById(R.id.nav_view);
+
+        navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+//
+//
+        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, mapFragment, "map_frag").hide(mapFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, notificationsFragment, "not_frag").hide(notificationsFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, subscriptionsFragment, "sub_frag").hide(subscriptionsFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, pointsOfInterestFragment, "poi_frag").commit();
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_points_of_interest, R.id.navigation_map, R.id.navigation_subscriptions)
                 .build();
 
-        NavHostFragment navHostFragment =
-                (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        NavController navController = navHostFragment.getNavController();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
-        badgeDrawable = navView.getOrCreateBadge(R.id.navigation_notifications);
-        badgeDrawable.setVisible(false);
+//        NavHostFragment navHostFragment =
+//                (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+//        NavController navController = navHostFragment.getNavController();
+//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+//        NavigationUI.setupWithNavController(navView, navController);
+//        badgeDrawable = navView.getOrCreateBadge(R.id.navigation_notifications);
+//        badgeDrawable.setVisible(false);
 
         if(getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -72,6 +88,28 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         MqttHelper.getInstance(this);
         SharedPreferencesHelper.getInstance(this);
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = item -> {
+                switch (item.getItemId()) {
+                    case R.id.navigation_points_of_interest:
+                        fragmentManager.beginTransaction().hide(active).show(pointsOfInterestFragment).commit();
+                        active = pointsOfInterestFragment;
+                        return true;
+
+                    case R.id.navigation_map:
+                        fragmentManager.beginTransaction().hide(active).show(mapFragment).commit();
+                        active = mapFragment;
+                        return true;
+
+                    case R.id.navigation_subscriptions:
+                        fragmentManager.beginTransaction().hide(active).show(subscriptionsFragment).commit();
+                        active = subscriptionsFragment;
+                        return true;
+                }
+                return false;
+            };
+
 
     @Override
     protected void onResume() {
@@ -174,7 +212,7 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         this.notificationsFragment = notificationsFragment;
         this.active = notificationsFragment;
         notificationCounter = 0;
-        badgeDrawable.setVisible(false);
+//        badgeDrawable.setVisible(false);
     }
 
     @Override
@@ -187,6 +225,13 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     public void subscriptionsActive(SubscriptionsFragment subscriptionsFragment) {
         this.subscriptionsFragment = subscriptionsFragment;
         this.active = subscriptionsFragment;
+    }
+
+    @Override
+    public void notificationsActive(SubscriptionsFragment subscriptionsFragment) {
+        this.subscriptionsFragment = subscriptionsFragment;
+        fragmentManager.beginTransaction().hide(active).show(notificationsFragment).commit();
+        this.active = notificationsFragment;
     }
 
     @Override
