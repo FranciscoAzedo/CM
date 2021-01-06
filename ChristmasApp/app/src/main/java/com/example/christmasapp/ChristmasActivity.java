@@ -3,10 +3,10 @@ package com.example.christmasapp;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import com.example.christmasapp.data.database.NotificationsDbHelper;
 import com.example.christmasapp.helpers.SharedPreferencesHelper;
 import com.example.christmasapp.tasks.SaveTopicTask;
 import com.example.christmasapp.utils.Constants;
-import com.example.christmasapp.helpers.DatabaseHelper;
 import com.example.christmasapp.helpers.MqttHelper;
 import com.example.christmasapp.tasks.ReadNotificationTask;
 import com.example.christmasapp.tasks.ReadTopicTask;
@@ -64,9 +64,26 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         if(getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
-        DatabaseHelper.getInstance(this);
+        /* Initialize the database singleton instance */
+        NotificationsDbHelper.getInstance(this);
         MqttHelper.getInstance(this);
         SharedPreferencesHelper.getInstance(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        /* Guarantee the connection to the database is available */
+        NotificationsDbHelper.getInstance(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        /* Close the database connection */
+        NotificationsDbHelper.getInstance(this).close();
+
+        super.onDestroy();
     }
 
     @Override

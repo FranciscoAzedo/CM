@@ -3,7 +3,7 @@ package com.example.christmasapp.data.model;
 import java.io.Serializable;
 
 /**
- *
+ * RECEIVED FROM MQTT
  */
 public class NotificationDTO implements Serializable {
     /**

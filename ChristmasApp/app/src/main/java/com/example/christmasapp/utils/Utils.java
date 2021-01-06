@@ -2,10 +2,10 @@ package com.example.christmasapp.utils;
 
 import android.os.Bundle;
 
+import com.example.christmasapp.data.database.NotificationsDbHelper;
 import com.example.christmasapp.data.model.Notification;
 import com.example.christmasapp.data.model.NotificationDTO;
 import com.example.christmasapp.data.model.Topic;
-import com.example.christmasapp.helpers.DatabaseHelper;
 import com.example.christmasapp.helpers.SharedPreferencesHelper;
 import com.google.gson.Gson;
 
@@ -45,24 +45,24 @@ public abstract class Utils {
     }
 
     private static boolean createNotification(Bundle bundle) {
-        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(null);
+        NotificationsDbHelper notificationsDbHelper = NotificationsDbHelper.getInstance(null);
         NotificationDTO notificationDTO = (NotificationDTO) bundle.getSerializable(Constants.NOTIFICATION_KEY);
         Notification notification = new Notification(notificationDTO.getTitle(), notificationDTO.getDescription(), false);
-        notification.setId(databaseHelper.addNotification(notification));
+        notification.setId(notificationsDbHelper.addNotification(notification));
         bundle.putSerializable(Constants.NOTIFICATION_KEY, notification);
         return notification.getId() != -1;
     }
 
     private static boolean updateNotifications(Bundle bundle) {
-        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(null);
+        NotificationsDbHelper notificationsDbHelper = NotificationsDbHelper.getInstance(null);
         Notification notification = (Notification) bundle.getSerializable(Constants.NOTIFICATION_KEY);
-        return databaseHelper.readNotification(notification);
+        return notificationsDbHelper.readNotification(notification.getId());
     }
 
     private static boolean deleteNotification(Bundle bundle) {
-        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(null);
+        NotificationsDbHelper notificationsDbHelper = NotificationsDbHelper.getInstance(null);
         Notification notification = (Notification) bundle.getSerializable(Constants.NOTIFICATION_KEY);
-        return databaseHelper.deleteNotification(notification);
+        return notificationsDbHelper.deleteNotification(notification.getId());
     }
 
     private static boolean createTopic(Bundle bundle) {
