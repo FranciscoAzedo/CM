@@ -61,7 +61,16 @@ public class NotificationsDbHelper extends SQLiteOpenHelper {
     private static NotificationsDbHelper dbHelper = null;
 
     /**
+     * Default Constructor
      *
+     * @param context the application's context
+     */
+    // Private to allow singleton instantiation
+    private NotificationsDbHelper(@Nullable Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    /**
      * @param context
      * @return
      */
@@ -70,16 +79,6 @@ public class NotificationsDbHelper extends SQLiteOpenHelper {
             dbHelper = new NotificationsDbHelper(context);
 
         return dbHelper;
-    }
-
-    /**
-     * Default Constructor
-     *
-     * @param context the application's context
-     */
-    // Private to allow singleton instantiation
-    private NotificationsDbHelper(@Nullable Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
@@ -110,7 +109,7 @@ public class NotificationsDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         /* Get the query results based on the read flag ascending in order to firstly show the
-        *  non-read notifications */
+         *  non-read notifications */
         String sortOrder = COLUMN_NOTIFICATION_READ + " ASC";
 
         /* Query the database and hold the results on a Cursor object */
@@ -163,7 +162,7 @@ public class NotificationsDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         /* Create the map of values, where column names are the keys, corresponding to the new
-        *  notification's fields to be inserted within the database*/
+         *  notification's fields to be inserted within the database*/
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NOTIFICATION_TITLE, notification.getTitle());
         contentValues.put(COLUMN_NOTIFICATION_DESCRIPTION, notification.getDescription());
@@ -196,7 +195,7 @@ public class NotificationsDbHelper extends SQLiteOpenHelper {
 
         /* Set the selection parameters with which row needs to be updated based on the identifier */
         String selection = NotificationsContract.NotificationsEntry._ID + " = ?";
-        String[] selectionArgs = { String.valueOf(notificationID) };
+        String[] selectionArgs = {String.valueOf(notificationID)};
 
         /* Update the correspondent row */
         final int result = db.update(TABLE_NAME, contentValues, selection, selectionArgs);
@@ -216,7 +215,7 @@ public class NotificationsDbHelper extends SQLiteOpenHelper {
 
         /* Set the selection parameters with which row needs to be dropped based on the identifier */
         String selection = NotificationsContract.NotificationsEntry._ID + " = ?";
-        String[] selectionArgs = { String.valueOf(notificationID) };
+        String[] selectionArgs = {String.valueOf(notificationID)};
 
         /* Drop the correspondent row */
         int result = db.delete(TABLE_NAME, "ID=" + notificationID, null);

@@ -4,8 +4,8 @@ import android.graphics.Bitmap;
 
 /**
  * The class PointOfInterest contains the required data to represent a given point of interest. A
- * point of interest is considered, on the system, a monument or some place, an event or a market
- * that is involved in the christmas spirit.
+ * point of interest is considered, on the system, a monument or some place, or an event that is
+ * involved in the christmas spirit.
  * <p>
  * The inherent methods allow the manipulation of the data.
  */

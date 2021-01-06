@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.example.christmasapp.data.database.NotificationsDbHelper;
 import com.example.christmasapp.data.model.Notification;
-import com.example.christmasapp.data.model.NotificationDTO;
+import com.example.christmasapp.data.model.dto.NotificationDTO;
 import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.helpers.SharedPreferencesHelper;
 import com.google.gson.Gson;
