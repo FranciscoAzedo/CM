@@ -2,78 +2,50 @@ package com.example.christmasapp.ui.pois;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.christmasapp.R;
 import com.example.christmasapp.data.model.PointOfInterest;
-import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.tasks.ReadPointOfInterestTask;
-import com.example.christmasapp.tasks.SaveTopicTask;
-import com.example.christmasapp.utils.Constants;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PointsOfInterestFragment extends Fragment {
 
-    private PointsOfInterestViewModel pointsOfInterestViewModel;
     private PointsOfInterestFragment.PointsOfInterestFragmentListener pointsOfInterestFragmentListener;
     private PoIRecyclerViewAdapter poIRecyclerViewAdapter;
+    private RecyclerView rvPOIList;
+    private EditText etSearch;
+    private TextView tvTotalPOIs;
 
     private List<PointOfInterest> pointOfInterestList = new ArrayList<>();
+    private List<PointOfInterest> searchPointOfInterestList = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        pointsOfInterestViewModel =
-                new ViewModelProvider(this).get(PointsOfInterestViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_points_of_interest, container, false);
-
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
-        poIRecyclerViewAdapter = new PoIRecyclerViewAdapter(getContext(), pointOfInterestList);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
-        recyclerView.setAdapter(poIRecyclerViewAdapter);
-
-        /* Listener to handle a click on a single recycler item */
-        poIRecyclerViewAdapter.setOnItemClickListener(index -> {
-            PointOfInterest poi = pointOfInterestList.get(index);
-
-            /* SUBSTITUTIR ISTO URGENTE! */
-            if (poi.getName().equals("Taberna do Tozé Vitor")) {
-                Navigation.findNavController(getView()).navigate(R.id.action_pois_to_monument_detailed);
-            } else if (poi.getName().equals("Taberna do Tozé Leno")) {
-                Navigation.findNavController(getView()).navigate(R.id.action_pois_to_event_detailed);
-            }
-        });
-
-        poIRecyclerViewAdapter.setOnIconClickListener(index -> {
-            PointOfInterest poi = pointOfInterestList.get(index);
-
-            /* SUBSTITUTIR ISTO URGENTE! */
-            if (poi.getName().contains(".")) {
-                poi.setName(poi.getName().substring(0, poi.getName().indexOf(".")));
-                poIRecyclerViewAdapter.notifyItemChanged(index);
-            } else {
-                poi.setName(poi.getName() + ".");
-                poIRecyclerViewAdapter.notifyItemChanged(index);
-            }
-        });
-
-        fetchPointsOfInterest();
-        return root;
+        return inflater.inflate(R.layout.fragment_points_of_interest, container, false);
     }
 
-    private void fetchPointsOfInterest() {
-        new ReadPointOfInterestTask(this).execute();
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initViewElements(view);
+        populateView();
+        fetchPointsOfInterest();
     }
 
     @Override
@@ -102,20 +74,95 @@ public class PointsOfInterestFragment extends Fragment {
     public void updatePointOfInterest(List<PointOfInterest> pointOfInterestList) {
         this.pointOfInterestList.clear();
         this.pointOfInterestList.addAll(pointOfInterestList);
+        updateSearchPointOfInterestList();
         poIRecyclerViewAdapter.notifyDataSetChanged();
+    }
 
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(Constants.ACTIVITY_KEY, (Serializable) getActivity());
-        Topic topic = new Topic("CM_TP_2020", pointOfInterestList.get(0).getImageUrl());
-        bundle.putSerializable(Constants.TOPIC_KEY, topic);
-        new SaveTopicTask(bundle).execute();
+    private void initViewElements(View view) {
+        /* References to View elements */
+        rvPOIList = view.findViewById(R.id.recycler_view);
+        etSearch = view.findViewById(R.id.et_search);
+        tvTotalPOIs = view.findViewById(R.id.count_points_of_interest);
+    }
 
-//        Topic topic2 = new Topic("CM_TP_2020_TEST", pointOfInterestList.get(1).getImageUrl());
-//        bundle.putSerializable(Constants.TOPIC_KEY, topic2);
-//        new SaveTopicTask(bundle).execute();
+    private void populateView() {
+        poIRecyclerViewAdapter = new PoIRecyclerViewAdapter(getContext(), searchPointOfInterestList);
+        rvPOIList.setLayoutManager(new GridLayoutManager(getContext(), 1));
+        rvPOIList.setAdapter(poIRecyclerViewAdapter);
+
+        /* Listener to handle a click on a single recycler item */
+        poIRecyclerViewAdapter.setOnItemClickListener(index -> {
+            PointOfInterest poi = searchPointOfInterestList.get(index);
+
+            /* SUBSTITUTIR ISTO URGENTE! */
+            if (poi.getName().equals("Taberna do Tozé Vitor")) {
+                Navigation.findNavController(getView()).navigate(R.id.action_pois_to_monument_detailed);
+            } else if (poi.getName().equals("Taberna do Tozé Leno")) {
+                Navigation.findNavController(getView()).navigate(R.id.action_pois_to_event_detailed);
+            }
+        });
+
+        poIRecyclerViewAdapter.setOnIconClickListener(index -> {
+            PointOfInterest poi = searchPointOfInterestList.get(index);
+
+            /* SUBSTITUTIR ISTO URGENTE! */
+            if (poi.getName().contains(".")) {
+                poi.setName(poi.getName().substring(0, poi.getName().indexOf(".")));
+                poIRecyclerViewAdapter.notifyItemChanged(index);
+            } else {
+                poi.setName(poi.getName() + ".");
+                poIRecyclerViewAdapter.notifyItemChanged(index);
+            }
+        });
+
+        // Listener para pesquisar notas por título
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Limpar a lista de pesquisa
+                searchPointOfInterestList.clear();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Caso em que a pesquisa está vazia
+                if (s.length() == 0)
+                    searchPointOfInterestList.addAll(pointOfInterestList);
+
+                    // Caso em que é inserida alguma pesquisa
+                else
+                    for (PointOfInterest poi : pointOfInterestList)
+                        if (poi.getName().equalsIgnoreCase(s.toString())
+                                || poi.getName().toLowerCase().contains(s.toString().toLowerCase()))
+                            searchPointOfInterestList.add(poi);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Atualizar o numero de notas na pesquisa
+                tvTotalPOIs.setText(searchPointOfInterestList.size() + " result(s) found");
+                // Atualizar o Adapter
+                poIRecyclerViewAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void updateSearchPointOfInterestList(){
+        String searchText = etSearch.getText().toString();
+        searchPointOfInterestList.clear();
+        for (PointOfInterest poi : pointOfInterestList)
+            if (poi.getName().equalsIgnoreCase(searchText) || poi.getName().toLowerCase().contains(searchText.toLowerCase()))
+                searchPointOfInterestList.add(poi);
+
+        tvTotalPOIs.setText(searchPointOfInterestList.size() + " result(s) found");
+    }
+
+    private void fetchPointsOfInterest() {
+        new ReadPointOfInterestTask(this).execute();
     }
 
     public interface PointsOfInterestFragmentListener {
+
         void pointsOfInterestActive(PointsOfInterestFragment pointsOfInterestFragment);
     }
 }

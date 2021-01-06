@@ -30,7 +30,7 @@
         android:layout_marginBottom="@dimen/padding_horizontal"
         android:textSize="@dimen/small_text_title"
         android:textColor="@color/empty_subscriptions_text"
-        android:text="2 result(s) found"/>
+        android:text="0 result(s) found"/>
 
     <LinearLayout
         android:id="@+id/rl_search_bar"

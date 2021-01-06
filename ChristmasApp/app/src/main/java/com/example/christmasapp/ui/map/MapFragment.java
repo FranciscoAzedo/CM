@@ -29,46 +29,29 @@ public class MapFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_map, container, false);
+        return inflater.inflate(R.layout.fragment_map, container, false);
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
 
-        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(LatLng latLng) {
-                        //When clicked on map
-                        //Initialize marker options
-                        MarkerOptions markerOptions = new MarkerOptions();
-                        //Set position of mark
-                        markerOptions.position(latLng);
-                        markerOptions.title(latLng.latitude + " : " + latLng.longitude);
-                        //Remove all marker
-                        googleMap.clear();
+        supportMapFragment.getMapAsync(googleMap -> googleMap.setOnMapClickListener(latLng -> {
+            //When clicked on map
+            //Initialize marker options
+            MarkerOptions markerOptions = new MarkerOptions();
+            //Set position of mark
+            markerOptions.position(latLng);
+            markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+            //Remove all marker
+            googleMap.clear();
 
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                latLng, 10
-                        ));
-                        googleMap.addMarker(markerOptions);
-                    }
-                });
-            }
-        });
-
-        return view;
-//        mapViewModel =
-//                new ViewModelProvider(this).get(MapViewModel.class);
-//        View root = inflater.inflate(R.layout.fragment_map, container, false);
-//        final TextView textView = root.findViewById(R.id.text_map);
-//        mapViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
-//        return root;
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                    latLng, 10
+            ));
+            googleMap.addMarker(markerOptions);
+        }));
     }
 
     @Override
