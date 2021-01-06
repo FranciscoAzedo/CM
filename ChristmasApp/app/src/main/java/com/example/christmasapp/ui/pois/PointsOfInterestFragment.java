@@ -82,13 +82,13 @@ public class PointsOfInterestFragment extends Fragment {
 //        this.pointOfInterestList.add(new Event("Evento teste", "", Type.EVENT, null, null));
         updateSearchPointOfInterestList();
         poIRecyclerViewAdapter.notifyDataSetChanged();
-        new ReadPointOfInterestImageTask(this, this.pointOfInterestList).execute();
+        for(PointOfInterest pointOfInterest : pointOfInterestList) {
+            new ReadPointOfInterestImageTask(this, pointOfInterest).execute();
+        }
 
     }
 
-    public void updatePointOfInterestImages(List<PointOfInterest> pointOfInterestList) {
-        this.pointOfInterestList.clear();
-        this.pointOfInterestList.addAll(pointOfInterestList);
+    public void updatePointOfInterestImages(PointOfInterest pointOfInterest) {
         poIRecyclerViewAdapter.notifyDataSetChanged();
     }
 
