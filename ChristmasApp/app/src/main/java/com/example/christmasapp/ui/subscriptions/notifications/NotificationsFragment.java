@@ -1,4 +1,4 @@
-package com.example.christmasapp.ui.notifications;
+package com.example.christmasapp.ui.subscriptions.notifications;
 
 import android.content.Context;
 import android.os.Bundle;

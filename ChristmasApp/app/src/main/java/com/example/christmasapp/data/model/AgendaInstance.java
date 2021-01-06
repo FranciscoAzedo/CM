@@ -29,10 +29,11 @@ public class AgendaInstance {
 
     /**
      * Constructor
-     * @param title the title to be assigned to the agenda's instance
+     *
+     * @param title     the title to be assigned to the agenda's instance
      * @param startTime the start time to be assigned to the agenda's instance
-     * @param endTime the end time to be assigned to the agenda's instance
-     * @param date the date to be assigned to the agenda's instance
+     * @param endTime   the end time to be assigned to the agenda's instance
+     * @param date      the date to be assigned to the agenda's instance
      */
     public AgendaInstance(String title, Time startTime, Time endTime, Date date) {
         this.title = title;
@@ -43,6 +44,7 @@ public class AgendaInstance {
 
     /**
      * Gets agenda's instance title
+     *
      * @return agenda's instance title
      */
     public String getTitle() {
@@ -51,6 +53,7 @@ public class AgendaInstance {
 
     /**
      * Sets agenda's instance title
+     *
      * @param title the title to be assigned to the agenda's instance
      */
     public void setTitle(String title) {
@@ -59,6 +62,7 @@ public class AgendaInstance {
 
     /**
      * Gets agenda's instance start time
+     *
      * @return agenda's instance start time
      */
     public Time getStartTime() {
@@ -67,6 +71,7 @@ public class AgendaInstance {
 
     /**
      * Sets agenda's instance start time
+     *
      * @param startTime the start time to be assigned to the agenda's instance
      */
     public void setStartTime(Time startTime) {
@@ -75,6 +80,7 @@ public class AgendaInstance {
 
     /**
      * Gets agenda's instance end time
+     *
      * @return agenda's instance end time
      */
     public Time getEndTime() {
@@ -83,6 +89,7 @@ public class AgendaInstance {
 
     /**
      * Sets agenda's instance end time
+     *
      * @param endTime the end time to be assigned to the agenda's instance
      */
     public void setEndTime(Time endTime) {
@@ -91,6 +98,7 @@ public class AgendaInstance {
 
     /**
      * Gets agenda's instance date
+     *
      * @return agenda's instance date
      */
     public Date getDate() {
@@ -99,6 +107,7 @@ public class AgendaInstance {
 
     /**
      * Sets agenda's instance date
+     *
      * @param date the date to be assigned to the agenda's instance
      */
     public void setDate(Date date) {

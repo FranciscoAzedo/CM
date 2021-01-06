@@ -12,8 +12,8 @@ import com.example.christmasapp.tasks.ReadNotificationTask;
 import com.example.christmasapp.tasks.ReadTopicTask;
 import com.example.christmasapp.ui.map.MapFragment;
 import com.example.christmasapp.ui.subscriptions.SubscriptionsFragment;
-import com.example.christmasapp.ui.points_of_interest.PointsOfInterestFragment;
-import com.example.christmasapp.ui.notifications.NotificationsFragment;
+import com.example.christmasapp.ui.pois.PointsOfInterestFragment;
+import com.example.christmasapp.ui.subscriptions.notifications.NotificationsFragment;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -21,7 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -53,9 +53,12 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_points_of_interest, R.id.navigation_map, R.id.navigation_subscriptions, R.id.navigation_notifications)
+                R.id.navigation_points_of_interest, R.id.navigation_map, R.id.navigation_subscriptions)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
+        NavHostFragment navHostFragment =
+                (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        NavController navController = navHostFragment.getNavController();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
         badgeDrawable = navView.getOrCreateBadge(R.id.navigation_notifications);

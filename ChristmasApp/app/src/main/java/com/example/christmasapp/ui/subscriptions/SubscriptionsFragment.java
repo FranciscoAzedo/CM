@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.LayoutManager;
@@ -36,6 +38,9 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
     private SubscriptionListAdapter rvSubscriptionsListAdapter;
     private LayoutManager rvSubscriptionsListLayoutManager;
 
+    /* View elements */
+    private ImageView ivNotificationsBell;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_subscriptions, container, false);
@@ -60,25 +65,36 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
     public void updateSubscriptions(Set<Topic> topics) {
         this.topicsList.clear();
         this.topicsList.addAll(topics);
-        getActivity().runOnUiThread(() -> {
-            if (this.topicsList.isEmpty()) {
-                rvSubscriptionsList.setVisibility(View.GONE);
-                tvSubscriptionsCount.setVisibility(View.GONE);
-                tvSubscriptionsEmpty.setVisibility(View.VISIBLE);
-            } else {
-                rvSubscriptionsList.setVisibility(View.VISIBLE);
-                tvSubscriptionsCount.setVisibility(View.VISIBLE);
-                tvSubscriptionsCount.setText(topicsList.size() + " subscription(s)");
-                tvSubscriptionsEmpty.setVisibility(View.GONE);
-            }
-            rvSubscriptionsListAdapter.notifyDataSetChanged();
-        });
+        try {
+            getActivity().runOnUiThread(() -> {
+                if (this.topicsList.isEmpty()) {
+                    rvSubscriptionsList.setVisibility(View.GONE);
+                    tvSubscriptionsCount.setVisibility(View.GONE);
+                    tvSubscriptionsEmpty.setVisibility(View.VISIBLE);
+                } else {
+                    rvSubscriptionsList.setVisibility(View.VISIBLE);
+                    tvSubscriptionsCount.setVisibility(View.VISIBLE);
+                    tvSubscriptionsCount.setText(topicsList.size() + " subscription(s)");
+                    tvSubscriptionsEmpty.setVisibility(View.GONE);
+                }
+                rvSubscriptionsListAdapter.notifyDataSetChanged();
+            });
+        }catch (NullPointerException ex){
+            ex.printStackTrace();
+        }
     }
 
     private void initViewElements(View view) {
+        /* References to View elements */
         tvSubscriptionsEmpty = view.findViewById(R.id.empty_subscriptions);
         tvSubscriptionsCount = view.findViewById(R.id.count_subscriptions);
         rvSubscriptionsList = view.findViewById(R.id.recycler_subscriptions);
+        ivNotificationsBell = view.findViewById(R.id.iv_notifications_bell);
+
+        /* Listener to click on the notification's bell */
+        ivNotificationsBell.setOnClickListener(v -> {
+            Navigation.findNavController(getView()).navigate(R.id.action_subscriptions_to_notifications);
+        });
     }
 
     private void populateView() {

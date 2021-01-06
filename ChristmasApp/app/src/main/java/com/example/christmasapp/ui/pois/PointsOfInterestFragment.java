@@ -1,4 +1,4 @@
-package com.example.christmasapp.ui.points_of_interest;
+package com.example.christmasapp.ui.pois;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,7 +28,7 @@ public class PointsOfInterestFragment extends Fragment {
 
     private PointsOfInterestViewModel pointsOfInterestViewModel;
     private PointsOfInterestFragment.PointsOfInterestFragmentListener pointsOfInterestFragmentListener;
-    private PoIRecycleViewAdapter poIRecycleViewAdapter;
+    private PoIRecyclerViewAdapter poIRecyclerViewAdapter;
 
     private List<PointOfInterest> pointOfInterestList = new ArrayList<>();
 
@@ -38,9 +39,34 @@ public class PointsOfInterestFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_points_of_interest, container, false);
 
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.recycler_view);
-        poIRecycleViewAdapter = new PoIRecycleViewAdapter(getContext(), pointOfInterestList);
+        poIRecyclerViewAdapter = new PoIRecyclerViewAdapter(getContext(), pointOfInterestList);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
-        recyclerView.setAdapter(poIRecycleViewAdapter);
+        recyclerView.setAdapter(poIRecyclerViewAdapter);
+
+        /* Listener to handle a click on a single recycler item */
+        poIRecyclerViewAdapter.setOnItemClickListener(index -> {
+            PointOfInterest poi = pointOfInterestList.get(index);
+
+            /* SUBSTITUTIR ISTO URGENTE! */
+            if (poi.getName().equals("Taberna do Tozé Vitor")) {
+                Navigation.findNavController(getView()).navigate(R.id.action_pois_to_monument_detailed);
+            } else if (poi.getName().equals("Taberna do Tozé Leno")) {
+                Navigation.findNavController(getView()).navigate(R.id.action_pois_to_event_detailed);
+            }
+        });
+
+        poIRecyclerViewAdapter.setOnIconClickListener(index -> {
+            PointOfInterest poi = pointOfInterestList.get(index);
+
+            /* SUBSTITUTIR ISTO URGENTE! */
+            if (poi.getName().contains(".")) {
+                poi.setName(poi.getName().substring(0, poi.getName().indexOf(".")));
+                poIRecyclerViewAdapter.notifyItemChanged(index);
+            } else {
+                poi.setName(poi.getName() + ".");
+                poIRecyclerViewAdapter.notifyItemChanged(index);
+            }
+        });
 
         fetchPointsOfInterest();
         return root;
@@ -76,7 +102,7 @@ public class PointsOfInterestFragment extends Fragment {
     public void updatePointOfInterest(List<PointOfInterest> pointOfInterestList) {
         this.pointOfInterestList.clear();
         this.pointOfInterestList.addAll(pointOfInterestList);
-        poIRecycleViewAdapter.notifyDataSetChanged();
+        poIRecyclerViewAdapter.notifyDataSetChanged();
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants.ACTIVITY_KEY, (Serializable) getActivity());

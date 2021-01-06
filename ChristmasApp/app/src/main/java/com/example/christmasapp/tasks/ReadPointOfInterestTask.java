@@ -3,11 +3,9 @@ package com.example.christmasapp.tasks;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.ImageView;
 
 import com.example.christmasapp.data.model.PointOfInterest;
-import com.example.christmasapp.ui.points_of_interest.PointsOfInterestFragment;
+import com.example.christmasapp.ui.pois.PointsOfInterestFragment;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.utils.JsonReader;
 

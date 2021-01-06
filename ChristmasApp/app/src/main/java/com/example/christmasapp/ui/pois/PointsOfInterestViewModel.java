@@ -1,4 +1,4 @@
-package com.example.christmasapp.ui.points_of_interest;
+package com.example.christmasapp.ui.pois;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

@@ -7,25 +7,46 @@
     android:background="@color/fragment_background"
     tools:context=".ui.subscriptions.SubscriptionsFragment">
 
-    <TextView
-        android:id="@+id/title_subscriptions"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:textStyle="bold"
-        android:layout_marginTop="@dimen/padding_horizontal"
-        android:layout_marginBottom="@dimen/notification_bar"
         android:layout_marginStart="@dimen/padding_vertical"
-        android:layout_marginEnd="@dimen/padding_horizontal"
-        android:text="@string/title_subscriptions"
-        android:textSize="@dimen/big_text_title"
-        android:textColor="@color/background_bar" />
+        android:layout_marginEnd="@dimen/padding_vertical"
+        android:layout_marginTop="@dimen/padding_horizontal"
+        android:layout_marginBottom="@dimen/notification_bar">
+
+        <TextView
+            android:id="@+id/title_subscriptions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:textStyle="bold"
+            android:text="@string/title_subscriptions"
+            android:textSize="@dimen/big_text_title"
+            android:textColor="@color/background_bar"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:maxLines="1"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/iv_notifications_bell"/>
+
+        <ImageView
+            android:id="@+id/iv_notifications_bell"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_bell"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/count_subscriptions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_subscriptions"
+        android:layout_below="@id/title_bar"
         android:layout_marginStart="@dimen/padding_vertical"
         android:layout_marginBottom="@dimen/padding_horizontal"
         android:textSize="@dimen/small_text_title"
@@ -35,7 +56,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/count_subscriptions">
+        android:layout_below="@id/count_subscriptions"
+        android:layout_marginStart="@dimen/padding_vertical"
+        android:layout_marginEnd="@dimen/padding_vertical">
 
         <!-- Notes Recycler View -->
         <androidx.recyclerview.widget.RecyclerView
@@ -54,4 +77,5 @@
         android:text="@string/empty_subscriptions"
         android:textSize="@dimen/text_title"
         android:textColor="@color/empty_subscriptions_text" />
+
 </RelativeLayout>

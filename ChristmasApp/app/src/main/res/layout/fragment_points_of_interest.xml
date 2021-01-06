@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/fragment_background"
-        tools:context=".ui.points_of_interest.PointsOfInterestFragment">
+        tools:context=".ui.pois.PointsOfInterestFragment">
 
     <TextView
         android:id="@+id/title_points_of_interest"

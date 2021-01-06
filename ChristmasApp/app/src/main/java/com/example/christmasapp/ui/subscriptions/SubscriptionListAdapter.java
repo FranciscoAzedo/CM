@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.christmasapp.R;
 import com.example.christmasapp.data.model.PointOfInterest;
 import com.example.christmasapp.data.model.Topic;
+import com.example.christmasapp.ui.pois.PoIRecyclerViewAdapter;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.tasks.DeleteTopicTask;
 
@@ -29,6 +30,11 @@ public class SubscriptionListAdapter extends RecyclerView.Adapter<SubscriptionLi
 
     private final List<Topic> topicsList;
     private final SubscriptionsFragment subscriptionsFragment;
+    private OnItemClickListener listener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public SubscriptionListAdapter(List<Topic> topicsList, SubscriptionsFragment subscriptionsFragment) {
         this.topicsList = topicsList;
@@ -45,8 +51,6 @@ public class SubscriptionListAdapter extends RecyclerView.Adapter<SubscriptionLi
     @Override
     public void onBindViewHolder(@NonNull SubscriptionListViewHolder holder, int index) {
         holder.ivTopicCard.setImageBitmap(topicsList.get(index).getBitmap());
-
-        holder.tvTitle.setText(topicsList.get(index).getName());
 
         holder.ivDelete.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
@@ -68,15 +72,18 @@ public class SubscriptionListAdapter extends RecyclerView.Adapter<SubscriptionLi
         super.onViewRecycled(holder);
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
     public static class SubscriptionListViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
-        private final TextView tvTitle;
         private final ImageView ivDelete;
         private final ImageView ivTopicCard;
 
         public SubscriptionListViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvTitle = itemView.findViewById(R.id.tv_notification_title);
+
             ivDelete = itemView.findViewById(R.id.iv_delete);
             ivTopicCard = itemView.findViewById(R.id.iv_topic_card);
 

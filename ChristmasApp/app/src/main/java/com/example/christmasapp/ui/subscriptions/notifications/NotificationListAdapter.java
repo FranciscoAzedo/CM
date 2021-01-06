@@ -1,4 +1,4 @@
-package com.example.christmasapp.ui.notifications;
+package com.example.christmasapp.ui.subscriptions.notifications;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.christmasapp.R;
+import com.example.christmasapp.ui.subscriptions.SubscriptionListAdapter;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.data.model.Notification;
 import com.example.christmasapp.tasks.DeleteNotificationTask;
@@ -28,6 +29,11 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationLi
 
     private final List<Notification> notificationList;
     private final NotificationsFragment notificationsFragment;
+    private OnItemClickListener listener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public NotificationListAdapter(List<Notification> notificationList, NotificationsFragment notificationsFragment) {
         this.notificationList = notificationList;
@@ -91,6 +97,10 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationLi
     public void onViewRecycled(NotificationListViewHolder holder) {
         holder.itemView.setOnLongClickListener(null);
         super.onViewRecycled(holder);
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 
     public static class NotificationListViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
