@@ -23,8 +23,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapFragment extends Fragment {
 
-    private MapViewModel mapViewModel;
-
     private MapFragmentListener mapFragmentListener;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
