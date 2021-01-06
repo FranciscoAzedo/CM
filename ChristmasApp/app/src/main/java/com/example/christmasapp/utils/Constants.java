@@ -20,6 +20,6 @@ public abstract class Constants {
     public static final String DELETE_TOPIC_MODE = "DELETE TOPIC";
     public static final String SHARED_PREFERENCES_TOPIC_KEY = " SHARED PREFERENCES TOPIC";
 
-    public static final String JSON_EVENTS_API_URL = "https://api.jsonbin.io/b/5feb8b1cd73ed63cc0f3fa2d/9";
-    public static final String JSON_MONUMENTS_API_URL = "https://api.jsonbin.io/b/5ff5e04309f7c73f1b6e6c91/1";
+    public static final String JSON_POI_API_URL = "https://api.jsonbin.io/b/5feb8b1cd73ed63cc0f3fa2d/10";
+    public static final String POI_OBJECT_BUNDLE = "POI OBJECT BUNDLE";
 }

@@ -2,6 +2,8 @@ package com.example.christmasapp.data.model;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 /**
  * The class PointOfInterest contains the required data to represent a given point of interest. A
  * point of interest is considered, on the system, a monument or some place, or an event that is
@@ -9,7 +11,7 @@ import android.graphics.Bitmap;
  * <p>
  * The inherent methods allow the manipulation of the data.
  */
-public class PointOfInterest {
+public class PointOfInterest implements Serializable {
     /**
      * Represents the POI's name
      */
@@ -18,10 +20,6 @@ public class PointOfInterest {
      * Represents the POI's location
      */
     private Location location;
-    /**
-     * Represents the POI's type
-     */
-//    private Type type;
     /**
      * Represent's the POI's image bitmap
      */
@@ -36,14 +34,12 @@ public class PointOfInterest {
      *
      * @param name     the name to be assigned to the POI
      * @param imageUrl the image URL to be assigned to the POI
-     * @param type     the type to be assigned to the POI
      * @param location the location to be assigned to the POI
      * @param bitmap   the image bitmap to be assigned to the POI
      */
     public PointOfInterest(String name, String imageUrl, Location location, Bitmap bitmap) {
         this.name = name;
         this.location = location;
-//        this.type = type;
         this.bitmap = bitmap;
         this.imageUrl = imageUrl;
     }

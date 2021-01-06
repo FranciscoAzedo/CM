@@ -3,6 +3,7 @@ package com.example.christmasapp.utils;
 import com.example.christmasapp.data.model.Event;
 import com.example.christmasapp.data.model.PointOfInterest;
 import com.example.christmasapp.data.model.Topic;
+import com.example.christmasapp.data.model.dto.EventsAndMonumentsDTO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -20,28 +21,13 @@ import java.util.Set;
 
 public class JsonReader {
 
-    public static List<PointOfInterest> readMonumentsJsonFromUrl(String url) throws IOException {
+    public static EventsAndMonumentsDTO readMonumentsJsonFromUrl(String url) throws IOException {
         InputStream inputStream = new URL(url).openStream();
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
             String jsonText = readAll(bufferedReader);
             Gson gson = new Gson();
-            Type poiListType = new TypeToken<ArrayList<PointOfInterest>>(){}.getType();
-            return gson.fromJson(jsonText, poiListType);
-        }
-        finally {
-            inputStream.close();
-        }
-    }
-
-    public static List<Event> readEventsJsonFromUrl(String url) throws IOException {
-        InputStream inputStream = new URL(url).openStream();
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
-            String jsonText = readAll(bufferedReader);
-            Gson gson = new Gson();
-            Type poiListType = new TypeToken<ArrayList<Event>>(){}.getType();
-            return gson.fromJson(jsonText, poiListType);
+            return gson.fromJson(jsonText, EventsAndMonumentsDTO.class);
         }
         finally {
             inputStream.close();

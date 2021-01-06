@@ -36,6 +36,10 @@ public class PointsOfInterestFragment extends Fragment {
     private List<PointOfInterest> pointOfInterestList = new ArrayList<>();
     private List<PointOfInterest> searchPointOfInterestList = new ArrayList<>();
 
+    public static PointsOfInterestFragment newInstance() {
+        return new PointsOfInterestFragment();
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_points_of_interest, container, false);
@@ -106,9 +110,9 @@ public class PointsOfInterestFragment extends Fragment {
 
             /* SUBSTITUTIR ISTO URGENTE! */
             if (poi instanceof Event) {
-                pointsOfInterestFragmentListener.toEventDetails(this);
+                pointsOfInterestFragmentListener.toEventDetails(this, poi);
             } else  {
-                pointsOfInterestFragmentListener.toMonumentDetails(this);
+                pointsOfInterestFragmentListener.toMonumentDetails(this, poi);
             }
         });
 
@@ -174,7 +178,7 @@ public class PointsOfInterestFragment extends Fragment {
     public interface PointsOfInterestFragmentListener {
 
         void pointsOfInterestActive(PointsOfInterestFragment pointsOfInterestFragment);
-        void toMonumentDetails(PointsOfInterestFragment pointsOfInterestFragment0);
-        void toEventDetails(PointsOfInterestFragment pointsOfInterestFragment0);
+        void toMonumentDetails(PointsOfInterestFragment pointsOfInterestFragment0, PointOfInterest poi);
+        void toEventDetails(PointsOfInterestFragment pointsOfInterestFragment0, PointOfInterest poi);
     }
 }
