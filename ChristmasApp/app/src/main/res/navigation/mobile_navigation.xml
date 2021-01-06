@@ -9,17 +9,8 @@
         android:id="@+id/navigation_points_of_interest"
         android:name="com.example.christmasapp.ui.pois.PointsOfInterestFragment"
         android:label="@string/title_points_of_interest"
-        tools:layout="@layout/fragment_points_of_interest">
+        tools:layout="@layout/fragment_points_of_interest"/>
 
-        <action
-            android:id="@+id/action_pois_to_monument_detailed"
-            app:destination="@id/navigation_monument_detailed" />
-
-        <action
-            android:id="@+id/action_pois_to_event_detailed"
-            app:destination="@id/navigation_event_detailed" />
-
-    </fragment>
 
     <fragment
         android:id="@+id/navigation_monument_detailed"

@@ -35,12 +35,15 @@ public class Event extends PointOfInterest {
      *
      * @param name     the name to be assigned to the POI
      * @param imageUrl the image URL to be assigned to the POI
-     * @param type     the type to be assigned to the POI
      * @param location the location to be assigned to the POI
      * @param bitmap   the image bitmap to be assigned to the POI
      */
-    public Event(String name, String imageUrl, Type type, Location location, Bitmap bitmap) {
-        super(name, imageUrl, type, location, bitmap);
+    public Event(String name, String imageUrl, Location location, Bitmap bitmap, Time openTime, Time closeTime, double price, List<AgendaInstance> agenda) {
+        super(name, imageUrl, location, bitmap);
+        this.openTime = openTime;
+        this.closeTime = closeTime;
+        this.price = price;
+        this.agenda = agenda;
     }
 
     /**

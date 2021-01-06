@@ -13,13 +13,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.christmasapp.R;
+import com.example.christmasapp.data.model.Event;
 import com.example.christmasapp.data.model.PointOfInterest;
-import com.example.christmasapp.tasks.ReadPointOfInterestTask;
+import com.example.christmasapp.tasks.ReadPointOfInterestImageTask;
+import com.example.christmasapp.tasks.ReadPointOfInterestInfoTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,10 +72,19 @@ public class PointsOfInterestFragment extends Fragment {
         pointsOfInterestFragmentListener = null;
     }
 
-    public void updatePointOfInterest(List<PointOfInterest> pointOfInterestList) {
+    public void updatePointOfInterestInfo(List<PointOfInterest> pointOfInterestList) {
         this.pointOfInterestList.clear();
         this.pointOfInterestList.addAll(pointOfInterestList);
+//        this.pointOfInterestList.add(new Event("Evento teste", "", Type.EVENT, null, null));
         updateSearchPointOfInterestList();
+        poIRecyclerViewAdapter.notifyDataSetChanged();
+        new ReadPointOfInterestImageTask(this, this.pointOfInterestList).execute();
+
+    }
+
+    public void updatePointOfInterestImages(List<PointOfInterest> pointOfInterestList) {
+        this.pointOfInterestList.clear();
+        this.pointOfInterestList.addAll(pointOfInterestList);
         poIRecyclerViewAdapter.notifyDataSetChanged();
     }
 
@@ -95,10 +105,10 @@ public class PointsOfInterestFragment extends Fragment {
             PointOfInterest poi = searchPointOfInterestList.get(index);
 
             /* SUBSTITUTIR ISTO URGENTE! */
-            if (poi.getName().equals("Taberna do Tozé Vitor")) {
-                Navigation.findNavController(getView()).navigate(R.id.action_pois_to_monument_detailed);
-            } else if (poi.getName().equals("Taberna do Tozé Leno")) {
-                Navigation.findNavController(getView()).navigate(R.id.action_pois_to_event_detailed);
+            if (poi instanceof Event) {
+                pointsOfInterestFragmentListener.toEventDetails(this);
+            } else  {
+                pointsOfInterestFragmentListener.toMonumentDetails(this);
             }
         });
 
@@ -158,11 +168,13 @@ public class PointsOfInterestFragment extends Fragment {
     }
 
     private void fetchPointsOfInterest() {
-        new ReadPointOfInterestTask(this).execute();
+        new ReadPointOfInterestInfoTask(this).execute();
     }
 
     public interface PointsOfInterestFragmentListener {
 
         void pointsOfInterestActive(PointsOfInterestFragment pointsOfInterestFragment);
+        void toMonumentDetails(PointsOfInterestFragment pointsOfInterestFragment0);
+        void toEventDetails(PointsOfInterestFragment pointsOfInterestFragment0);
     }
 }

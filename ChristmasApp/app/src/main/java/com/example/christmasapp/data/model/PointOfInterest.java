@@ -21,7 +21,7 @@ public class PointOfInterest {
     /**
      * Represents the POI's type
      */
-    private Type type;
+//    private Type type;
     /**
      * Represent's the POI's image bitmap
      */
@@ -40,10 +40,10 @@ public class PointOfInterest {
      * @param location the location to be assigned to the POI
      * @param bitmap   the image bitmap to be assigned to the POI
      */
-    public PointOfInterest(String name, String imageUrl, Type type, Location location, Bitmap bitmap) {
+    public PointOfInterest(String name, String imageUrl, Location location, Bitmap bitmap) {
         this.name = name;
         this.location = location;
-        this.type = type;
+//        this.type = type;
         this.bitmap = bitmap;
         this.imageUrl = imageUrl;
     }
@@ -89,18 +89,18 @@ public class PointOfInterest {
      *
      * @return POI's type
      */
-    public Type getType() {
-        return type;
-    }
+//    public Type getType() {
+//        return type;
+//    }
 
     /**
      * Sets POI's type
      *
      * @param type the type to be assigned to the POI
      */
-    public void setType(Type type) {
-        this.type = type;
-    }
+//    public void setType(Type type) {
+//        this.type = type;
+//    }
 
     /**
      * Gets POI's location
@@ -143,7 +143,7 @@ public class PointOfInterest {
         return "PointOfInterest{" +
                 "name='" + name + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", type=" + type +
+//                ", type=" + type +
                 ", location=" + location +
                 ", imageView=" + bitmap +
                 '}';

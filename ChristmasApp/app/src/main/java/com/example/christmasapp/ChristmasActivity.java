@@ -7,6 +7,8 @@ import android.view.MenuItem;
 import com.example.christmasapp.data.database.NotificationsDbHelper;
 import com.example.christmasapp.helpers.SharedPreferencesHelper;
 import com.example.christmasapp.tasks.SaveTopicTask;
+import com.example.christmasapp.ui.pois.Event_Detailed.EventDetailedFragment;
+import com.example.christmasapp.ui.pois.Monument_Detailed.MonumentDetailedFragment;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.helpers.MqttHelper;
 import com.example.christmasapp.tasks.ReadNotificationTask;
@@ -49,6 +51,8 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     private MapFragment mapFragment = new MapFragment();
     private SubscriptionsFragment subscriptionsFragment = new SubscriptionsFragment();
     private Fragment active = pointsOfInterestFragment;
+    private EventDetailedFragment eventDetailedFragment = new EventDetailedFragment();
+    private MonumentDetailedFragment monumentDetailedFragment = new MonumentDetailedFragment();
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -64,6 +68,8 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         fragmentManager.beginTransaction().add(R.id.nav_host_fragment, mapFragment, "map_frag").hide(mapFragment).commit();
         fragmentManager.beginTransaction().add(R.id.nav_host_fragment, notificationsFragment, "not_frag").hide(notificationsFragment).commit();
         fragmentManager.beginTransaction().add(R.id.nav_host_fragment, subscriptionsFragment, "sub_frag").hide(subscriptionsFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, eventDetailedFragment, "eve_frag").hide(eventDetailedFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, monumentDetailedFragment, "mon_frag").hide(monumentDetailedFragment).commit();
         fragmentManager.beginTransaction().add(R.id.nav_host_fragment, pointsOfInterestFragment, "poi_frag").commit();
 
         // Passing each menu ID as a set of Ids because each
@@ -238,6 +244,20 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     public void pointsOfInterestActive(PointsOfInterestFragment pointsOfInterestFragment) {
         this.pointsOfInterestFragment = pointsOfInterestFragment;
         this.active = pointsOfInterestFragment;
+    }
+
+    @Override
+    public void toMonumentDetails(PointsOfInterestFragment pointsOfInterestFragment) {
+        this.pointsOfInterestFragment = pointsOfInterestFragment;
+        fragmentManager.beginTransaction().hide(active).show(monumentDetailedFragment).commit();
+        this.active = monumentDetailedFragment;
+    }
+
+    @Override
+    public void toEventDetails(PointsOfInterestFragment pointsOfInterestFragment) {
+        this.pointsOfInterestFragment = pointsOfInterestFragment;
+        fragmentManager.beginTransaction().hide(active).show(eventDetailedFragment).commit();
+        this.active = eventDetailedFragment;
     }
 
     private void updateNotificationsView(Bundle bundle){
