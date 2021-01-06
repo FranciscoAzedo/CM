@@ -1,17 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/RelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:orientation="vertical"
+    android:background="@color/fragment_background"
     tools:context=".ui.pois.Monument_Detailed.MonumentDetailedFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ImageView
+        android:id="@+id/poi_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="MONUMENT DETAILED" />
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/empty_subscriptions_text"
+        android:src="@drawable/ic_baseline_mark_email_read_24"/>
 
-    +
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        android:paddingHorizontal="20dp"
+        android:layout_weight="1"
+        android:background="@drawable/background_round_corner_white_poi">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/poi_name"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/poi_icon"
+            app:layout_constraintBottom_toBottomOf="@id/poi_icon"
+            android:textSize="@dimen/text_title"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="QUE BONITE"/>
+
+        <ImageView
+            android:id="@+id/poi_icon"
+            app:layout_constraintTop_toTopOf="@id/poi_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_baseline_event_icon_24"/>
+
+        <TextView
+            android:id="@+id/poi_location"
+            app:layout_constraintTop_toBottomOf="@id/poi_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/poi_name"
+            android:layout_marginTop="5dp"
+            android:textSize="@dimen/small_text_title"
+            android:textColor="@color/black"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:text="Porto, Portugal"/>
+
+        <TextView
+            android:id="@+id/poi_description"
+            app:layout_constraintTop_toBottomOf="@id/poi_location"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="15dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxHeight="200dp"
+            android:textSize="@dimen/small_text_title"
+            android:textColor="@color/black"
+            android:text="As 31600 lâmpadas da àrvore de Natal de 30 metros da avenida, mesmo junto à Câmara do Porto, vão acender-se e inaugurar o epicentro dos festejos portuenses"/>
+
+        <ImageView
+            android:id="@+id/poi_map"
+            app:layout_constraintTop_toBottomOf="@id/poi_description"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/background_bar"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
