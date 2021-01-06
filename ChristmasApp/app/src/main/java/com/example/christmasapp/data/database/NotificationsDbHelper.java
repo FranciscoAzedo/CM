@@ -43,7 +43,7 @@ public class NotificationsDbHelper extends SQLiteOpenHelper {
      */
     private static final String NOTIFICATIONS_QUERY_CREATE =
             "CREATE TABLE " + TABLE_NAME + " ("
-                    + NotificationsContract.NotificationsEntry._ID + " TEXT PRIMARY KEY AUTOINCREMENT, "
+                    + NotificationsContract.NotificationsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + COLUMN_NOTIFICATION_TITLE + " TEXT, "
                     + COLUMN_NOTIFICATION_DESCRIPTION + " TEXT, "
                     + COLUMN_NOTIFICATION_DATE + " DATE, "
