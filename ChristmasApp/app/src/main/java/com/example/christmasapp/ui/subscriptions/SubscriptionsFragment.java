@@ -93,7 +93,8 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
 
         /* Listener to click on the notification's bell */
         ivNotificationsBell.setOnClickListener(v -> {
-            Navigation.findNavController(getView()).navigate(R.id.action_subscriptions_to_notifications);
+//            Navigation.findNavController(getView()).navigate(R.id.action_subscriptions_to_notifications);
+            subscriptionsFragmentListener.notificationsActive(this);
         });
     }
 
@@ -123,5 +124,6 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
 
     public interface SubscriptionsFragmentListener {
         void subscriptionsActive(SubscriptionsFragment subscriptionsFragment);
+        void notificationsActive(SubscriptionsFragment subscriptionsFragment);
     }
 }
