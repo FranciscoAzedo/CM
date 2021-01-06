@@ -4,7 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
+import androidx.fragment.app.Fragment;
+
 import com.example.christmasapp.data.model.PointOfInterest;
+import com.example.christmasapp.ui.map.MapFragment;
 import com.example.christmasapp.ui.pois.PointsOfInterestFragment;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.utils.JsonReader;
@@ -18,26 +21,32 @@ import java.util.List;
 public class ReadPointOfInterestTask extends AsyncTask<Void, Void, Void> {
 
     private List<PointOfInterest> pointOfInterestList = new ArrayList<>();
-    PointsOfInterestFragment pointsOfInterestFragment;
+    Fragment fragment;
 
-    public ReadPointOfInterestTask(PointsOfInterestFragment pointsOfInterestFragment) {
-        this.pointsOfInterestFragment = pointsOfInterestFragment;
+    public ReadPointOfInterestTask(Fragment pointsOfInterestFragment) {
+        this.fragment = pointsOfInterestFragment;
     }
 
     @Override
     protected void onPostExecute(Void arg) {
-        pointsOfInterestFragment.updatePointOfInterest(pointOfInterestList);
+        if(fragment instanceof PointsOfInterestFragment)
+            ((PointsOfInterestFragment) fragment).updatePointOfInterest(pointOfInterestList);
+        else if(fragment instanceof MapFragment)
+            ((MapFragment) fragment).fetchPOIs(pointOfInterestList);
     }
 
     @Override
     protected Void doInBackground(Void... args) {
         fetchJson();
-        try {
-            downloadImage();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        if(fragment instanceof PointsOfInterestFragment) {
+            try {
+                downloadImage();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         return null;
