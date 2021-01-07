@@ -12,9 +12,10 @@
     <ImageView
         android:id="@+id/poi_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:layout_weight="1"
         android:background="@color/empty_subscriptions_text"
+        android:scaleType="centerCrop"
         android:src="@drawable/ic_baseline_mark_email_read_24"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -58,22 +59,32 @@
             android:layout_height="20dp"
             android:text="Porto, Portugal"/>
 
-        <TextView
-            android:id="@+id/poi_description"
+        <ScrollView
+            android:id="@+id/scrollable"
             app:layout_constraintTop_toBottomOf="@id/poi_location"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:scrollbars="vertical"
             android:layout_marginTop="15dp"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:maxHeight="200dp"
-            android:textSize="@dimen/small_text_title"
-            android:textColor="@color/black"
-            android:text="As 31600 lâmpadas da àrvore de Natal de 30 metros da avenida, mesmo junto à Câmara do Porto, vão acender-se e inaugurar o epicentro dos festejos portuenses"/>
+            android:layout_height="100dp"
+            android:fillViewport="true">
+
+            <TextView
+                android:id="@+id/poi_description"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:textSize="@dimen/small_text_title"
+                android:textColor="@color/black"
+                android:text="As 31600 lâmpadas da àrvore de Natal de 30 metros da avenida, mesmo junto à Câmara do Porto, vão acender-se e inaugurar o epicentro dos festejos portuenses"/>
+
+        </ScrollView>
+
 
         <ImageView
             android:id="@+id/poi_map"
-            app:layout_constraintTop_toBottomOf="@id/poi_description"
+            app:layout_constraintTop_toBottomOf="@id/scrollable"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -83,5 +94,4 @@
             android:background="@color/background_bar"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </LinearLayout>

@@ -91,21 +91,24 @@ public abstract class Utils {
             differenceCalendar.setTime(differenceDate);
 
             if (differenceCalendar.get(Calendar.YEAR) > 1970){
-                timeValue += (differenceCalendar.get(Calendar.YEAR) - 1970) + " years ago";
+                timeValue += (differenceCalendar.get(Calendar.YEAR) - 1970) + " ano(s) atrás";
             } else {
                 if (differenceCalendar.get(Calendar.MONTH) > 0){
-                    timeValue += differenceCalendar.get(Calendar.MONTH) + " months ago";
+                    if(differenceCalendar.get(Calendar.MONTH) == 1)
+                        timeValue += differenceCalendar.get(Calendar.MONTH) + " mês atrás";
+                    else
+                        timeValue += differenceCalendar.get(Calendar.MONTH) + " meses atrás";
                 } else {
                     if (differenceCalendar.get(Calendar.DAY_OF_MONTH) > 1){
-                        timeValue += (differenceCalendar.get(Calendar.DAY_OF_MONTH) - 1) + " days ago";
+                        timeValue += (differenceCalendar.get(Calendar.DAY_OF_MONTH) - 1) + " dia(s) atrás";
                     } else {
                         if (differenceCalendar.get(Calendar.HOUR_OF_DAY) > 0){
-                            timeValue += differenceCalendar.get(Calendar.HOUR_OF_DAY) + " hours ago";
+                            timeValue += differenceCalendar.get(Calendar.HOUR_OF_DAY) + " hora(s) atrás";
                         } else {
                             if (differenceCalendar.get(Calendar.MINUTE) > 0){
-                                timeValue += differenceCalendar.get(Calendar.MINUTE) + " minutes ago";
+                                timeValue += differenceCalendar.get(Calendar.MINUTE) + " minuto(s) atrás";
                             } else {
-                                timeValue += "just now";
+                                timeValue += "mesmo agora";
                             }
                         }
                     }

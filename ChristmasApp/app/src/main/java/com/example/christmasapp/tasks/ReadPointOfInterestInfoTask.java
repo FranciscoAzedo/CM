@@ -58,7 +58,8 @@ public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
                     pointOfInterest.getName(),
                     pointOfInterest.getImageUrl(),
                     pointOfInterest.getLocation(),
-                    pointOfInterest.getBitmap()
+                    pointOfInterest.getBitmap(),
+                    pointOfInterest.getDescription()
                 )
             );
         }
@@ -69,6 +70,7 @@ public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
                     event.getImageUrl(),
                     event.getLocation(),
                     event.getBitmap(),
+                    event.getDescription(),
                     event.getOpenTime(),
                     event.getCloseTime(),
                     event.getPrice(),

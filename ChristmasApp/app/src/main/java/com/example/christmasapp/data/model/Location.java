@@ -8,6 +8,10 @@ package com.example.christmasapp.data.model;
  */
 public class Location {
     /**
+     * Represents the Location's name
+     */
+    private String name;
+    /**
      * Represents the location's latitude
      */
     private double latitude;
@@ -19,12 +23,32 @@ public class Location {
     /**
      * Constructor
      *
+     * @param name the name to be assigned to the location
      * @param latitude  the latitude to be assigned to the location
      * @param longitude the longitude to be assigned to the location
      */
-    public Location(double latitude, double longitude) {
+    public Location(String name, double latitude, double longitude) {
+        this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    /**
+     * Get location's name
+     *
+     * @return location's name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets location's name
+     *
+     * @param name the name to be assigned to the location
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

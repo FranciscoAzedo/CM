@@ -28,7 +28,10 @@ public class PointOfInterest implements Serializable {
      * Represents the POI's image URL
      */
     private String imageUrl;
-
+    /**
+     * Represents the POI's description
+     */
+    private String description;
     /**
      * Constructor
      *
@@ -36,12 +39,14 @@ public class PointOfInterest implements Serializable {
      * @param imageUrl the image URL to be assigned to the POI
      * @param location the location to be assigned to the POI
      * @param bitmap   the image bitmap to be assigned to the POI
+     * @param description the description to be assigned to the POI
      */
-    public PointOfInterest(String name, String imageUrl, Location location, Bitmap bitmap) {
+    public PointOfInterest(String name, String imageUrl, Location location, Bitmap bitmap, String description) {
         this.name = name;
         this.location = location;
         this.bitmap = bitmap;
         this.imageUrl = imageUrl;
+        this.description = description;
     }
 
     /**
@@ -81,24 +86,6 @@ public class PointOfInterest implements Serializable {
     }
 
     /**
-     * Gets POI's type
-     *
-     * @return POI's type
-     */
-//    public Type getType() {
-//        return type;
-//    }
-
-    /**
-     * Sets POI's type
-     *
-     * @param type the type to be assigned to the POI
-     */
-//    public void setType(Type type) {
-//        this.type = type;
-//    }
-
-    /**
      * Gets POI's location
      *
      * @return POI's location
@@ -134,6 +121,23 @@ public class PointOfInterest implements Serializable {
         this.bitmap = bitmap;
     }
 
+    /**
+     * Gets POI's description
+     *
+     * @return POI's description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets POI's description
+     *
+     * @param description the name to be assigned to the POI
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
     @Override
     public String toString() {
         return "PointOfInterest{" +

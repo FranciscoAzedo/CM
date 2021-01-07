@@ -14,18 +14,18 @@ import java.util.List;
 
 public class ReadPointOfInterestImageTask extends AsyncTask<Void, Void, Void> {
 
-    private List<PointOfInterest> pointOfInterestList = new ArrayList<>();
+    private PointOfInterest pointOfInterest = null;
     PointsOfInterestFragment pointsOfInterestFragment;
 
-    public ReadPointOfInterestImageTask(PointsOfInterestFragment pointsOfInterestFragment, List<PointOfInterest> pointOfInterestList) {
+    public ReadPointOfInterestImageTask(PointsOfInterestFragment pointsOfInterestFragment, PointOfInterest pointOfInterest) {
         this.pointsOfInterestFragment = pointsOfInterestFragment;
-        this.pointOfInterestList = pointOfInterestList;
+        this.pointOfInterest = pointOfInterest;
     }
 
 
     @Override
     protected void onPostExecute(Void arg) {
-        pointsOfInterestFragment.updatePointOfInterestImages(pointOfInterestList);
+        pointsOfInterestFragment.updatePointOfInterestImages(pointOfInterest);
     }
 
     @Override
@@ -39,10 +39,8 @@ public class ReadPointOfInterestImageTask extends AsyncTask<Void, Void, Void> {
     }
 
     private void downloadImage() throws IOException {
-        for (PointOfInterest pointOfInterest : pointOfInterestList) {
-            URL url = new URL(pointOfInterest.getImageUrl());
-            Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-            pointOfInterest.setBitmap(bitmap);
-        }
+        URL url = new URL(pointOfInterest.getImageUrl());
+        Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        pointOfInterest.setBitmap(bitmap);
     }
 }
