@@ -67,7 +67,13 @@ public class SharedPreferencesHelper {
 
     public void removeSharedPreference(String key, Topic topic) {
         Set<Topic> topicsSet = new HashSet<>(getSharedPreference(key));
-        topicsSet.remove(topic);
+
+        for (Topic auxTopic : topicsSet) {
+            if(auxTopic.getName().equals(topic.getName()) && auxTopic.getImageUrl().equals(topic.getImageUrl())) {
+                topicsSet.remove(auxTopic);
+                break;
+            }
+        }
         Set<String> stringSet = JsonReader.deserializeTopicList(topicsSet);
 
         SharedPreferences.Editor editor = context.getSharedPreferences(context.getString(R.string.app_name),

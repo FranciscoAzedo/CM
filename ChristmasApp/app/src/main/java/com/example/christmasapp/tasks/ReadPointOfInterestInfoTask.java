@@ -11,6 +11,7 @@ import com.example.christmasapp.ui.map.MapFragment;
 import com.example.christmasapp.ui.pois.PointsOfInterestFragment;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.utils.JsonReader;
+import com.example.christmasapp.utils.Mapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,24 +54,28 @@ public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
     }
 
     private void rawListToList(EventsAndMonumentsDTO eventsAndMonumentsDTO) {
-        for (PointOfInterest pointOfInterest : eventsAndMonumentsDTO.getPointsOfInterest()) {
-            pointOfInterestList.add( new PointOfInterest(
+        List<PointOfInterest> pointOfInterestList = Mapper.poiMapper(eventsAndMonumentsDTO.getPointsOfInterest());
+        List<Event> eventList = Mapper.eventMapper(eventsAndMonumentsDTO.getEvents());
+
+        for (PointOfInterest pointOfInterest : pointOfInterestList) {
+            this.pointOfInterestList.add( new PointOfInterest(
                     pointOfInterest.getName(),
                     pointOfInterest.getImageUrl(),
                     pointOfInterest.getLocation(),
                     pointOfInterest.getBitmap(),
-                    pointOfInterest.getDescription()
-                )
+                    pointOfInterest.getDescription(),
+                    false)
             );
         }
 
-        for (Event event : eventsAndMonumentsDTO.getEvents()) {
-            pointOfInterestList.add( new Event(
+        for (Event event : eventList) {
+            this.pointOfInterestList.add( new Event(
                     event.getName(),
                     event.getImageUrl(),
                     event.getLocation(),
                     event.getBitmap(),
                     event.getDescription(),
+                    false,
                     event.getOpenTime(),
                     event.getCloseTime(),
                     event.getPrice(),
@@ -79,6 +84,6 @@ public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
             );
         }
 
-        Collections.shuffle(pointOfInterestList);
+        Collections.shuffle(this.pointOfInterestList);
     }
 }

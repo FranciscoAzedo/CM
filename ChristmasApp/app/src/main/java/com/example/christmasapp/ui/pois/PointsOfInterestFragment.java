@@ -19,9 +19,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.christmasapp.R;
 import com.example.christmasapp.data.model.Event;
 import com.example.christmasapp.data.model.PointOfInterest;
+import com.example.christmasapp.data.model.Topic;
+import com.example.christmasapp.tasks.DeleteTopicTask;
 import com.example.christmasapp.tasks.ReadPointOfInterestImageTask;
 import com.example.christmasapp.tasks.ReadPointOfInterestInfoTask;
+import com.example.christmasapp.tasks.SaveTopicTask;
+import com.example.christmasapp.utils.Constants;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,15 +123,23 @@ public class PointsOfInterestFragment extends Fragment {
 
         poIRecyclerViewAdapter.setOnIconClickListener(index -> {
             PointOfInterest poi = searchPointOfInterestList.get(index);
+            Topic topic = new Topic(
+                 poi.getName(),
+                 poi.getImageUrl()
+            );
 
-            /* SUBSTITUTIR ISTO URGENTE! */
-            if (poi.getName().contains(".")) {
-                poi.setName(poi.getName().substring(0, poi.getName().indexOf(".")));
-                poIRecyclerViewAdapter.notifyItemChanged(index);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(Constants.TOPIC_KEY, topic);
+            bundle.putSerializable(Constants.ACTIVITY_KEY, (Serializable) getActivity());
+
+            if(poi.isSubscribed()) {
+                new DeleteTopicTask(bundle).execute();
             } else {
-                poi.setName(poi.getName() + ".");
-                poIRecyclerViewAdapter.notifyItemChanged(index);
+                new SaveTopicTask(bundle).execute();
             }
+
+            poi.setSubscribed(!poi.isSubscribed());
+            poIRecyclerViewAdapter.notifyDataSetChanged();
         });
 
         // Listener para pesquisar notas por título
@@ -176,7 +189,6 @@ public class PointsOfInterestFragment extends Fragment {
     }
 
     public interface PointsOfInterestFragmentListener {
-
         void pointsOfInterestActive(PointsOfInterestFragment pointsOfInterestFragment);
         void toMonumentDetails(PointsOfInterestFragment pointsOfInterestFragment0, PointOfInterest poi);
         void toEventDetails(PointsOfInterestFragment pointsOfInterestFragment0, PointOfInterest poi);

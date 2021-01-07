@@ -1,6 +1,8 @@
-package com.example.christmasapp.data.model;
+package com.example.christmasapp.data.model.dto;
 
 import android.graphics.Bitmap;
+
+import com.example.christmasapp.data.model.Location;
 
 import java.io.Serializable;
 
@@ -11,7 +13,7 @@ import java.io.Serializable;
  * <p>
  * The inherent methods allow the manipulation of the data.
  */
-public class PointOfInterest implements Serializable {
+public class PointOfInterestDTO implements Serializable {
     /**
      * Represents the POI's name
      */
@@ -33,25 +35,20 @@ public class PointOfInterest implements Serializable {
      */
     private String description;
     /**
-     * Represents if POI is subscribed
-     */
-    private boolean isSubscribed;
-    /**
      * Constructor
-     *  @param name     the name to be assigned to the POI
+     *
+     * @param name     the name to be assigned to the POI
      * @param imageUrl the image URL to be assigned to the POI
      * @param location the location to be assigned to the POI
      * @param bitmap   the image bitmap to be assigned to the POI
      * @param description the description to be assigned to the POI
-     * @param isSubscribed the information if POI is subscribed
      */
-    public PointOfInterest(String name, String imageUrl, Location location, Bitmap bitmap, String description, boolean isSubscribed) {
+    public PointOfInterestDTO(String name, String imageUrl, Location location, Bitmap bitmap, String description) {
         this.name = name;
         this.location = location;
         this.bitmap = bitmap;
         this.imageUrl = imageUrl;
         this.description = description;
-        this.isSubscribed = isSubscribed;
     }
 
     /**
@@ -143,16 +140,6 @@ public class PointOfInterest implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-
-
-    public boolean isSubscribed() {
-        return isSubscribed;
-    }
-
-    public void setSubscribed(boolean subscribed) {
-        isSubscribed = subscribed;
-    }
-
     @Override
     public String toString() {
         return "PointOfInterest{" +

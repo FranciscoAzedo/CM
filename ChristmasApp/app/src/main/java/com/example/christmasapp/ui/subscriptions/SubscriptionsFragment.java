@@ -66,6 +66,17 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
         subscriptionsFragmentListener.subscriptionsActive(this);
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(hidden == false) {
+            super.onResume();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(Constants.ACTIVITY_KEY, (Serializable) getActivity());
+            new ReadTopicTask(this, bundle).execute();
+        }
+    }
+
     public void updateSubscriptions(Set<Topic> topics) {
         this.topicsList.clear();
         this.topicsList.addAll(topics);

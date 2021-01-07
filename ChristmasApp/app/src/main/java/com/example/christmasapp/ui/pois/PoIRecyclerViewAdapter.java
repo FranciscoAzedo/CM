@@ -1,6 +1,7 @@
 package com.example.christmasapp.ui.pois;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,18 +56,19 @@ public class PoIRecyclerViewAdapter extends RecyclerView.Adapter<PoIRecyclerView
 
         /* SUBSTITUTIR ISTO URGENTE! */
         if (currentPOI instanceof Event) {
-            holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_go_empty));
+            if (currentPOI.isSubscribed()) {
+                holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_go_filled));
+            } else {
+                holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_go_empty));
+            }
         }
         else {
-            holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_star_empty));
+            if (currentPOI.isSubscribed()) {
+                holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_star_filled));
+            } else {
+                holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_star_empty));
+            }
         }
-//        } else if (currentPOI.getName().equals("Taberna do Tozé Leno")) {
-//            holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_go_empty));
-//        } else if (currentPOI.getName().equals("Taberna do Tozé Vitor.")) {
-//            holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_star_filled));
-//        } else if(currentPOI.getName().equals("Taberna do Tozé Leno.")) {
-//            holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_go_filled));
-//        }
 
         holder.iconView.setOnClickListener(v -> {
             iconListener.OnIconClickListener(position);
