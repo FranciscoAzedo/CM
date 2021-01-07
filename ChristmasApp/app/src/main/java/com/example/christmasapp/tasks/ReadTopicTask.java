@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.example.christmasapp.ChristmasActivity;
-import com.example.christmasapp.data.model.PointOfInterest;
 import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.helpers.SharedPreferencesHelper;
 import com.example.christmasapp.utils.Constants;
@@ -14,10 +13,7 @@ import com.example.christmasapp.helpers.MqttHelper;
 import com.example.christmasapp.ui.subscriptions.SubscriptionsFragment;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Set;
 
 public class ReadTopicTask extends AsyncTask<Void, Void, Void> {
@@ -44,7 +40,6 @@ public class ReadTopicTask extends AsyncTask<Void, Void, Void> {
             mqttHelper.subscribeToTopic(topic.getName());
 
         if (subscriptionsFragment != null) {
-            Collections.reverse(new ArrayList<>(topics));
             subscriptionsFragment.updateSubscriptions(topics);
         }
         return null;

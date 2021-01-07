@@ -65,6 +65,13 @@ public class PointsOfInterestFragment extends Fragment {
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden == false)
+            fetchPointsOfInterest();
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof PointsOfInterestFragmentListener) {
@@ -84,7 +91,6 @@ public class PointsOfInterestFragment extends Fragment {
     public void updatePointOfInterestInfo(List<PointOfInterest> pointOfInterestList) {
         this.pointOfInterestList.clear();
         this.pointOfInterestList.addAll(pointOfInterestList);
-//        this.pointOfInterestList.add(new Event("Evento teste", "", Type.EVENT, null, null));
         updateSearchPointOfInterestList();
         poIRecyclerViewAdapter.notifyDataSetChanged();
         for(PointOfInterest pointOfInterest : pointOfInterestList) {

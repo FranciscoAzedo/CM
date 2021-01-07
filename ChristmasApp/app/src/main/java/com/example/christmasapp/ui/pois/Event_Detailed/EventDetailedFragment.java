@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +14,12 @@ import android.widget.TextView;
 
 import com.example.christmasapp.R;
 import com.example.christmasapp.data.model.Event;
-import com.example.christmasapp.ui.subscriptions.SubscriptionListAdapter;
+import com.example.christmasapp.data.model.Topic;
+import com.example.christmasapp.tasks.DeleteTopicTask;
+import com.example.christmasapp.tasks.SaveTopicTask;
 import com.example.christmasapp.utils.Constants;
-import com.example.christmasapp.utils.Utils;
+
+import java.io.Serializable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +30,7 @@ public class EventDetailedFragment extends Fragment {
 
     private ImageView ivPOIImage;
     private TextView tvPOIName;
+    private ImageView ivPoIIcon;
     private TextView tvPOILocation;
     private TextView tvPOIEventDescription;
     private TextView tvPOIEventSchedule;
@@ -98,6 +101,10 @@ public class EventDetailedFragment extends Fragment {
         tvPOIName.setText(event.getName());
         tvPOILocation.setText(event.getLocation().getName());
         ivPOIImage.setImageBitmap(event.getBitmap());
+        if (event.isSubscribed())
+            ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_go_filled));
+        else
+            ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_go_empty));
     }
 
     @Override
@@ -117,6 +124,27 @@ public class EventDetailedFragment extends Fragment {
         ivPOIEventDescription  = view.findViewById(R.id.selected_description);
         ivPOIEventSchedule = view.findViewById(R.id.selected_schedule);
         ivPOIEventInfo = view.findViewById(R.id.selected_info);
+        ivPoIIcon = view.findViewById(R.id.poi_icon);
+
+        ivPoIIcon.setOnClickListener(v -> {
+            Topic topic = new Topic(
+                    event.getName(),
+                    event.getImageUrl()
+            );
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(Constants.TOPIC_KEY, topic);
+            bundle.putSerializable(Constants.ACTIVITY_KEY, (Serializable) getActivity());
+
+            if(event.isSubscribed()) {
+                new DeleteTopicTask(bundle).execute();
+                ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_go_empty));
+            } else {
+                new SaveTopicTask(bundle).execute();
+                ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_go_filled));
+            }
+            event.setSubscribed(!event.isSubscribed());
+        });
 
         tvPOIEventDescription.setOnClickListener(v -> {
             ivPOIEventDescription.setVisibility(View.VISIBLE);
@@ -183,6 +211,11 @@ public class EventDetailedFragment extends Fragment {
         tvPOIName.setText(event.getName());
         tvPOILocation.setText(event.getLocation().getName());
         ivPOIImage.setImageBitmap(event.getBitmap());
+
+        if (event.isSubscribed())
+            ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_go_filled));
+        else
+            ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_go_empty));
 
         eventDescriptionFragment = EventDescriptionFragment.newInstance();
 

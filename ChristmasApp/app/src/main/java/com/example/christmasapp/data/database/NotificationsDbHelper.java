@@ -218,7 +218,7 @@ public class NotificationsDbHelper extends SQLiteOpenHelper {
         String[] selectionArgs = {String.valueOf(notificationID)};
 
         /* Drop the correspondent row */
-        int result = db.delete(TABLE_NAME, "ID=" + notificationID, null);
+        int result = db.delete(TABLE_NAME, NotificationsContract.NotificationsEntry._ID + "=" + notificationID, null);
 
         return result != 0;
     }

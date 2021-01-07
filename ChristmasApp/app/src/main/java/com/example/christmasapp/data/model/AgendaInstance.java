@@ -1,8 +1,5 @@
 package com.example.christmasapp.data.model;
 
-import java.sql.Date;
-import java.sql.Time;
-
 /**
  * The class AgendaInstance represents a single instance on an event's agenda. It contains the
  * required data to represents each of those instances of an event's agenda and the correspondent

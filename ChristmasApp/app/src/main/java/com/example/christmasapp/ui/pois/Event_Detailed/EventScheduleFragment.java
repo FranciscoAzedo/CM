@@ -17,8 +17,6 @@ import com.example.christmasapp.data.model.AgendaInstance;
 import com.example.christmasapp.data.model.Event;
 import com.example.christmasapp.utils.Constants;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +61,6 @@ public class EventScheduleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-//        agendaInstanceList.add(new AgendaInstance("Teste", new Time(20, 0, 0), new Time(20, 20, 20), new Date(2021, 1, 1)));
         return inflater.inflate(R.layout.fragment_event_schedule, container, false);
     }
 

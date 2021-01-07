@@ -1,6 +1,5 @@
 package com.example.christmasapp.data.model.dto;
 
-import com.example.christmasapp.data.model.Event;
 
 import java.io.Serializable;
 import java.util.List;

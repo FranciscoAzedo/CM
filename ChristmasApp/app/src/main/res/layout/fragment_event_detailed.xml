@@ -36,8 +36,7 @@
             android:textStyle="bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:maxLines="2"
-            android:text="QUE BONITE"/>
+            android:maxLines="2"/>
 
         <ImageView
             android:id="@+id/poi_icon"
@@ -45,7 +44,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_baseline_event_icon_24"/>
+            android:src="@drawable/ic_go_empty"/>
 
         <TextView
             android:id="@+id/poi_location"
@@ -56,8 +55,7 @@
             android:textSize="@dimen/small_text_title"
             android:textColor="@color/black"
             android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:text="Porto, Portugal"/>
+            android:layout_height="20dp"/>
 
         <LinearLayout
             android:id="@+id/section_layout"

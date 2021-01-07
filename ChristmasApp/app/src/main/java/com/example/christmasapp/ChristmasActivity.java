@@ -1,9 +1,6 @@
 package com.example.christmasapp;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.SparseArray;
-import android.view.MenuItem;
 
 import com.example.christmasapp.data.database.NotificationsDbHelper;
 import com.example.christmasapp.data.model.PointOfInterest;
@@ -18,23 +15,14 @@ import com.example.christmasapp.ui.map.MapFragment;
 import com.example.christmasapp.ui.subscriptions.SubscriptionsFragment;
 import com.example.christmasapp.ui.pois.PointsOfInterestFragment;
 import com.example.christmasapp.ui.subscriptions.notifications.NotificationsFragment;
-import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.viven.fragmentstatemanager.FragmentStateManager;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import java.io.Serializable;
-import java.util.Map;
 
 public class ChristmasActivity extends AppCompatActivity implements NotificationManager,
         MapFragment.MapFragmentListener,
@@ -44,9 +32,6 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
                                                             Serializable {
 
     private BottomNavigationView navView;
-
-    private BadgeDrawable badgeDrawable;
-    private int notificationCounter = 0;
 
     private NotificationsFragment notificationsFragment = new NotificationsFragment();
 
@@ -63,8 +48,8 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         setContentView(R.layout.activity_main);
         navView = findViewById(R.id.nav_view);
 
-        navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);//
-//
+        navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
         changeFragment(PointsOfInterestFragment.newInstance(), PointsOfInterestFragment.class.getSimpleName(), null);
 
         /* Initialize the database singleton instance */
@@ -143,22 +128,8 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     public void notifyConnection(Bundle bundle) {
         Boolean connectionStatus = bundle.getBoolean(Constants.CONNECTION_STATUS_KEY);
 
-//        bundle.putSerializable(Constants.ACTIVITY_KEY, this);
-//        bundle.putString(Constants.TOPIC_KEY, "CM_TP_2020");
-//        new SaveTopicTask(bundle).execute();
-
         if (connectionStatus)
             updateTopicsList();
-    }
-
-    @Override
-    public void notifyNewNote(Bundle bundle) {
-
-    }
-
-    @Override
-    public void notifyUpdateNote(Bundle bundle) {
-
     }
 
     @Override
@@ -177,28 +148,9 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     }
 
     @Override
-    public void notifyLoadedNotifications(Bundle bundle) {
-
-    }
-
-    @Override
-    public void notifyLoadedTopics(Bundle bundle) {
-
-    }
-
-    @Override
     public void notifyNewTopic(Bundle bundle) {
         if (active instanceof SubscriptionsFragment)
             updateTopicsList();
-
-//        else {
-//            BadgeDrawable badgeDrawable = navView.getOrCreateBadge(R.id.navigation_subscriptions);
-//            badgeDrawable.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.badge_background));
-//            badgeDrawable.setBadgeTextColor(Color.WHITE);
-//            badgeDrawable.setMaxCharacterCount(2);
-//            badgeDrawable.setNumber(++notificationCounter);
-//            badgeDrawable.setVisible(true);
-//        }
     }
 
     @Override
@@ -210,12 +162,8 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         if (active instanceof NotificationsFragment)
             new ReadNotificationTask(notificationsFragment).execute();
         else {
-//            BadgeDrawable badgeDrawable = navView.getOrCreateBadge(R.id.navigation_notifications);
-//            badgeDrawable.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.badge_background));
-//            badgeDrawable.setBadgeTextColor(Color.WHITE);
-//            badgeDrawable.setMaxCharacterCount(2);
-//            badgeDrawable.setNumber(++notificationCounter);
-//            badgeDrawable.setVisible(true);
+            if (subscriptionsFragment != null)
+                subscriptionsFragment.addNotification();
         }
     }
 
@@ -223,8 +171,6 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     public void notificationsActive(NotificationsFragment notificationsFragment) {
         this.notificationsFragment = notificationsFragment;
         this.active = notificationsFragment;
-        notificationCounter = 0;
-//        badgeDrawable.setVisible(false);
     }
 
     @Override

@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.christmasapp.data.model.Event;
 import com.example.christmasapp.data.model.PointOfInterest;
+import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.data.model.dto.EventsAndMonumentsDTO;
+import com.example.christmasapp.helpers.SharedPreferencesHelper;
 import com.example.christmasapp.ui.map.MapFragment;
 import com.example.christmasapp.ui.pois.PointsOfInterestFragment;
 import com.example.christmasapp.utils.Constants;
@@ -16,19 +18,29 @@ import com.example.christmasapp.utils.Mapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
 
     private List<PointOfInterest> pointOfInterestList = new ArrayList<>();
-    Fragment fragment;
+    private Set<Topic> topicSet = new HashSet<>();
+    private SharedPreferencesHelper sharedPreferencesHelper;
+    private Fragment fragment;
 
     public ReadPointOfInterestInfoTask(Fragment pointsOfInterestFragment) {
         this.fragment = pointsOfInterestFragment;
+        this.sharedPreferencesHelper = SharedPreferencesHelper.getInstance(fragment.getActivity());
     }
 
     @Override
     protected void onPostExecute(Void arg) {
+        this.topicSet = sharedPreferencesHelper.getSharedPreference(Constants.SHARED_PREFERENCES_TOPIC_KEY);
+        for (PointOfInterest pointOfInterest : pointOfInterestList)
+            if (sharedPreferencesContainsPointOfInterest(pointOfInterest.getName()))
+                pointOfInterest.setSubscribed(true);
+
         if(fragment instanceof PointsOfInterestFragment)
             ((PointsOfInterestFragment) fragment).updatePointOfInterestInfo(pointOfInterestList);
         else if(fragment instanceof MapFragment)
@@ -85,5 +97,12 @@ public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
         }
 
         Collections.shuffle(this.pointOfInterestList);
+    }
+
+    private boolean sharedPreferencesContainsPointOfInterest(String name){
+        for (Topic topic : topicSet)
+            if (topic.getName().equalsIgnoreCase(name))
+                return true;
+        return false;
     }
 }

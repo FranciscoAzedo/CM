@@ -36,8 +36,7 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:text="QUE BONITE"/>
+            android:layout_height="0dp"/>
 
         <ImageView
             android:id="@+id/poi_icon"
@@ -45,7 +44,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_baseline_event_icon_24"/>
+            android:src="@drawable/ic_star_empty"/>
 
         <TextView
             android:id="@+id/poi_location"
@@ -56,8 +55,7 @@
             android:textSize="@dimen/small_text_title"
             android:textColor="@color/black"
             android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:text="Porto, Portugal"/>
+            android:layout_height="20dp"/>
 
         <ScrollView
             android:id="@+id/scrollable"
@@ -76,9 +74,7 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:textSize="@dimen/small_text_title"
-                android:textColor="@color/black"
-                android:text="As 31600 lâmpadas da àrvore de Natal de 30 metros da avenida, mesmo junto à Câmara do Porto, vão acender-se e inaugurar o epicentro dos festejos portuenses"/>
-
+                android:textColor="@color/black"/>
         </ScrollView>
 
 

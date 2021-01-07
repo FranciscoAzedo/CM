@@ -6,12 +6,10 @@ import android.content.SharedPreferences;
 import com.example.christmasapp.R;
 import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.utils.JsonReader;
-import com.example.christmasapp.utils.Utils;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
 
 public class SharedPreferencesHelper {
 
@@ -51,20 +49,6 @@ public class SharedPreferencesHelper {
         editor.apply();
     }
 
-//    public void updateSharedPreference(String key, String value) {
-//        Set<String> stringSet = new HashSet<>(getSharedPreference(key));
-//        for (String title : stringSet)
-//            if (title.contains(String.valueOf(Utils.getUUIDFromTitle(value)))) {
-//                stringSet.remove(title);
-//                stringSet.add(value);
-//                break;
-//            }
-//        SharedPreferences.Editor editor = context.getSharedPreferences(context.getString(R.string.app_name),
-//                Context.MODE_PRIVATE).edit();
-//        editor.putStringSet(key, stringSet);
-//        editor.apply();
-//    }
-
     public void removeSharedPreference(String key, Topic topic) {
         Set<Topic> topicsSet = new HashSet<>(getSharedPreference(key));
 
@@ -79,6 +63,20 @@ public class SharedPreferencesHelper {
         SharedPreferences.Editor editor = context.getSharedPreferences(context.getString(R.string.app_name),
                 Context.MODE_PRIVATE).edit();
         editor.putStringSet(key, stringSet);
+        editor.apply();
+    }
+
+    public int getNotifications(final String key) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.app_name),
+                Context.MODE_PRIVATE);
+        int sharedPreferencesResult = sharedPreferences.getInt(key, 0);
+        return sharedPreferencesResult;
+    }
+
+    public void setNotifications(String key, int notifications) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(context.getString(R.string.app_name),
+                Context.MODE_PRIVATE).edit();
+        editor.putInt(key, notifications);
         editor.apply();
     }
 }

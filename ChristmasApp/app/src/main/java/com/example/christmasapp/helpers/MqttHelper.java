@@ -137,12 +137,4 @@ public class MqttHelper implements Serializable {
             ex.printStackTrace();
         }
     }
-
-//    public void publishToTopic(String subscriptionTopic, byte[] message) {
-//        try {
-//            IMqttDeliveryToken publish = mqttAndroidClient.publish(subscriptionTopic, message, 0, true);
-//        } catch (MqttException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }

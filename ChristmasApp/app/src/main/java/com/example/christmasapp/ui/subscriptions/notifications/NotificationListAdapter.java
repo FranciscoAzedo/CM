@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.christmasapp.R;
-import com.example.christmasapp.ui.subscriptions.SubscriptionListAdapter;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.data.model.Notification;
 import com.example.christmasapp.tasks.DeleteNotificationTask;
@@ -52,16 +51,10 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationLi
     public void onBindViewHolder(@NonNull NotificationListViewHolder holder, int index) {
 
         if (notificationList.get(index).getRead()) {
-//            holder.viewListener.setBackgroundColor(Color.parseColor("#E8E8E8"));
-//            holder.tvTitle.setAlpha(0.6f);
-//            holder.tvDescription.setAlpha(0.6f);
             holder.ivNewNotification.setVisibility(View.INVISIBLE);
             holder.ivRead.setVisibility(View.GONE);
             holder.ivDelete.setVisibility(View.VISIBLE);
         } else {
-//            holder.viewListener.setBackgroundColor(Color.WHITE);
-//            holder.tvTitle.setAlpha(1);
-//            holder.tvDescription.setAlpha(1);
             holder.ivNewNotification.setVisibility(View.VISIBLE);
             holder.ivRead.setVisibility(View.VISIBLE);
             holder.ivDelete.setVisibility(View.GONE);

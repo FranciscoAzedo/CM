@@ -9,8 +9,6 @@ import com.example.christmasapp.ui.pois.PointsOfInterestFragment;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ReadPointOfInterestImageTask extends AsyncTask<Void, Void, Void> {
 
