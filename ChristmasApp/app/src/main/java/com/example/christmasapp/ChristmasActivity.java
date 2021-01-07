@@ -1,5 +1,10 @@
 package com.example.christmasapp;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -19,7 +24,11 @@ import com.example.christmasapp.ui.subscriptions.notifications.NotificationsFrag
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -27,6 +36,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 
 import java.io.Serializable;
 import java.util.Map;
+
+import static com.example.christmasapp.utils.Constants.REQUEST_LOCATION;
 
 public class ChristmasActivity extends AppCompatActivity implements NotificationManager,
         MapFragment.MapFragmentListener,
@@ -263,10 +274,10 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         NotificationsFragment notificationsFragment = (NotificationsFragment) bundle.getSerializable(Constants.NOTIFICATION_FRAGMENT_KEY);
         new ReadNotificationTask(notificationsFragment).execute();
     }
-    private void updateTopicsList(){
+    private void updateTopicsList() {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants.ACTIVITY_KEY, this);
         new ReadTopicTask(subscriptionsFragment, bundle).execute();
-    }
 
+    }
 }
