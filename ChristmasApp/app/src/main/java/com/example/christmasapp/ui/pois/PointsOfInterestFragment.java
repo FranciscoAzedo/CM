@@ -154,7 +154,7 @@ public class PointsOfInterestFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 // Atualizar o numero de notas na pesquisa
-                tvTotalPOIs.setText(searchPointOfInterestList.size() + " result(s) found");
+                tvTotalPOIs.setText(searchPointOfInterestList.size() + " resultado(s) encontrado(s)");
                 // Atualizar o Adapter
                 poIRecyclerViewAdapter.notifyDataSetChanged();
             }
@@ -168,7 +168,7 @@ public class PointsOfInterestFragment extends Fragment {
             if (poi.getName().equalsIgnoreCase(searchText) || poi.getName().toLowerCase().contains(searchText.toLowerCase()))
                 searchPointOfInterestList.add(poi);
 
-        tvTotalPOIs.setText(searchPointOfInterestList.size() + " result(s) found");
+        tvTotalPOIs.setText(searchPointOfInterestList.size() + " resultado(s) encontrado(s)");
     }
 
     private void fetchPointsOfInterest() {

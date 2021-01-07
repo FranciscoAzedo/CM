@@ -14,6 +14,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.christmasapp.R;
+import com.example.christmasapp.data.model.Event;
+import com.example.christmasapp.data.model.PointOfInterest;
+import com.example.christmasapp.utils.Constants;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +28,7 @@ public class EventInfoFragment extends Fragment {
     private TextView tvPrice;
     private TextView tvSchedule;
     private ImageView ivLocation;
+    private Event event;
 
     public EventInfoFragment() {
         // Required empty public constructor
@@ -33,6 +37,18 @@ public class EventInfoFragment extends Fragment {
     public static EventInfoFragment newInstance() {
         EventInfoFragment fragment = new EventInfoFragment();
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initArguments();
+    }
+
+    private void initArguments() {
+        if(getArguments() != null) {
+            this.event = (Event) getArguments().getSerializable(Constants.POI_OBJECT_BUNDLE);
+        }
     }
 
     @Override
@@ -57,8 +73,11 @@ public class EventInfoFragment extends Fragment {
     }
 
     private void populateView() {
-        tvPrice.setText("De borla para todos!");
-        tvSchedule.setText("É dia e noite! Isto é dia e noite!");
-        ivLocation.setBackgroundColor(Color.CYAN);
+        if(event != null) {
+            event.setPrice(10d);
+            tvPrice.setText(String.valueOf(event.getPrice()));
+            tvSchedule.setText("É dia e noite! Isto é dia e noite!");
+            ivLocation.setBackgroundColor(Color.CYAN);
+        }
     }
 }

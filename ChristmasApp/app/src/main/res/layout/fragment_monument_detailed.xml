@@ -12,9 +12,10 @@
     <ImageView
         android:id="@+id/poi_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:layout_weight="1"
         android:background="@color/empty_subscriptions_text"
+        android:scaleType="centerCrop"
         android:src="@drawable/ic_baseline_mark_email_read_24"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout

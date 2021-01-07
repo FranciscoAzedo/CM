@@ -30,7 +30,7 @@
         android:layout_marginBottom="@dimen/padding_horizontal"
         android:textSize="@dimen/small_text_title"
         android:textColor="@color/empty_subscriptions_text"
-        android:text="0 result(s) found"/>
+        android:text="0 resultado(s) encontrado(s)"/>
 
     <LinearLayout
         android:id="@+id/rl_search_bar"
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:backgroundTint="@android:color/transparent"
-            android:hint="Search Point of Interest…"
+            android:hint="Procurar por Pontos de Interesse…"
             android:inputType="text"
             android:lines="1"
             android:maxLines="1"

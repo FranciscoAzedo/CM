@@ -63,21 +63,17 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         setContentView(R.layout.activity_main);
         navView = findViewById(R.id.nav_view);
 
-        navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);//
 //
-//
-        changeFragment(PointsOfInterestFragment.newInstance(), PointsOfInterestFragment.class.getSimpleName());
+        changeFragment(PointsOfInterestFragment.newInstance(), PointsOfInterestFragment.class.getSimpleName(), null);
 
-        if(getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
         /* Initialize the database singleton instance */
         NotificationsDbHelper.getInstance(this);
         MqttHelper.getInstance(this);
         SharedPreferencesHelper.getInstance(this);
     }
 
-    public void changeFragment(Fragment fragment, String tagFragmentName) {
+    public void changeFragment(Fragment fragment, String tagFragmentName, Bundle bundle) {
 
         FragmentManager mFragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
@@ -95,6 +91,7 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
             fragmentTransaction.show(fragmentTemp);
         }
 
+        fragment.setArguments(bundle);
         fragmentTransaction.setPrimaryNavigationFragment(fragmentTemp);
         fragmentTransaction.setReorderingAllowed(true);
         fragmentTransaction.commitNowAllowingStateLoss();
@@ -107,19 +104,19 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         switch (itemID) {
             case R.id.navigation_points_of_interest:
                 changeFragment(new PointsOfInterestFragment(), PointsOfInterestFragment.class
-                        .getSimpleName());
+                        .getSimpleName(), null);
                 active = pointsOfInterestFragment;
                 return true;
 
             case R.id.navigation_map:
                 changeFragment(new MapFragment(), MapFragment.class
-                        .getSimpleName());
+                        .getSimpleName(), null);
                 active = mapFragment;
                 return true;
 
             case R.id.navigation_subscriptions:
                 changeFragment(new SubscriptionsFragment(), SubscriptionsFragment.class
-                        .getSimpleName());
+                        .getSimpleName(), null);
                 active = subscriptionsFragment;
                 return true;
         }
@@ -245,7 +242,7 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     @Override
     public void notificationsActive(SubscriptionsFragment subscriptionsFragment) {
         this.subscriptionsFragment = subscriptionsFragment;
-        changeFragment(notificationsFragment, NotificationsFragment.class.getSimpleName());
+        changeFragment(notificationsFragment, NotificationsFragment.class.getSimpleName(), null);
         this.active = notificationsFragment;
     }
 
@@ -258,7 +255,11 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     @Override
     public void toMonumentDetails(PointsOfInterestFragment pointsOfInterestFragment, PointOfInterest poi) {
         this.pointsOfInterestFragment = pointsOfInterestFragment;
-        changeFragment(monumentDetailedFragment, MonumentDetailedFragment.class.getSimpleName());
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, (Serializable) poi);
+
+        changeFragment(monumentDetailedFragment, MonumentDetailedFragment.class.getSimpleName(), bundle);
         this.active = monumentDetailedFragment;
     }
 
@@ -267,9 +268,8 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         this.pointsOfInterestFragment = pointsOfInterestFragment;
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, (Serializable) poi);
-        eventDetailedFragment.setArguments(bundle);
 
-        changeFragment(eventDetailedFragment, EventDetailedFragment.class.getSimpleName());
+        changeFragment(eventDetailedFragment, EventDetailedFragment.class.getSimpleName(), bundle);
         this.active = eventDetailedFragment;
     }
 
