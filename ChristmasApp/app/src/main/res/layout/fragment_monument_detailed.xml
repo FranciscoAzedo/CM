@@ -12,7 +12,7 @@
     <ImageView
         android:id="@+id/poi_image"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         android:layout_weight="1"
         android:background="@color/empty_subscriptions_text"
         android:scaleType="centerCrop"
@@ -32,7 +32,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/poi_icon"
             app:layout_constraintBottom_toBottomOf="@id/poi_icon"
-            android:textSize="@dimen/text_title"
+            android:textSize="@dimen/medium_text_tittle"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:layout_width="0dp"

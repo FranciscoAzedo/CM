@@ -14,7 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.christmasapp.R;
+import com.example.christmasapp.data.model.Event;
 import com.example.christmasapp.ui.subscriptions.SubscriptionListAdapter;
+import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.utils.Utils;
 
 /**
@@ -34,10 +36,11 @@ public class EventDetailedFragment extends Fragment {
     private ImageView ivPOIEventSchedule;
     private ImageView ivPOIEventInfo;
 
-    EventDescriptionFragment eventDescriptionFragment;
-    EventInfoFragment eventInfoFragment;
-    EventScheduleFragment eventScheduleFragment;
+    private EventDescriptionFragment eventDescriptionFragment;
+    private EventInfoFragment eventInfoFragment;
+    private EventScheduleFragment eventScheduleFragment;
 
+    private Event event;
 
 
     public EventDetailedFragment() {
@@ -59,6 +62,18 @@ public class EventDetailedFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initArguments();
+    }
+
+    private void initArguments() {
+        if(getArguments() != null) {
+            this.event = (Event) getArguments().getSerializable(Constants.POI_OBJECT_BUNDLE);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -68,6 +83,21 @@ public class EventDetailedFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(hidden == false) {
+            initArguments();
+            updateView();
+        }
+    }
+
+    private void updateView() {
+        tvPOIName.setText(event.getName());
+        tvPOILocation.setText(event.getLocation().getName());
+        ivPOIImage.setImageBitmap(event.getBitmap());
     }
 
     @Override
@@ -96,9 +126,9 @@ public class EventDetailedFragment extends Fragment {
             if ((eventDescriptionFragment = (EventDescriptionFragment) getChildFragmentManager().findFragmentByTag("eventDescriptionFragment")) == null)
                 eventDescriptionFragment = EventDescriptionFragment.newInstance();
 
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable(Utils.DATABASE_HELPER_KEY, noteKeeperDBHelper);
-//            noteListFragment.setArguments(bundle);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, event);
+            eventDescriptionFragment.setArguments(bundle);
 
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.event_detailed_selected_fragment, eventDescriptionFragment, "eventDescriptionFragment")
@@ -115,9 +145,9 @@ public class EventDetailedFragment extends Fragment {
             if ((eventScheduleFragment = (EventScheduleFragment) getChildFragmentManager().findFragmentByTag("eventScheduleFragment")) == null)
                 eventScheduleFragment = EventScheduleFragment.newInstance();
 
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable(Utils.DATABASE_HELPER_KEY, noteKeeperDBHelper);
-//            noteListFragment.setArguments(bundle);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, event);
+            eventScheduleFragment.setArguments(bundle);
 
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.event_detailed_selected_fragment, eventScheduleFragment, "eventScheduleFragment")
@@ -133,9 +163,9 @@ public class EventDetailedFragment extends Fragment {
             if ((eventInfoFragment = (EventInfoFragment) getChildFragmentManager().findFragmentByTag("eventInfoFragment")) == null)
                 eventInfoFragment = EventInfoFragment.newInstance();
 
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable(Utils.DATABASE_HELPER_KEY, noteKeeperDBHelper);
-//            noteListFragment.setArguments(bundle);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, event);
+            eventInfoFragment.setArguments(bundle);
 
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.event_detailed_selected_fragment, eventInfoFragment, "eventInfoFragment")
@@ -150,11 +180,15 @@ public class EventDetailedFragment extends Fragment {
         ivPOIEventSchedule.setVisibility(View.INVISIBLE);
         ivPOIEventInfo.setVisibility(View.INVISIBLE);
 
+        tvPOIName.setText(event.getName());
+        tvPOILocation.setText(event.getLocation().getName());
+        ivPOIImage.setImageBitmap(event.getBitmap());
+
         eventDescriptionFragment = EventDescriptionFragment.newInstance();
 
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable(Utils.DATABASE_HELPER_KEY, noteKeeperDBHelper);
-//            noteListFragment.setArguments(bundle);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, event);
+        eventDescriptionFragment.setArguments(bundle);
 
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.event_detailed_selected_fragment, eventDescriptionFragment, "eventDescriptionFragment")

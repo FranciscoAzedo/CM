@@ -12,6 +12,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.christmasapp.R;
+import com.example.christmasapp.data.model.Event;
 import com.example.christmasapp.data.model.PointOfInterest;
 
 import java.util.List;
@@ -53,15 +54,19 @@ public class PoIRecyclerViewAdapter extends RecyclerView.Adapter<PoIRecyclerView
         holder.imageView.setImageBitmap(currentPOI.getBitmap());
 
         /* SUBSTITUTIR ISTO URGENTE! */
-        if (currentPOI.getName().equals("Taberna do Tozé Vitor")) {
-            holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_star_empty));
-        } else if (currentPOI.getName().equals("Taberna do Tozé Leno")) {
+        if (currentPOI instanceof Event) {
             holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_go_empty));
-        } else if (currentPOI.getName().equals("Taberna do Tozé Vitor.")) {
-            holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_star_filled));
-        } else if(currentPOI.getName().equals("Taberna do Tozé Leno.")) {
-            holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_go_filled));
         }
+        else {
+            holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_star_empty));
+        }
+//        } else if (currentPOI.getName().equals("Taberna do Tozé Leno")) {
+//            holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_go_empty));
+//        } else if (currentPOI.getName().equals("Taberna do Tozé Vitor.")) {
+//            holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_star_filled));
+//        } else if(currentPOI.getName().equals("Taberna do Tozé Leno.")) {
+//            holder.iconView.setImageDrawable(context.getDrawable(R.drawable.ic_go_filled));
+//        }
 
         holder.iconView.setOnClickListener(v -> {
             iconListener.OnIconClickListener(position);

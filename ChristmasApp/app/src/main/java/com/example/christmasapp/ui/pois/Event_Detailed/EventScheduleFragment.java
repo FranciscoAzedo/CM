@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView.LayoutManager;
 
 import com.example.christmasapp.R;
 import com.example.christmasapp.data.model.AgendaInstance;
+import com.example.christmasapp.data.model.Event;
+import com.example.christmasapp.utils.Constants;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -33,6 +35,8 @@ public class EventScheduleFragment extends Fragment {
     private EventSchedulesListAdapter rvAgendaInstancesListAdapter;
     private LayoutManager rvAgendaInstancesListLayoutManager;
 
+    private Event event;
+
     public EventScheduleFragment() {
         // Required empty public constructor
     }
@@ -40,6 +44,19 @@ public class EventScheduleFragment extends Fragment {
     public static EventScheduleFragment newInstance() {
         EventScheduleFragment fragment = new EventScheduleFragment();
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initArguments();
+    }
+
+    private void initArguments() {
+        if(getArguments() != null) {
+            this.event = (Event) getArguments().getSerializable(Constants.POI_OBJECT_BUNDLE);
+            agendaInstanceList.addAll(event.getAgenda());
+        }
     }
 
     @Override
@@ -55,6 +72,15 @@ public class EventScheduleFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initViewElements(view);
         populateView();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(hidden == false) {
+            initArguments();
+            rvAgendaInstancesListAdapter.notifyDataSetChanged();
+        }
     }
 
     private void initViewElements(View view) {

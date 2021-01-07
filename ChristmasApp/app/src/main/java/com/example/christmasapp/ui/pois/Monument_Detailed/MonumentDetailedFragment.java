@@ -56,6 +56,13 @@ public class MonumentDetailedFragment extends Fragment {
         populateView();
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        initArguments();
+        populateView();
+    }
+
     private void initViewElements(View view) {
         ivPoIThumb = view.findViewById(R.id.poi_image);
         tvPoIName = view.findViewById(R.id.poi_name);

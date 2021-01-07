@@ -17,15 +17,15 @@ public class AgendaInstance {
     /**
      * Represents the agenda instance's opening time
      */
-    private Time startTime;
+    private String startTime;
     /**
      * Represents the agenda instance's closing time
      */
-    private Time endTime;
+    private String endTime;
     /**
      * Represents the agenda instance's date
      */
-    private Date date;
+    private String date;
 
     /**
      * Constructor
@@ -35,7 +35,7 @@ public class AgendaInstance {
      * @param endTime   the end time to be assigned to the agenda's instance
      * @param date      the date to be assigned to the agenda's instance
      */
-    public AgendaInstance(String title, Time startTime, Time endTime, Date date) {
+    public AgendaInstance(String title, String startTime, String endTime, String date) {
         this.title = title;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -65,7 +65,7 @@ public class AgendaInstance {
      *
      * @return agenda's instance start time
      */
-    public Time getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
@@ -74,7 +74,7 @@ public class AgendaInstance {
      *
      * @param startTime the start time to be assigned to the agenda's instance
      */
-    public void setStartTime(Time startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
@@ -83,7 +83,7 @@ public class AgendaInstance {
      *
      * @return agenda's instance end time
      */
-    public Time getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
@@ -92,7 +92,7 @@ public class AgendaInstance {
      *
      * @param endTime the end time to be assigned to the agenda's instance
      */
-    public void setEndTime(Time endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 
@@ -101,7 +101,7 @@ public class AgendaInstance {
      *
      * @return agenda's instance date
      */
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
@@ -110,7 +110,7 @@ public class AgendaInstance {
      *
      * @param date the date to be assigned to the agenda's instance
      */
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 }

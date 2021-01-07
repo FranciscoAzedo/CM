@@ -67,7 +67,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:text="@string/empty_notifications"
-        android:textSize="@dimen/text_title"
+        android:textSize="@dimen/medium_text_tittle"
         android:textColor="@color/empty_notifications_text" />
 
 </RelativeLayout>

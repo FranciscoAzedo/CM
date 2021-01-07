@@ -74,8 +74,7 @@ public class EventInfoFragment extends Fragment {
 
     private void populateView() {
         if(event != null) {
-            event.setPrice(10d);
-            tvPrice.setText(String.valueOf(event.getPrice()));
+            tvPrice.setText(String.valueOf(event.getPrice() + "€"));
             tvSchedule.setText("É dia e noite! Isto é dia e noite!");
             ivLocation.setBackgroundColor(Color.CYAN);
         }
