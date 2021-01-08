@@ -1,7 +1,11 @@
 package com.example.christmasapp.ui.subscriptions;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +25,9 @@ import com.example.christmasapp.data.model.PointOfInterest;
 import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.helpers.SharedPreferencesHelper;
 import com.example.christmasapp.tasks.ReadPointOfInterestInfoTask;
-import com.example.christmasapp.ui.pois.PointsOfInterestFragment;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.tasks.ReadTopicTask;
+import com.example.christmasapp.utils.Utils;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -43,13 +47,38 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
     private TextView tvNotificationsCount;
     private SubscriptionListAdapter rvSubscriptionsListAdapter;
     private LayoutManager rvSubscriptionsListLayoutManager;
+    private Bundle initialBundle;
 
     private List<PointOfInterest> pointOfInterestList;
 
     private int notificationCounter = 0;
 
+    // Flag indicating connectivity status
+    private boolean isNetworkAvailable = false;
+
     /* View elements */
     private ImageView ivNotificationsBell;
+
+    // Broadcast Receiver to handles connectivity changes (enabled/disabled)
+    private final BroadcastReceiver networkReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                String action = intent.getAction();
+
+                // Update connectivity flag according to the current connectivity status
+                if(!TextUtils.isEmpty(action) && action.matches("android.net.conn.CONNECTIVITY_CHANGE")) {
+                    isNetworkAvailable = Utils.isOnline(getContext());
+
+                    // Get the list of points of interest asynchronously
+                    if (isNetworkAvailable && pointOfInterestList.isEmpty() && topicsList.isEmpty()) {
+                        new ReadPointOfInterestInfoTask(SubscriptionsFragment.this).execute();
+                        new ReadTopicTask(SubscriptionsFragment.this, initialBundle).execute();
+                    }
+                }
+            }
+        }
+    };
 
     public static SubscriptionsFragment newInstance() {
         return new SubscriptionsFragment();
@@ -65,16 +94,36 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
         super.onViewCreated(view, savedInstanceState);
         initViewElements(view);
         populateView();
-        new ReadPointOfInterestInfoTask(this).execute();
+
+        // Get the list of points of interest asynchronously
+        if(isNetworkAvailable)
+            new ReadPointOfInterestInfoTask(this).execute();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(Constants.ACTIVITY_KEY, (Serializable) getActivity());
-        new ReadTopicTask(this, bundle).execute();
+
+        // Register broadcast receiver to be aware of changes on connectivity status
+        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        requireContext().registerReceiver(networkReceiver, intentFilter);
+
+        initialBundle = new Bundle();
+        initialBundle.putSerializable(Constants.ACTIVITY_KEY, (Serializable) getActivity());
+        if(isNetworkAvailable)
+            new ReadTopicTask(this, initialBundle).execute();
         subscriptionsFragmentListener.subscriptionsActive(this);
+    }
+
+    /**
+     * Unregisters broadcast receivers
+     */
+    @Override
+    public void onPause() {
+        // Unregister the broadcast receiver
+        requireContext().unregisterReceiver(networkReceiver);
+
+        super.onPause();
     }
 
     public void updateSubscriptions(List<Topic> topics) {

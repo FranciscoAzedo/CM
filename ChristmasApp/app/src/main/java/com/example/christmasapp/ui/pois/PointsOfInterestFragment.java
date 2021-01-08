@@ -63,8 +63,12 @@ public class PointsOfInterestFragment extends Fragment {
             if (intent != null) {
                 String action = intent.getAction();
 
-                if(!TextUtils.isEmpty(action) && action.matches("android.net.conn.CONNECTIVITY_CHANGE"))
+                if(!TextUtils.isEmpty(action) && action.matches("android.net.conn.CONNECTIVITY_CHANGE")) {
                     isNetworkAvailable = Utils.isOnline(getContext());
+
+                    if(isNetworkAvailable && pointOfInterestList.isEmpty())
+                        new ReadPointOfInterestInfoTask(PointsOfInterestFragment.this).execute();
+                }
             }
         }
     };

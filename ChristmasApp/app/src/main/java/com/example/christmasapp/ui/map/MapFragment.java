@@ -36,6 +36,7 @@ import com.example.christmasapp.data.model.Event;
 import com.example.christmasapp.data.model.Location;
 import com.example.christmasapp.data.model.PointOfInterest;
 import com.example.christmasapp.tasks.ReadPointOfInterestInfoTask;
+import com.example.christmasapp.utils.Utils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -94,7 +95,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private boolean isLocationPermissionGranted = false;
     // Flag indicating location's services status
     private boolean isLocationServiceEnabled = false;
-    /* [END Permissions] */
+    // Flag indicating connectivity status
+    private boolean isNetworkAvailable = false;
+    /* [END Permissions/Services] */
 
     public static MapFragment newInstance() {
         return new MapFragment();
@@ -135,6 +138,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                         // Update the interface to insert/remove the user location methods
                         updateUserLocationMethods(isLocationServiceEnabled);
                     }
+                }
+            }
+        }
+    };
+
+    // Broadcast Receiver to handles connectivity changes (enabled/disabled)
+    private final BroadcastReceiver networkReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                String action = intent.getAction();
+
+                // Update connectivity flag according to the current connectivity status
+                if(!TextUtils.isEmpty(action) && action.matches("android.net.conn.CONNECTIVITY_CHANGE")) {
+                    isNetworkAvailable = Utils.isOnline(getContext());
+
+                    // Get the list of points of interest asynchronously
+                    if (isNetworkAvailable && pointOfInterestList == null)
+                        new ReadPointOfInterestInfoTask(MapFragment.this).execute();
                 }
             }
         }
@@ -210,6 +232,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         // Register broadcast receiver to be aware of changes on location status
         IntentFilter filter = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
         requireContext().registerReceiver(gpsReceiver, filter);
+        // Register broadcast receiver to be aware of changes on connectivity status
+        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        requireContext().registerReceiver(networkReceiver, intentFilter);
 
         // Get the current location permission and service status
         isLocationPermissionGranted = isLocationsPermissionGranted();
@@ -225,8 +250,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
      */
     @Override
     public void onPause() {
-        // Unregister the broadcast receiver for changes on location status
+        // Unregister the broadcast receivers
         requireContext().unregisterReceiver(gpsReceiver);
+        requireContext().unregisterReceiver(networkReceiver);
 
         super.onPause();
     }
@@ -269,7 +295,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         getDeviceLocation();
 
         // Get the list of points of interest asynchronously
-        new ReadPointOfInterestInfoTask(this).execute();
+        if(isNetworkAvailable)
+            new ReadPointOfInterestInfoTask(this).execute();
     }
 
     /**
