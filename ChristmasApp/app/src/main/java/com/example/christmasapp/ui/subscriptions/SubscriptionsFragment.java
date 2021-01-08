@@ -120,7 +120,6 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
     }
 
     private void populateView() {
-        tvSubscriptionsEmpty.setText("Carregando Subscrições...");
         rvSubscriptionsListLayoutManager = new LinearLayoutManager(getContext());
         rvSubscriptionsList.setLayoutManager(rvSubscriptionsListLayoutManager);
         rvSubscriptionsListAdapter = new SubscriptionListAdapter(topicsList, this);
