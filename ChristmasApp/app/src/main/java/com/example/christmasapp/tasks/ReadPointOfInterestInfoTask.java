@@ -87,8 +87,7 @@ public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
                     event.getBitmap(),
                     event.getDescription(),
                     false,
-                    event.getOpenTime(),
-                    event.getCloseTime(),
+                    event.getSchedule(),
                     event.getPrice(),
                     event.getAgenda()
                 )

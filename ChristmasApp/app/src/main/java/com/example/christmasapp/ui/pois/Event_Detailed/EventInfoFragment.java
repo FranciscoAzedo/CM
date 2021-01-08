@@ -112,8 +112,8 @@ public class EventInfoFragment extends Fragment {
 
     private void populateView() {
         if(event != null) {
-            tvPrice.setText(String.valueOf(event.getPrice() + "€"));
-            tvSchedule.setText("É dia e noite! Isto é dia e noite!");
+            tvPrice.setText(event.getPrice());
+            tvSchedule.setText(event.getSchedule());
         }
     }
 }

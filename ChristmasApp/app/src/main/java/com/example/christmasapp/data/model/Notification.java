@@ -13,7 +13,7 @@ public class Notification implements Serializable {
     /**
      * Notification's identifier
      */
-    private int id;
+    private Integer id;
     /**
      * Represents the notification's title
      */
@@ -55,7 +55,7 @@ public class Notification implements Serializable {
      *
      * @return notification's identifier
      */
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -64,7 +64,7 @@ public class Notification implements Serializable {
      *
      * @param id the identifier to be assigned to the notification
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
