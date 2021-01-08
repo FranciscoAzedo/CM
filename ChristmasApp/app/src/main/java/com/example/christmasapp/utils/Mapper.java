@@ -39,8 +39,7 @@ public class Mapper {
                             event.getBitmap(),
                             event.getDescription(),
                             false,
-                            event.getOpenTime(),
-                            event.getCloseTime(),
+                            event.getSchedule(),
                             event.getPrice(),
                             event.getAgenda()
                     )

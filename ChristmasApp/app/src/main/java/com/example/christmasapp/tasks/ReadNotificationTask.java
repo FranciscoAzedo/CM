@@ -24,6 +24,7 @@ public class ReadNotificationTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... args) {
         notifications = databaseHelper.getAllNotifications();
+        Collections.sort(notifications, (o1, o2) -> o1.getId().compareTo(o2.getId()));
         Collections.reverse(notifications);
         notificationsFragment.updateNotifications(notifications);
         return null;

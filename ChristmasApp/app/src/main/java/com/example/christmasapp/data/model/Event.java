@@ -15,17 +15,13 @@ import java.util.List;
 public class Event extends PointOfInterest implements Serializable {
 
     /**
-     * Represents the opening time of the event
+     * Represents the schedule of the event
      */
-    private Time openTime;
-    /**
-     * Represents the closing time of the event
-     */
-    private Time closeTime;
+    private String schedule;
     /**
      * Represents the price to enter the event
      */
-    private double price;
+    private String price;
     /**
      * Represents the agenda of this event
      */
@@ -39,48 +35,29 @@ public class Event extends PointOfInterest implements Serializable {
      * @param location the location to be assigned to the POI
      * @param bitmap   the image bitmap to be assigned to the POI
      */
-    public Event(String name, String imageUrl, Location location, Bitmap bitmap, String description, boolean isSubscribed, Time openTime, Time closeTime, double price, List<AgendaInstance> agenda) {
+    public Event(String name, String imageUrl, Location location, Bitmap bitmap, String description, boolean isSubscribed, String schedule, String price, List<AgendaInstance> agenda) {
         super(name, imageUrl, location, bitmap, description, isSubscribed);
-        this.openTime = openTime;
-        this.closeTime = closeTime;
+        this.schedule = schedule;
         this.price = price;
         this.agenda = agenda;
     }
 
     /**
-     * Gets event's opening time
+     * Gets event's schedule
      *
-     * @return event's opening time
+     * @return event's schedule
      */
-    public Time getOpenTime() {
-        return openTime;
+    public String getSchedule() {
+        return schedule;
     }
 
     /**
-     * Sets event's opening time
+     * Sets event's schedule
      *
-     * @param openTime the opening time to be assigned to the event
+     * @param schedule the schedule be assigned to the event
      */
-    public void setOpenTime(Time openTime) {
-        this.openTime = openTime;
-    }
-
-    /**
-     * Gets event's closing time
-     *
-     * @return event's closing time
-     */
-    public Time getCloseTime() {
-        return closeTime;
-    }
-
-    /**
-     * Sets event's closing time
-     *
-     * @param closeTime the closing time to be assigned to the event
-     */
-    public void setCloseTime(Time closeTime) {
-        this.closeTime = closeTime;
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
     }
 
     /**
@@ -88,7 +65,7 @@ public class Event extends PointOfInterest implements Serializable {
      *
      * @return event's entry price
      */
-    public double getPrice() {
+    public String getPrice() {
         return price;
     }
 
@@ -97,7 +74,7 @@ public class Event extends PointOfInterest implements Serializable {
      *
      * @param price the entry price to be assigned to the event
      */
-    public void setPrice(double price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
