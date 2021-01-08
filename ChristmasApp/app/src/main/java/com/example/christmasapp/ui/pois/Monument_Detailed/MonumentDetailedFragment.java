@@ -110,13 +110,11 @@ public class MonumentDetailedFragment extends Fragment {
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (hidden == false) {
-            initArguments();
-            populateView();
-            checkIfImageExists();
-        }
+    public void onResume() {
+        super.onResume();
+        initArguments();
+        populateView();
+        checkIfImageExists();
     }
 
     private void checkIfImageExists() {

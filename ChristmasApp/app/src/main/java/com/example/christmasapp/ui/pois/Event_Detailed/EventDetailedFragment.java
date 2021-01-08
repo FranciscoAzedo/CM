@@ -93,16 +93,9 @@ public class EventDetailedFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if(hidden == false) {
-            initArguments();
-            updateView();
-            checkIfImageExists();
-        }
+        initArguments();
+        updateView();
+        checkIfImageExists();
     }
 
     private void updateView() {
