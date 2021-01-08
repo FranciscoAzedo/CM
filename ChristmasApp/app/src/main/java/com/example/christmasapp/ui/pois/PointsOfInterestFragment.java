@@ -1,6 +1,8 @@
 package com.example.christmasapp.ui.pois;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -209,6 +211,14 @@ public class PointsOfInterestFragment extends Fragment {
                 searchPointOfInterestList.add(poi);
 
         tvTotalPOIs.setText(searchPointOfInterestList.size() + " resultado(s) encontrado(s)");
+    }
+
+
+    public boolean isOnline(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        //should check null because in airplane mode it will be null
+        return (netInfo != null && netInfo.isConnected());
     }
 
     private void fetchPointsOfInterest() {

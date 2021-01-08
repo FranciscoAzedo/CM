@@ -135,14 +135,20 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
-        if (active instanceof EventDetailedFragment || active instanceof MonumentDetailedFragment)
-            if(firstFragmentClass == PointsOfInterestFragment.class)
+        // TRAULITADA
+        if(active instanceof PointsOfInterestFragment
+                || active instanceof MapFragment
+                || active instanceof SubscriptionsFragment )
+            finish();
+
+        if (active instanceof EventDetailedFragment || active instanceof MonumentDetailedFragment){
+            if (firstFragmentClass == PointsOfInterestFragment.class)
                 changeFragment(pointsOfInterestFragment, PointsOfInterestFragment.class.getSimpleName(), null);
-            else if(firstFragmentClass == MapFragment.class)
+            else if (firstFragmentClass == MapFragment.class)
                 changeFragment(mapFragment, MapFragment.class.getSimpleName(), null);
-            else if(firstFragmentClass == SubscriptionsFragment.class)
+            else if (firstFragmentClass == SubscriptionsFragment.class)
                 changeFragment(subscriptionsFragment, SubscriptionsFragment.class.getSimpleName(), null);
+        }
         else if (active instanceof NotificationsFragment)
             changeFragment(subscriptionsFragment, SubscriptionsFragment.class.getSimpleName(), null);
     }
