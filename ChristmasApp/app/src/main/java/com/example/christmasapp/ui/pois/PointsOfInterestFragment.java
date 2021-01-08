@@ -192,6 +192,7 @@ public class PointsOfInterestFragment extends Fragment {
             if(poi.isSubscribed()) {
                 new DeleteTopicTask(bundle).execute();
             } else {
+                bundle.putBoolean(Constants.MQTT_SUBSCRIBED, false);
                 new SaveTopicTask(bundle).execute();
             }
 

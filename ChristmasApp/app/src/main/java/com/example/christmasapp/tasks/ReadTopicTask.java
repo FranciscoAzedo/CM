@@ -41,7 +41,7 @@ public class ReadTopicTask extends AsyncTask<Void, Void, Void> {
         downloadImages();
 
         for (Topic topic : topics)
-            mqttHelper.subscribeToTopic(topic.getName());
+            mqttHelper.subscribeToTopic(topic, false);
 
         if (subscriptionsFragment != null) {
             subscriptionsFragment.updateSubscriptions(topics);

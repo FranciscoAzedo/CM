@@ -145,6 +145,7 @@ public class MonumentDetailedFragment extends Fragment {
                 new DeleteTopicTask(bundle).execute();
                 ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_empty));
             } else {
+                bundle.putBoolean(Constants.MQTT_SUBSCRIBED, false);
                 new SaveTopicTask(bundle).execute();
                 ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_filled));
             }

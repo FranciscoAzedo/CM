@@ -141,6 +141,7 @@ public class EventDetailedFragment extends Fragment {
                 new DeleteTopicTask(bundle).execute();
                 ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_go_empty));
             } else {
+                bundle.putBoolean(Constants.MQTT_SUBSCRIBED, false);
                 new SaveTopicTask(bundle).execute();
                 ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_go_filled));
             }

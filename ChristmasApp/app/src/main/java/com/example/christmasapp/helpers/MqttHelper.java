@@ -5,7 +5,9 @@ import android.util.Log;
 
 import com.example.christmasapp.ChristmasActivity;
 import com.example.christmasapp.NotificationManager;
+import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.data.model.dto.NotificationDTO;
+import com.example.christmasapp.tasks.SaveTopicTask;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.utils.Utils;
 import com.example.christmasapp.tasks.SaveNotificationTask;
@@ -109,11 +111,18 @@ public class MqttHelper implements Serializable {
         }
     }
 
-    public void subscribeToTopic(String subscriptionTopic) {
+    public void subscribeToTopic(Topic subscriptionTopic, boolean saveTopic) {
         try {
-            mqttAndroidClient.subscribe(subscriptionTopic, 0, null, new IMqttActionListener() {
+            mqttAndroidClient.subscribe(subscriptionTopic.getName(), 0, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
+                    if (saveTopic) {
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(Constants.TOPIC_KEY, subscriptionTopic);
+                        bundle.putSerializable(Constants.ACTIVITY_KEY, christmasActivity);
+                        bundle.putBoolean(Constants.MQTT_SUBSCRIBED, true);
+                        new SaveTopicTask(bundle).execute();
+                    }
                     Log.w("Mqtt", "Subscribed!");
                 }
 

@@ -26,16 +26,26 @@ public class SaveTopicTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPostExecute(Void arg) {
-        if (result) {
-            Topic topic = (Topic) bundle.getSerializable(Constants.TOPIC_KEY);
-            mqttHelper.subscribeToTopic(topic.getName());
-            notificationManager.notifyNewTopic(bundle);
+        Boolean subscribed = bundle.getBoolean(Constants.MQTT_SUBSCRIBED);
+        Topic topic = (Topic) bundle.getSerializable(Constants.TOPIC_KEY);
+        if (subscribed) {
+            if (result) {
+                notificationManager.notifyNewTopic(bundle);
+            } else {
+                mqttHelper.unSubscribeToTopic(topic.getName());
+            }
         }
     }
 
     @Override
     protected Void doInBackground(Void... args) {
-        result = Utils.updateTopics(Constants.CREATE_TOPIC_MODE, bundle);
+        Boolean subscribed = bundle.getBoolean(Constants.MQTT_SUBSCRIBED);
+        if (subscribed)
+            result = Utils.updateTopics(Constants.CREATE_TOPIC_MODE, bundle);
+        else{
+            Topic topic = (Topic) bundle.getSerializable(Constants.TOPIC_KEY);
+            mqttHelper.subscribeToTopic(topic, true);
+        }
         return null;
     }
 }
