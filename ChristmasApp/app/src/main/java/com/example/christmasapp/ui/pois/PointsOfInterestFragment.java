@@ -76,16 +76,14 @@ public class PointsOfInterestFragment extends Fragment {
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (hidden == false) {
-            SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(getActivity());
-            List<Topic> topicList = sharedPreferencesHelper.getSharedPreference(Constants.SHARED_PREFERENCES_TOPIC_KEY);
-            for (PointOfInterest pointOfInterest : pointOfInterestList)
-                if (!Utils.sharedPreferencesContainsPointOfInterest(pointOfInterest.getName(), topicList))
-                    pointOfInterest.setSubscribed(false);
-            poIRecyclerViewAdapter.notifyDataSetChanged();
-        }
+    public void onResume() {
+        super.onResume();
+        SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(getActivity());
+        List<Topic> topicList = sharedPreferencesHelper.getSharedPreference(Constants.SHARED_PREFERENCES_TOPIC_KEY);
+        for (PointOfInterest pointOfInterest : pointOfInterestList)
+            if (!Utils.sharedPreferencesContainsPointOfInterest(pointOfInterest.getName(), topicList))
+                pointOfInterest.setSubscribed(false);
+        poIRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     @Override

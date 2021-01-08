@@ -42,6 +42,11 @@ public class SubscriptionListAdapter extends RecyclerView.Adapter<SubscriptionLi
 
     @Override
     public void onBindViewHolder(@NonNull SubscriptionListViewHolder holder, int index) {
+
+        holder.itemView.setOnClickListener(v -> {
+            listener.onItemClick(index);
+        });
+
         holder.ivTopicCard.setImageBitmap(topicsList.get(index).getBitmap());
 
         holder.ivDelete.setOnClickListener(v -> {

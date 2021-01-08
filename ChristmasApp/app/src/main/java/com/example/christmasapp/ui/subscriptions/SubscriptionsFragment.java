@@ -16,8 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.LayoutManager;
 
 import com.example.christmasapp.R;
+import com.example.christmasapp.data.model.Event;
+import com.example.christmasapp.data.model.PointOfInterest;
 import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.helpers.SharedPreferencesHelper;
+import com.example.christmasapp.tasks.ReadPointOfInterestInfoTask;
+import com.example.christmasapp.ui.pois.PointsOfInterestFragment;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.tasks.ReadTopicTask;
 
@@ -38,6 +42,8 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
     private SubscriptionListAdapter rvSubscriptionsListAdapter;
     private LayoutManager rvSubscriptionsListLayoutManager;
 
+    private List<PointOfInterest> pointOfInterestList;
+
     private int notificationCounter = 0;
 
     /* View elements */
@@ -57,6 +63,7 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
         super.onViewCreated(view, savedInstanceState);
         initViewElements(view);
         populateView();
+        new ReadPointOfInterestInfoTask(this).execute();
     }
 
     @Override
@@ -101,6 +108,10 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
         }
     }
 
+    public void updatePointsOfInterest(List<PointOfInterest> pointOfInterestList){
+        this.pointOfInterestList.addAll(pointOfInterestList);
+    }
+
     private void initViewElements(View view) {
         /* References to View elements */
         tvSubscriptionsEmpty = view.findViewById(R.id.empty_subscriptions);
@@ -117,6 +128,7 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
             SharedPreferencesHelper.getInstance(getActivity()).setNotifications(Constants.NOTIFICATIONS_KEY,0);
             tvNotificationsCount.setVisibility(View.INVISIBLE);
         });
+        this.pointOfInterestList = new ArrayList<>();
     }
 
     private void populateView() {
@@ -124,6 +136,14 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
         rvSubscriptionsList.setLayoutManager(rvSubscriptionsListLayoutManager);
         rvSubscriptionsListAdapter = new SubscriptionListAdapter(topicsList, this);
         rvSubscriptionsList.setAdapter(rvSubscriptionsListAdapter);
+
+        rvSubscriptionsListAdapter.setOnItemClickListener(index -> {
+            PointOfInterest pointOfInterest = getPointOfInterestByName(topicsList.get(index).getName());
+            if (pointOfInterest instanceof Event)
+                subscriptionsFragmentListener.subscriptionToEventDetails(this, pointOfInterest);
+            else
+                subscriptionsFragmentListener.subscriptionToMonumentDetails(this, pointOfInterest);
+        });
 
         notificationCounter = SharedPreferencesHelper.getInstance(getActivity()).getNotifications(Constants.NOTIFICATIONS_KEY);
 
@@ -133,6 +153,13 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
             tvNotificationsCount.setVisibility(View.INVISIBLE);
             rvSubscriptionsList.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private PointOfInterest getPointOfInterestByName(String name){
+        for (PointOfInterest pointOfInterest : pointOfInterestList)
+            if (pointOfInterest.getName().equalsIgnoreCase(name))
+                return pointOfInterest;
+        return null;
     }
 
     @Override
@@ -165,5 +192,7 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
     public interface SubscriptionsFragmentListener {
         void subscriptionsActive(SubscriptionsFragment subscriptionsFragment);
         void notificationsActive(SubscriptionsFragment subscriptionsFragment);
+        void subscriptionToEventDetails(SubscriptionsFragment subscriptionsFragment, PointOfInterest pointOfInterest);
+        void subscriptionToMonumentDetails(SubscriptionsFragment subscriptionsFragment, PointOfInterest pointOfInterest);
     }
 }
