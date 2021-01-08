@@ -23,7 +23,7 @@ public class ReadPointOfInterestImageTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPostExecute(Void arg) {
-        pointsOfInterestFragment.updatePointOfInterestImages(pointOfInterest);
+        pointsOfInterestFragment.updatePointOfInterestImages();
     }
 
     @Override

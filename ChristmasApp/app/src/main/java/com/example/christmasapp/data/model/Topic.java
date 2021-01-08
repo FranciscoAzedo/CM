@@ -3,6 +3,7 @@ package com.example.christmasapp.data.model;
 import android.graphics.Bitmap;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 /**
  * The class Topic contains the required data to represent a topic that the user can subscribe in
@@ -24,6 +25,8 @@ public class Topic implements Serializable {
      */
     private Bitmap bitmap;
 
+    private Long timestamp;
+
     /**
      * Default Constructor
      */
@@ -40,6 +43,7 @@ public class Topic implements Serializable {
         this.name = name;
         this.imageUrl = imageUrl;
         this.bitmap = null;
+        timestamp = System.currentTimeMillis();
     }
 
     /**
@@ -94,5 +98,13 @@ public class Topic implements Serializable {
      */
     public void setBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 }

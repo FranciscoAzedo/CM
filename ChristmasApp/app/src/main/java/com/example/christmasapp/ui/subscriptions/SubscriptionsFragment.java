@@ -80,7 +80,7 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
         }
     }
 
-    public void updateSubscriptions(Set<Topic> topics) {
+    public void updateSubscriptions(List<Topic> topics) {
         this.topicsList.clear();
         this.topicsList.addAll(topics);
         try {

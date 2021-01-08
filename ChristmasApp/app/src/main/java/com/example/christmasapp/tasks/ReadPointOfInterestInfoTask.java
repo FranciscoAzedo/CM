@@ -14,18 +14,17 @@ import com.example.christmasapp.ui.pois.PointsOfInterestFragment;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.utils.JsonReader;
 import com.example.christmasapp.utils.Mapper;
+import com.example.christmasapp.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
 
     private List<PointOfInterest> pointOfInterestList = new ArrayList<>();
-    private Set<Topic> topicSet = new HashSet<>();
+    private List<Topic> topicList = new ArrayList<>();
     private SharedPreferencesHelper sharedPreferencesHelper;
     private Fragment fragment;
 
@@ -36,9 +35,9 @@ public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPostExecute(Void arg) {
-        this.topicSet = sharedPreferencesHelper.getSharedPreference(Constants.SHARED_PREFERENCES_TOPIC_KEY);
+        this.topicList = sharedPreferencesHelper.getSharedPreference(Constants.SHARED_PREFERENCES_TOPIC_KEY);
         for (PointOfInterest pointOfInterest : pointOfInterestList)
-            if (sharedPreferencesContainsPointOfInterest(pointOfInterest.getName()))
+            if (Utils.sharedPreferencesContainsPointOfInterest(pointOfInterest.getName(), topicList))
                 pointOfInterest.setSubscribed(true);
 
         if(fragment instanceof PointsOfInterestFragment)
@@ -97,12 +96,5 @@ public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
         }
 
         Collections.shuffle(this.pointOfInterestList);
-    }
-
-    private boolean sharedPreferencesContainsPointOfInterest(String name){
-        for (Topic topic : topicSet)
-            if (topic.getName().equalsIgnoreCase(name))
-                return true;
-        return false;
     }
 }

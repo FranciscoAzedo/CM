@@ -9,6 +9,7 @@ import com.example.christmasapp.utils.JsonReader;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class SharedPreferencesHelper {
@@ -28,14 +29,14 @@ public class SharedPreferencesHelper {
         return sharedPreferencesHelper;
     }
 
-    public Set<Topic> getSharedPreference(final String key) {
+    public List<Topic> getSharedPreference(final String key) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.app_name),
                 Context.MODE_PRIVATE);
         Set<String> sharedPreferencesResult = sharedPreferences.getStringSet(key, Collections.emptySet());
 
         if (!sharedPreferencesResult.isEmpty())
             return JsonReader.serializeTopicList(sharedPreferencesResult);
-        return Collections.emptySet();
+        return Collections.emptyList();
     }
 
     public void saveSharedPreference(String key, Topic topic) {

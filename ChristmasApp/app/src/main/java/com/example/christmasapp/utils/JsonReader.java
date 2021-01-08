@@ -10,7 +10,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class JsonReader {
@@ -28,8 +30,8 @@ public class JsonReader {
         }
     }
 
-    public static Set<Topic> serializeTopicList(Set<String> deserializedTopics){
-        Set<Topic> topicList = new HashSet<>();
+    public static List<Topic> serializeTopicList(Set<String> deserializedTopics){
+        List<Topic> topicList = new ArrayList<>();
         for (String topic : deserializedTopics)
             topicList.add(deserializeTopic(topic));
         return topicList;

@@ -13,6 +13,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 public abstract class Utils {
 
@@ -119,5 +121,12 @@ public abstract class Utils {
         }
 
         return timeValue;
+    }
+
+    public static boolean sharedPreferencesContainsPointOfInterest(String name, List<Topic> topicList){
+        for (Topic topic : topicList)
+            if (topic.getName().equalsIgnoreCase(name))
+                return true;
+        return false;
     }
 }

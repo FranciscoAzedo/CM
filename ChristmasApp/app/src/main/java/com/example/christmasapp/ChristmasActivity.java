@@ -76,7 +76,7 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
             fragmentTransaction.show(fragmentTemp);
         }
 
-        fragment.setArguments(bundle);
+        fragmentTemp.setArguments(bundle);
         fragmentTransaction.setPrimaryNavigationFragment(fragmentTemp);
         fragmentTransaction.setReorderingAllowed(true);
         fragmentTransaction.commitNowAllowingStateLoss();
