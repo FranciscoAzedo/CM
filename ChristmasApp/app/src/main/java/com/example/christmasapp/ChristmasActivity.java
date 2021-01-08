@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.christmasapp.data.database.NotificationsDbHelper;
 import com.example.christmasapp.data.model.PointOfInterest;
+import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.helpers.MqttHelper;
 import com.example.christmasapp.helpers.SharedPreferencesHelper;
 import com.example.christmasapp.tasks.ReadNotificationTask;
@@ -87,8 +88,6 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     }
 
     public void changeFragment(Fragment fragment, String tagFragmentName, Bundle bundle) {
-
-        final Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(tagFragmentName);
 
         if ((getSupportFragmentManager().findFragmentByTag(tagFragmentName)) == null) {
             if (tagFragmentName.equals(PointOfInterest.class.getSimpleName())) {
@@ -249,6 +248,24 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         this.subscriptionsFragment = subscriptionsFragment;
         changeFragment(notificationsFragment, NotificationsFragment.class.getSimpleName(), null);
         this.active = notificationsFragment;
+    }
+
+    @Override
+    public void subscriptionToEventDetails(SubscriptionsFragment subscriptionsFragment, PointOfInterest pointOfInterest) {
+        this.subscriptionsFragment = subscriptionsFragment;
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, pointOfInterest);
+        changeFragment(eventDetailedFragment, EventDetailedFragment.class.getSimpleName(), bundle);
+        this.active = eventDetailedFragment;
+    }
+
+    @Override
+    public void subscriptionToMonumentDetails(SubscriptionsFragment subscriptionsFragment, PointOfInterest pointOfInterest) {
+        this.subscriptionsFragment = subscriptionsFragment;
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, pointOfInterest);
+        changeFragment(monumentDetailedFragment, MonumentDetailedFragment.class.getSimpleName(), bundle);
+        this.active = monumentDetailedFragment;
     }
 
     @Override

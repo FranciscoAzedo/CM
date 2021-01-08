@@ -11,6 +11,7 @@ import com.example.christmasapp.data.model.dto.EventsAndMonumentsDTO;
 import com.example.christmasapp.helpers.SharedPreferencesHelper;
 import com.example.christmasapp.ui.map.MapFragment;
 import com.example.christmasapp.ui.pois.PointsOfInterestFragment;
+import com.example.christmasapp.ui.subscriptions.SubscriptionsFragment;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.utils.JsonReader;
 import com.example.christmasapp.utils.Mapper;
@@ -44,6 +45,8 @@ public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
             ((PointsOfInterestFragment) fragment).updatePointOfInterestInfo(pointOfInterestList);
         else if(fragment instanceof MapFragment)
             ((MapFragment) fragment).fetchPOIsOnMap(pointOfInterestList);
+        else if(fragment instanceof SubscriptionsFragment)
+            ((SubscriptionsFragment) fragment).updatePointsOfInterest(pointOfInterestList);
     }
 
     @Override
