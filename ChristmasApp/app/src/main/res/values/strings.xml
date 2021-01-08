@@ -8,11 +8,6 @@
     <string name="create_notification_success">Notificação criada com sucesso</string>
     <string name="create_notification_error">Ocorreu um error durante o processo de criação de notificação</string>
 
-    <string name="empty_notifications">No notifications to show</string>
-    <string name="empty_subscriptions">No subscriptions to show</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="dialog_request_location_title">Access Location</string>
     <string name="dialog_request_location_description">The Christmas App requires access to location services in order to show the current user position. Please allow the location services in order to do that.</string>
 

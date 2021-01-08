@@ -2,18 +2,28 @@ package com.example.christmasapp.ui.map;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -32,7 +42,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,33 +56,66 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                                                         GoogleMap.OnMyLocationButtonClickListener,
                                                         GoogleMap.OnMyLocationClickListener {
 
-    private GoogleMap mMap;
-    private static final int DEFAULT_ZOOM = 6;
-    // A default location (Sydney, Australia) and default zoom to use when location permission is
-    // not granted.
-    private final LatLng defaultLocation = new LatLng(39.694784, -8.130301);
-
-    private MapFragmentListener mapFragmentListener;
-
+    // List of Points of Interest represented on map
     private List<PointOfInterest> pointOfInterestList;
 
-    // The geographical location where the device is currently located. That is, the last-known
-    // location retrieved by the Fused Location Provider.
-    private android.location.Location lastKnownLocation;
-    private CameraPosition cameraPosition;
+    // Map object
+    private GoogleMap mMap;
 
-    // Keys for storing activity state.
-    // [START maps_current_place_state_keys]
+    /* [START User Location] */
+    // FusedLocationProviderClient required to get user's current location
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    // Last-known location retrieved by the Fused Location Provider
+    private android.location.Location lastKnownLocation;
+    /* [END User Location] */
+
+    /* [START Default Map Configurations] */
+    // Default level of map's zoom
+    private static final int DEFAULT_ZOOM = 6;
+    // Default location (Center of Portugal) to use when location permission is not granted
+    private final LatLng defaultLocation = new LatLng(39.694784, -8.130301);
+    /* [END Default Map Configurations] */
+
+    /* [START Storing Keys] */
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
-    // [END maps_current_place_state_keys]
+    /* [END Storing Keys] */
 
-    /**
-     * Flag indicating whether a requested permission has been denied after returning in
-     */
-    private boolean locationPermission = false;
+    // Flag indicating location's requested permission status
+    private boolean isLocationPermissionGranted = false;
+    // Flag indicating location's services status
+    private boolean isLocationServiceEnabled = false;
 
-    private FusedLocationProviderClient mFusedLocationProviderClient;
+    // Navigation listener
+    private MapFragmentListener mapFragmentListener;
+
+    // Broadcast Receiver to handles status changes (enabled/disabled) on location services
+    private final BroadcastReceiver gpsReceiver = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            if(!isLocationPermissionGranted)
+                return;
+
+            // Verify if the intent is not null
+            if(intent != null) {
+                // Get the intent's action
+                String action = intent.getAction();
+
+                // If the intent's action refers to a services location change
+                if (!TextUtils.isEmpty(action) && action.matches(LocationManager.PROVIDERS_CHANGED_ACTION)) {
+                    boolean isEnabled = getLocationServiceStatus();
+
+                    // If the isEnabled flag is different than the already settled
+                    if(isEnabled != isLocationServiceEnabled){
+                        isLocationServiceEnabled = isEnabled;
+                        // Update the interface to insert/remove the user location methods
+                        updateUserLocationMethods(isLocationServiceEnabled);
+                    }
+                }
+            }
+        }
+    };
 
     // Register the permissions callback, which handles the user's response to the
     // system permissions dialog. Save the return value, an instance of
@@ -79,16 +123,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
-                    // Permission is granted. Continue the action or workflow in your
-                    // app.
-                    locationPermission = true;
+                    // Permission granted
+                    // Set location's permission flag as true
+                    isLocationPermissionGranted = true;
+                    // Update interface to present user location, or user location button
+                    updateLocationUI();
                 } else {
-                    // Explain to the user that the feature is unavailable because the
-                    // features requires a permission that the user has denied. At the
-                    // same time, respect the user's decision. Don't link to system
-                    // settings in an effort to convince the user to change their
-                    // decision.
-                    locationPermission = false;
+                    // Permission denied
+                    // Set location's permission flag as false
+                    isLocationPermissionGranted = false;
+                    // Show dialog to warn the user about features that are unavailable because of
+                    // his decision. Always respecting the user's decision.
                     showWarningDialog(getContext());
                 }
             });
@@ -102,20 +147,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // [START_EXCLUDE silent]
-        // [START maps_current_place_on_create_save_instance_state]
-        // Retrieve location and camera position from saved instance state.
+        // Retrieve location from saved instance state
         if (savedInstanceState != null) {
             lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
-            cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
-        // [END maps_current_place_on_create_save_instance_state]
-        // [END_EXCLUDE]
 
+        // Get reference to map's view element
         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
+        // Initialize the map asynchronously
         supportMapFragment.getMapAsync(this);
 
-        // Construct a FusedLocationProviderClient.
+        // Initializing a FusedLocationProviderClient
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
     }
 
@@ -132,6 +174,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     public void onResume() {
         super.onResume();
         mapFragmentListener.mapActive(this);
+
+        IntentFilter filter = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
+        getContext().registerReceiver(gpsReceiver, filter);
+
+        isLocationPermissionGranted = isLocationsPermissionAllowed();
+        isLocationServiceEnabled = getLocationServiceStatus();
+
+        if(getLocationServiceStatus() && mMap != null)
+            updateLocationUI(); 
+
+    }
+
+    @Override
+    public void onPause() {
+        getContext().unregisterReceiver(gpsReceiver);
+        super.onPause();
     }
 
     @Override
@@ -149,6 +207,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     public void onDetach() {
         super.onDetach();
         mapFragmentListener = null;
+    }
+
+    public interface MapFragmentListener {
+        void mapActive(MapFragment mapFragment);
     }
 
     @Override
@@ -194,8 +256,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     public void fetchPOIsOnMap(List<PointOfInterest> pointOfInterestList) {
-        for (int i = 0; i < pointOfInterestList.size(); i++)
+        for (int i = 0; i < pointOfInterestList.size(); i++) {
+            // [SUBSTITUIR]
+            pointOfInterestList.get(i).getLocation().setLatitude(39.694784);
+            pointOfInterestList.get(i).getLocation().setLongitude(-8.130301);
             setPointOnMap(pointOfInterestList.get(i).getName(), pointOfInterestList.get(i).getLocation());
+        }
         //new ReadPOIImageTask(MapFragment.this, pointOfInterestList.get(i).getImageUrl(), i).execute();
     }
 
@@ -211,29 +277,64 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
         MarkerOptions marker = new MarkerOptions()
                 .position(poiLocation)
-                .title(title);
+                .title(title)
+                .icon(bitmapDescriptorFromVector(getContext()));
 
         mMap.addMarker(marker);
 
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(poiLocation));
     }
 
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context/*, @DrawableRes int vectorDrawableResourceId*/) {
+        Drawable background = ContextCompat.getDrawable(context, R.drawable.ic_poi);
+        background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
+        //Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId);
+        //vectorDrawable.setBounds(40, 20, vectorDrawable.getIntrinsicWidth() + 40, vectorDrawable.getIntrinsicHeight() + 20);
+        Bitmap bitmap = Bitmap.createBitmap(background.getIntrinsicWidth(), background.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        background.draw(canvas);
+        //vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+    private boolean getLocationServiceStatus(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // This is new method provided in API 28
+            // Obtain the reference to the Location Manager
+            LocationManager lm = getContext().getSystemService(LocationManager.class);
+            // Get the current status of location services
+            return lm != null && lm.isLocationEnabled();
+        } else {
+            // This is Deprecated in API 28
+            int mode = Settings.Secure.getInt(getContext().getContentResolver(), Settings.Secure.LOCATION_MODE,
+                    Settings.Secure.LOCATION_MODE_OFF);
+            // Get the current status of location services
+            return (mode != Settings.Secure.LOCATION_MODE_OFF);
+        }
+    }
+
+    private void updateUserLocationMethods(boolean flag){
+        Toast.makeText(getContext(), "Enabled: " + flag, Toast.LENGTH_SHORT);
+
+        try {
+            mMap.setMyLocationEnabled(flag);
+            mMap.getUiSettings().setMyLocationButtonEnabled(flag);
+        } catch (SecurityException e) {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
     private void updateLocationUI() {
         if (mMap == null) {
             return;
         }
-        try {
-            if (locationPermission) {
-                mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            } else {
-                mMap.setMyLocationEnabled(false);
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                lastKnownLocation = null;
-                granted();
-            }
-        } catch (SecurityException e) {
-            Log.e("Exception: %s", e.getMessage());
+
+        if (isLocationPermissionGranted) {
+            updateUserLocationMethods(isLocationServiceEnabled);
+        } else {
+            updateUserLocationMethods(false);
+            lastKnownLocation = null;
+            granted();
         }
     }
 
@@ -243,7 +344,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
          * cases when a location is not available.
          */
         try {
-            if (locationPermission) {
+            if (isLocationPermissionGranted) {
                 Task<android.location.Location> locationResult = mFusedLocationProviderClient.getLastLocation();
                 locationResult.addOnCompleteListener(getActivity(), (OnCompleteListener<android.location.Location>) task -> {
                     if (task.isSuccessful()) {
@@ -277,16 +378,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    public boolean isLocationsPermissionAllowed(){
+        return ContextCompat.checkSelfPermission(
+                getContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED;
+    }
+
     public void granted() {
-        if(locationPermission)
+        if(isLocationPermissionGranted)
             return;
 
-        if (ContextCompat.checkSelfPermission(
-                getContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED) {
+        if (isLocationsPermissionAllowed()) {
             // You can use the API that requires the permission.
 
-            locationPermission = true;
+            isLocationPermissionGranted = true;
             updateLocationUI();
 
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -303,10 +408,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    public interface MapFragmentListener {
-        void mapActive(MapFragment mapFragment);
-    }
-
     public void showDialog(Context context) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -319,10 +420,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         /* Setup description */
         ((TextView) dialog.findViewById(R.id.tv_permissions_description)).setText(getString(R.string.dialog_request_location_description));
 
-        TextView cancelButton = (TextView) dialog.findViewById(R.id.tv_permissions_cancel);
+        TextView cancelButton = dialog.findViewById(R.id.tv_permissions_cancel);
         cancelButton.setOnClickListener(v -> dialog.dismiss());
 
-        TextView okButton = (TextView) dialog.findViewById(R.id.tv_permissions_ok);
+        TextView okButton = dialog.findViewById(R.id.tv_permissions_ok);
         okButton.setOnClickListener(v -> {
             requestPermissionLauncher.launch(
                 Manifest.permission.ACCESS_FINE_LOCATION);
@@ -344,10 +445,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         /* Setup description */
         ((TextView) dialog.findViewById(R.id.tv_permissions_description)).setText(getString(R.string.dialog_location_denied_description));
 
-        TextView cancelButton = (TextView) dialog.findViewById(R.id.tv_permissions_cancel);
+        TextView cancelButton = dialog.findViewById(R.id.tv_permissions_cancel);
         cancelButton.setVisibility(View.GONE);
 
-        TextView okButton = (TextView) dialog.findViewById(R.id.tv_permissions_ok);
+        TextView okButton = dialog.findViewById(R.id.tv_permissions_ok);
         okButton.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
