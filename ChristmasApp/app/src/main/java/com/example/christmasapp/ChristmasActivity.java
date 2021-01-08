@@ -38,6 +38,7 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     private EventDetailedFragment eventDetailedFragment;
     private MonumentDetailedFragment monumentDetailedFragment;
     private Fragment active;
+    private Class firstFragmentClass;
 
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
@@ -111,6 +112,12 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
             }
         }
 
+        // TRAULITADA
+        if(fragment instanceof PointsOfInterestFragment
+                || fragment instanceof MapFragment
+                || fragment instanceof SubscriptionsFragment)
+            firstFragmentClass = fragment.getClass();
+
         active = fragment;
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.nav_host_fragment, fragment, tagFragmentName)
@@ -130,10 +137,12 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     public void onBackPressed() {
         //super.onBackPressed();
         if (active instanceof EventDetailedFragment || active instanceof MonumentDetailedFragment)
-            if(getSupportFragmentManager().findFragmentByTag(MapFragment.class.getSimpleName()) == null)
+            if(firstFragmentClass == PointsOfInterestFragment.class)
                 changeFragment(pointsOfInterestFragment, PointsOfInterestFragment.class.getSimpleName(), null);
-            else
+            else if(firstFragmentClass == MapFragment.class)
                 changeFragment(mapFragment, MapFragment.class.getSimpleName(), null);
+            else if(firstFragmentClass == SubscriptionsFragment.class)
+                changeFragment(subscriptionsFragment, SubscriptionsFragment.class.getSimpleName(), null);
         else if (active instanceof NotificationsFragment)
             changeFragment(subscriptionsFragment, SubscriptionsFragment.class.getSimpleName(), null);
     }
