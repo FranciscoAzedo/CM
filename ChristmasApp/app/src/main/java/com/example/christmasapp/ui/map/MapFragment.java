@@ -92,6 +92,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     // Navigation listener
     private MapFragmentListener mapFragmentListener;
 
+    public void updatePointOfInterestImages() {
+
+    }
+
+    public interface MapFragmentListener {
+        void mapActive(MapFragment mapFragment);
+        void toEventDetails(MapFragment mapFragment, PointOfInterest poi);
+        void toMonumentDetails(MapFragment mapFragment, PointOfInterest poi);
+    }
+
     // Broadcast Receiver to handles status changes (enabled/disabled) on location services
     private final BroadcastReceiver gpsReceiver = new BroadcastReceiver(){
         @Override
@@ -212,9 +222,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         mapFragmentListener = null;
     }
 
-    public interface MapFragmentListener {
-        void mapActive(MapFragment mapFragment);
-    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -228,12 +236,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
             for(int i = 0; i <pointOfInterestList.size(); i++){
                 PointOfInterest poi = pointOfInterestList.get(i);
+                new ReadPointOfInterestInfoTask(this);
 
                 if(poi.getName().equals(marketTitle)){
-                    //if (poi instanceof Event)
-                        //pointsOfInterestFragmentListener.toEventDetails(MapFragment.this, poi);
-                    //else
-                        //pointsOfInterestFragmentListener.toMonumentDetails(MapFragment.this, poi);
+                    if (poi instanceof Event)
+                        mapFragmentListener.toEventDetails(MapFragment.this, poi);
+                    else
+                        mapFragmentListener.toMonumentDetails(MapFragment.this, poi);
                 }
             }
         });

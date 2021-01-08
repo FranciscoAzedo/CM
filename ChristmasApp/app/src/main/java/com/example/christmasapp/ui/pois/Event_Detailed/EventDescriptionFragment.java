@@ -1,5 +1,7 @@
 package com.example.christmasapp.ui.pois.Event_Detailed;
 
+import android.graphics.text.LineBreaker;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.example.christmasapp.R;
@@ -54,6 +57,7 @@ public class EventDescriptionFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_event_description, container, false);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -72,6 +76,7 @@ public class EventDescriptionFragment extends Fragment {
 
     private void initViewElements(View view) {
         tvEventDescription = view.findViewById(R.id.event_description);
+//        tvEventDescription.setJustificationMode(LineBreaker.JUSTIFICATION_MODE_INTER_WORD);
     }
 
     private void populateView() {

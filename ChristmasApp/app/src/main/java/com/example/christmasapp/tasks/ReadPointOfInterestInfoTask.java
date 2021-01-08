@@ -28,9 +28,9 @@ public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
     private SharedPreferencesHelper sharedPreferencesHelper;
     private Fragment fragment;
 
-    public ReadPointOfInterestInfoTask(Fragment pointsOfInterestFragment) {
-        this.fragment = pointsOfInterestFragment;
-        this.sharedPreferencesHelper = SharedPreferencesHelper.getInstance(fragment.getActivity());
+    public ReadPointOfInterestInfoTask(Fragment fragment) {
+        this.fragment = fragment;
+        this.sharedPreferencesHelper = SharedPreferencesHelper.getInstance(this.fragment.getActivity());
     }
 
     @Override

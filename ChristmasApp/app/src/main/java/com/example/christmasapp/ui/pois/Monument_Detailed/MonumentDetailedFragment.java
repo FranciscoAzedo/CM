@@ -1,5 +1,7 @@
 package com.example.christmasapp.ui.pois.Monument_Detailed;
 
+import android.graphics.text.LineBreaker;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.example.christmasapp.R;
@@ -16,6 +19,8 @@ import com.example.christmasapp.data.model.Event;
 import com.example.christmasapp.data.model.PointOfInterest;
 import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.tasks.DeleteTopicTask;
+import com.example.christmasapp.tasks.ReadPointOfInterestImageTask;
+import com.example.christmasapp.tasks.ReadPointOfInterestInfoTask;
 import com.example.christmasapp.tasks.SaveTopicTask;
 import com.example.christmasapp.utils.Constants;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -25,6 +30,8 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
@@ -100,13 +107,23 @@ public class MonumentDetailedFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initViewElements(view);
         populateView();
+        checkIfImageExists();
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        initArguments();
-        populateView();
+        if (hidden == false) {
+            initArguments();
+            populateView();
+            checkIfImageExists();
+        }
+    }
+
+    private void checkIfImageExists() {
+        if(pointOfInterest.getBitmap() == null) {
+            new ReadPointOfInterestImageTask(this, pointOfInterest).execute();
+        }
     }
 
     private void initViewElements(View view) {
@@ -115,6 +132,7 @@ public class MonumentDetailedFragment extends Fragment {
         tvPoILocationName = view.findViewById(R.id.poi_location);
         tvPoIDescription = view.findViewById(R.id.poi_description);
         ivPoIIcon = view.findViewById(R.id.poi_icon);
+//        tvPoIDescription.setJustificationMode(LineBreaker.JUSTIFICATION_MODE_INTER_WORD);
 
         ivPoIIcon.setOnClickListener(v -> {
             Topic topic = new Topic(
@@ -148,5 +166,10 @@ public class MonumentDetailedFragment extends Fragment {
             else
                 ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_empty));
         }
+    }
+
+    public void updatePointOfInterestImages(@NotNull PointOfInterest pointOfInterest) {
+        this.pointOfInterest.setBitmap(pointOfInterest.getBitmap());
+        ivPoIThumb.setImageBitmap(this.pointOfInterest.getBitmap());
     }
 }

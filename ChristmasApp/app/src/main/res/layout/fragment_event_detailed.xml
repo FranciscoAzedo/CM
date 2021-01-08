@@ -73,7 +73,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Descrição"
-                android:textColor="@color/dark_grey"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
                 android:textAlignment="center"/>
 
             <TextView
@@ -82,7 +84,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Calendário"
-                android:textColor="@color/dark_grey"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
                 android:textAlignment="center"/>
 
             <TextView
@@ -91,7 +95,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Informações"
-                android:textColor="@color/dark_grey"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
                 android:textAlignment="center"/>
 
         </LinearLayout>

@@ -92,7 +92,7 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
                 } else {
                     rvSubscriptionsList.setVisibility(View.VISIBLE);
                     tvSubscriptionsCount.setVisibility(View.VISIBLE);
-                    tvSubscriptionsCount.setText(topicsList.size() + " subscription(s)");
+                    tvSubscriptionsCount.setText(topicsList.size() + " subscrição(ões)");
                     tvSubscriptionsEmpty.setVisibility(View.GONE);
                 }
                 rvSubscriptionsListAdapter.notifyDataSetChanged();

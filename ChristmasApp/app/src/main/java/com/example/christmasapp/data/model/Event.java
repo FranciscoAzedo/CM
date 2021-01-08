@@ -2,6 +2,7 @@ package com.example.christmasapp.data.model;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
 import java.sql.Time;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * <p>
  * The inherent methods allow the manipulation of the data.
  */
-public class Event extends PointOfInterest {
+public class Event extends PointOfInterest implements Serializable {
 
     /**
      * Represents the opening time of the event

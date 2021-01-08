@@ -14,8 +14,10 @@ import android.widget.TextView;
 
 import com.example.christmasapp.R;
 import com.example.christmasapp.data.model.Event;
+import com.example.christmasapp.data.model.PointOfInterest;
 import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.tasks.DeleteTopicTask;
+import com.example.christmasapp.tasks.ReadPointOfInterestImageTask;
 import com.example.christmasapp.tasks.SaveTopicTask;
 import com.example.christmasapp.utils.Constants;
 
@@ -68,11 +70,18 @@ public class EventDetailedFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initArguments();
+        checkIfImageExists();
     }
 
     private void initArguments() {
         if(getArguments() != null) {
             this.event = (Event) getArguments().getSerializable(Constants.POI_OBJECT_BUNDLE);
+        }
+    }
+
+    private void checkIfImageExists() {
+        if(event.getBitmap() == null) {
+            new ReadPointOfInterestImageTask(this, event).execute();
         }
     }
 
@@ -94,6 +103,7 @@ public class EventDetailedFragment extends Fragment {
         if(hidden == false) {
             initArguments();
             updateView();
+            checkIfImageExists();
         }
     }
 
@@ -227,5 +237,10 @@ public class EventDetailedFragment extends Fragment {
                 .replace(R.id.event_detailed_selected_fragment, eventDescriptionFragment, "eventDescriptionFragment")
                 .addToBackStack(null)
                 .commit();
+    }
+
+    public void updatePointOfInterestImages(PointOfInterest pointOfInterest) {
+        this.event.setBitmap(pointOfInterest.getBitmap());
+        ivPOIImage.setImageBitmap(this.event.getBitmap());
     }
 }

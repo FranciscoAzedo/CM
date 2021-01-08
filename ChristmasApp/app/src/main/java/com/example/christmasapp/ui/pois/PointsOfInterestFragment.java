@@ -64,16 +64,9 @@ public class PointsOfInterestFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        pointsOfInterestFragmentListener.pointsOfInterestActive(this);
-    }
-
-    @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (hidden == false) {
-//            fetchPointsOfInterest();
             SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(getActivity());
             List<Topic> topicList = sharedPreferencesHelper.getSharedPreference(Constants.SHARED_PREFERENCES_TOPIC_KEY);
             for (PointOfInterest pointOfInterest : pointOfInterestList)

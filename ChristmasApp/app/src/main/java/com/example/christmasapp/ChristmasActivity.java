@@ -31,33 +31,35 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         NotificationsFragment.NotificationFragmentListener,
         Serializable {
 
-    private final EventDetailedFragment eventDetailedFragment = new EventDetailedFragment();
-    private final MonumentDetailedFragment monumentDetailedFragment = new MonumentDetailedFragment();
     private BottomNavigationView navView;
+
     private NotificationsFragment notificationsFragment = new NotificationsFragment();
-    private PointsOfInterestFragment pointsOfInterestFragment;
+    private PointsOfInterestFragment pointsOfInterestFragment = new PointsOfInterestFragment();
     private MapFragment mapFragment = new MapFragment();
     private SubscriptionsFragment subscriptionsFragment = new SubscriptionsFragment();
+    private final EventDetailedFragment eventDetailedFragment = new EventDetailedFragment();
+    private final MonumentDetailedFragment monumentDetailedFragment = new MonumentDetailedFragment();
     private Fragment active = pointsOfInterestFragment;
+
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
         int itemID = item.getItemId();
 
         switch (itemID) {
             case R.id.navigation_points_of_interest:
-                changeFragment(new PointsOfInterestFragment(), PointsOfInterestFragment.class
+                changeFragment(pointsOfInterestFragment, PointsOfInterestFragment.class
                         .getSimpleName(), null);
                 active = pointsOfInterestFragment;
                 return true;
 
             case R.id.navigation_map:
-                changeFragment(new MapFragment(), MapFragment.class
+                changeFragment(mapFragment, MapFragment.class
                         .getSimpleName(), null);
                 active = mapFragment;
                 return true;
 
             case R.id.navigation_subscriptions:
-                changeFragment(new SubscriptionsFragment(), SubscriptionsFragment.class
+                changeFragment(subscriptionsFragment, SubscriptionsFragment.class
                         .getSimpleName(), null);
                 active = subscriptionsFragment;
                 return true;
@@ -174,6 +176,28 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     public void mapActive(MapFragment mapFragment) {
         this.mapFragment = mapFragment;
         this.active = mapFragment;
+    }
+
+    @Override
+    public void toEventDetails(MapFragment mapFragment, PointOfInterest poi) {
+        this.mapFragment = mapFragment;
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, poi);
+
+        changeFragment(eventDetailedFragment, EventDetailedFragment.class.getSimpleName(), bundle);
+        this.active = eventDetailedFragment;
+    }
+
+    @Override
+    public void toMonumentDetails(MapFragment mapFragment, PointOfInterest poi) {
+        this.mapFragment = mapFragment;
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, poi);
+
+        changeFragment(monumentDetailedFragment, MonumentDetailedFragment.class.getSimpleName(), bundle);
+        this.active = monumentDetailedFragment;
     }
 
     @Override
