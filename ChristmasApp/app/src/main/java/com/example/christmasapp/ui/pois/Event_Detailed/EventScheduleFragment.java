@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.RecyclerView.LayoutManager;
 
 import com.example.christmasapp.R;
 import com.example.christmasapp.data.model.AgendaInstance;
+import com.example.christmasapp.data.model.Event;
+import com.example.christmasapp.utils.Constants;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +33,8 @@ public class EventScheduleFragment extends Fragment {
     private EventSchedulesListAdapter rvAgendaInstancesListAdapter;
     private LayoutManager rvAgendaInstancesListLayoutManager;
 
+    private Event event;
+
     public EventScheduleFragment() {
         // Required empty public constructor
     }
@@ -43,10 +45,22 @@ public class EventScheduleFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initArguments();
+    }
+
+    private void initArguments() {
+        if(getArguments() != null) {
+            this.event = (Event) getArguments().getSerializable(Constants.POI_OBJECT_BUNDLE);
+            agendaInstanceList.addAll(event.getAgenda());
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-//        agendaInstanceList.add(new AgendaInstance("Teste", new Time(20, 0, 0), new Time(20, 20, 20), new Date(2021, 1, 1)));
         return inflater.inflate(R.layout.fragment_event_schedule, container, false);
     }
 
@@ -55,6 +69,15 @@ public class EventScheduleFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initViewElements(view);
         populateView();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(hidden == false) {
+            initArguments();
+            rvAgendaInstancesListAdapter.notifyDataSetChanged();
+        }
     }
 
     private void initViewElements(View view) {

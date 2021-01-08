@@ -1,25 +1,23 @@
 package com.example.christmasapp.data.model.dto;
 
-import com.example.christmasapp.data.model.Event;
-import com.example.christmasapp.data.model.PointOfInterest;
 
 import java.io.Serializable;
 import java.util.List;
 
 public class EventsAndMonumentsDTO implements Serializable {
-    List<Event> events;
-    List<PointOfInterest> pointsOfInterest;
+    List<EventDTO> events;
+    List<PointOfInterestDTO> pointsOfInterest;
 
-    public EventsAndMonumentsDTO(List<Event> events, List<PointOfInterest> pointsOfInterest) {
+    public EventsAndMonumentsDTO(List<EventDTO> events, List<PointOfInterestDTO> pointsOfInterest) {
         this.events = events;
         this.pointsOfInterest = pointsOfInterest;
     }
 
-    public List<Event> getEvents() {
+    public List<EventDTO> getEvents() {
         return events;
     }
 
-    public List<PointOfInterest> getPointsOfInterest() {
+    public List<PointOfInterestDTO> getPointsOfInterest() {
         return pointsOfInterest;
     }
 }

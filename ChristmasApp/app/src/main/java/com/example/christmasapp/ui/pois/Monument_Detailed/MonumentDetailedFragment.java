@@ -13,7 +13,12 @@ import androidx.fragment.app.Fragment;
 
 import com.example.christmasapp.R;
 import com.example.christmasapp.data.model.PointOfInterest;
+import com.example.christmasapp.data.model.Topic;
+import com.example.christmasapp.tasks.DeleteTopicTask;
+import com.example.christmasapp.tasks.SaveTopicTask;
 import com.example.christmasapp.utils.Constants;
+
+import java.io.Serializable;
 
 public class MonumentDetailedFragment extends Fragment {
 
@@ -22,6 +27,7 @@ public class MonumentDetailedFragment extends Fragment {
     private PointOfInterest pointOfInterest;
 
     private TextView tvPoIName;
+    private ImageView ivPoIIcon;
     private TextView tvPoILocationName;
     private TextView tvPoIDescription;
     private ImageView ivPoIThumb;
@@ -56,11 +62,39 @@ public class MonumentDetailedFragment extends Fragment {
         populateView();
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        initArguments();
+        populateView();
+    }
+
     private void initViewElements(View view) {
         ivPoIThumb = view.findViewById(R.id.poi_image);
         tvPoIName = view.findViewById(R.id.poi_name);
         tvPoILocationName = view.findViewById(R.id.poi_location);
         tvPoIDescription = view.findViewById(R.id.poi_description);
+        ivPoIIcon = view.findViewById(R.id.poi_icon);
+
+        ivPoIIcon.setOnClickListener(v -> {
+            Topic topic = new Topic(
+                    pointOfInterest.getName(),
+                    pointOfInterest.getImageUrl()
+            );
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(Constants.TOPIC_KEY, topic);
+            bundle.putSerializable(Constants.ACTIVITY_KEY, (Serializable) getActivity());
+
+            if(pointOfInterest.isSubscribed()) {
+                new DeleteTopicTask(bundle).execute();
+                ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_empty));
+            } else {
+                new SaveTopicTask(bundle).execute();
+                ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_filled));
+            }
+            pointOfInterest.setSubscribed(!pointOfInterest.isSubscribed());
+        });
     }
 
     private void populateView() {
@@ -69,6 +103,10 @@ public class MonumentDetailedFragment extends Fragment {
             tvPoIName.setText(pointOfInterest.getName());
             tvPoILocationName.setText(pointOfInterest.getLocation().getName());
             tvPoIDescription.setText(pointOfInterest.getDescription());
+            if (pointOfInterest.isSubscribed())
+                ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_filled));
+            else
+                ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_empty));
         }
     }
 }

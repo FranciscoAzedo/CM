@@ -46,10 +46,12 @@ public class NotificationsFragment extends Fragment implements Serializable {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        new ReadNotificationTask(this).execute();
-        notificationFragmentListener.notificationsActive(this);
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(hidden == false) {
+            new ReadNotificationTask(this).execute();
+            notificationFragmentListener.notificationsActive(this);
+        }
     }
 
     public void updateNotifications(List<Notification> notifications) {

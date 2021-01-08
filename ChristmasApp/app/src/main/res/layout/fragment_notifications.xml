@@ -31,28 +31,11 @@
         android:textSize="@dimen/small_text_title"
         android:textColor="@color/empty_subscriptions_text" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/count_new_notifications"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentTop="true"-->
-<!--        android:layout_toRightOf="@id/title_notifications"-->
-<!--        android:textStyle="bold"-->
-<!--        android:layout_marginTop="@dimen/padding_horizontal"-->
-<!--        android:paddingVertical="@dimen/padding_horizontal"-->
-<!--        android:paddingHorizontal="@dimen/square_button_back"-->
-<!--        android:background="@drawable/background_round_corner_green"-->
-<!--        android:text="99"-->
-<!--        android:textSize="@dimen/small_text_title"-->
-<!--        android:textColor="@color/white" />-->
-
-    <!-- Scroll View -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/count_notifications">
 
-        <!-- Notes Recycler View -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_notifications"
             android:layout_width="match_parent"
@@ -67,7 +50,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:text="@string/empty_notifications"
-        android:textSize="@dimen/text_title"
+        android:textSize="@dimen/medium_text_tittle"
         android:textColor="@color/empty_notifications_text" />
 
 </RelativeLayout>

@@ -11,13 +11,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.LayoutManager;
 
 import com.example.christmasapp.R;
 import com.example.christmasapp.data.model.Topic;
+import com.example.christmasapp.helpers.SharedPreferencesHelper;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.tasks.ReadTopicTask;
 
@@ -35,8 +35,11 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
     private RecyclerView rvSubscriptionsList;
     private TextView tvSubscriptionsEmpty;
     private TextView tvSubscriptionsCount;
+    private TextView tvNotificationsCount;
     private SubscriptionListAdapter rvSubscriptionsListAdapter;
     private LayoutManager rvSubscriptionsListLayoutManager;
+
+    private int notificationCounter = 0;
 
     /* View elements */
     private ImageView ivNotificationsBell;
@@ -66,7 +69,18 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
         subscriptionsFragmentListener.subscriptionsActive(this);
     }
 
-    public void updateSubscriptions(Set<Topic> topics) {
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(hidden == false) {
+            super.onResume();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(Constants.ACTIVITY_KEY, (Serializable) getActivity());
+            new ReadTopicTask(this, bundle).execute();
+        }
+    }
+
+    public void updateSubscriptions(List<Topic> topics) {
         this.topicsList.clear();
         this.topicsList.addAll(topics);
         try {
@@ -94,11 +108,15 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
         tvSubscriptionsCount = view.findViewById(R.id.count_subscriptions);
         rvSubscriptionsList = view.findViewById(R.id.recycler_subscriptions);
         ivNotificationsBell = view.findViewById(R.id.iv_notifications_bell);
+        tvNotificationsCount = view.findViewById(R.id.tv_notifications_bell_counter);
 
         /* Listener to click on the notification's bell */
         ivNotificationsBell.setOnClickListener(v -> {
 //            Navigation.findNavController(getView()).navigate(R.id.action_subscriptions_to_notifications);
             subscriptionsFragmentListener.notificationsActive(this);
+            notificationCounter = 0;
+            SharedPreferencesHelper.getInstance(getActivity()).setNotifications(Constants.NOTIFICATIONS_KEY,0);
+            tvNotificationsCount.setVisibility(View.INVISIBLE);
         });
     }
 
@@ -107,6 +125,13 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
         rvSubscriptionsList.setLayoutManager(rvSubscriptionsListLayoutManager);
         rvSubscriptionsListAdapter = new SubscriptionListAdapter(topicsList, this);
         rvSubscriptionsList.setAdapter(rvSubscriptionsListAdapter);
+
+        notificationCounter = SharedPreferencesHelper.getInstance(getActivity()).getNotifications(Constants.NOTIFICATIONS_KEY);
+
+        if (notificationCounter > 0)
+            tvNotificationsCount.setText(String.valueOf(notificationCounter));
+        else
+            tvNotificationsCount.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -124,6 +149,16 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
     public void onDetach() {
         super.onDetach();
         subscriptionsFragmentListener = null;
+    }
+
+    public void addNotification() {
+        notificationCounter++;
+        SharedPreferencesHelper.getInstance(getActivity()).setNotifications(Constants.NOTIFICATIONS_KEY,notificationCounter);
+        tvNotificationsCount.setVisibility(View.VISIBLE);
+        if (notificationCounter < 10)
+            tvNotificationsCount.setText(String.valueOf(notificationCounter));
+        else
+            tvNotificationsCount.setText("9+");
     }
 
     public interface SubscriptionsFragmentListener {

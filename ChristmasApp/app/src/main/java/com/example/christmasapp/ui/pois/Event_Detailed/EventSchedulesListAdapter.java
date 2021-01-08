@@ -32,9 +32,9 @@ public class EventSchedulesListAdapter extends RecyclerView.Adapter<EventSchedul
     public void onBindViewHolder(@NonNull EventScheduleListViewHolder holder, int index) {
 
         holder.tvAgendaInstanceName.setText(agendaInstanceList.get(index).getTitle());
-        holder.tvAgendaInstanceDate.setText(agendaInstanceList.get(index).getDate().toString());
-        holder.tvAgendaInstanceTime.setText(agendaInstanceList.get(index).getStartTime().toString() + "h - "
-                                            + agendaInstanceList.get(index).getEndTime() + "h");
+        holder.tvAgendaInstanceDate.setText(agendaInstanceList.get(index).getDate());
+        holder.tvAgendaInstanceTime.setText(agendaInstanceList.get(index).getStartTime() + " - "
+                                            + agendaInstanceList.get(index).getEndTime());
     }
 
     @Override

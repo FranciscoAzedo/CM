@@ -6,11 +6,15 @@ import androidx.fragment.app.Fragment;
 
 import com.example.christmasapp.data.model.Event;
 import com.example.christmasapp.data.model.PointOfInterest;
+import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.data.model.dto.EventsAndMonumentsDTO;
+import com.example.christmasapp.helpers.SharedPreferencesHelper;
 import com.example.christmasapp.ui.map.MapFragment;
 import com.example.christmasapp.ui.pois.PointsOfInterestFragment;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.utils.JsonReader;
+import com.example.christmasapp.utils.Mapper;
+import com.example.christmasapp.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,14 +24,22 @@ import java.util.List;
 public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
 
     private List<PointOfInterest> pointOfInterestList = new ArrayList<>();
-    Fragment fragment;
+    private List<Topic> topicList = new ArrayList<>();
+    private SharedPreferencesHelper sharedPreferencesHelper;
+    private Fragment fragment;
 
     public ReadPointOfInterestInfoTask(Fragment pointsOfInterestFragment) {
         this.fragment = pointsOfInterestFragment;
+        this.sharedPreferencesHelper = SharedPreferencesHelper.getInstance(fragment.getActivity());
     }
 
     @Override
     protected void onPostExecute(Void arg) {
+        this.topicList = sharedPreferencesHelper.getSharedPreference(Constants.SHARED_PREFERENCES_TOPIC_KEY);
+        for (PointOfInterest pointOfInterest : pointOfInterestList)
+            if (Utils.sharedPreferencesContainsPointOfInterest(pointOfInterest.getName(), topicList))
+                pointOfInterest.setSubscribed(true);
+
         if(fragment instanceof PointsOfInterestFragment)
             ((PointsOfInterestFragment) fragment).updatePointOfInterestInfo(pointOfInterestList);
         else if(fragment instanceof MapFragment)
@@ -53,24 +65,28 @@ public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
     }
 
     private void rawListToList(EventsAndMonumentsDTO eventsAndMonumentsDTO) {
-        for (PointOfInterest pointOfInterest : eventsAndMonumentsDTO.getPointsOfInterest()) {
-            pointOfInterestList.add( new PointOfInterest(
+        List<PointOfInterest> pointOfInterestList = Mapper.poiMapper(eventsAndMonumentsDTO.getPointsOfInterest());
+        List<Event> eventList = Mapper.eventMapper(eventsAndMonumentsDTO.getEvents());
+
+        for (PointOfInterest pointOfInterest : pointOfInterestList) {
+            this.pointOfInterestList.add( new PointOfInterest(
                     pointOfInterest.getName(),
                     pointOfInterest.getImageUrl(),
                     pointOfInterest.getLocation(),
                     pointOfInterest.getBitmap(),
-                    pointOfInterest.getDescription()
-                )
+                    pointOfInterest.getDescription(),
+                    false)
             );
         }
 
-        for (Event event : eventsAndMonumentsDTO.getEvents()) {
-            pointOfInterestList.add( new Event(
+        for (Event event : eventList) {
+            this.pointOfInterestList.add( new Event(
                     event.getName(),
                     event.getImageUrl(),
                     event.getLocation(),
                     event.getBitmap(),
                     event.getDescription(),
+                    false,
                     event.getOpenTime(),
                     event.getCloseTime(),
                     event.getPrice(),
@@ -79,6 +95,6 @@ public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
             );
         }
 
-        Collections.shuffle(pointOfInterestList);
+        Collections.shuffle(this.pointOfInterestList);
     }
 }

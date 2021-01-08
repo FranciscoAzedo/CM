@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.christmasapp.R;
+import com.example.christmasapp.data.model.Event;
+import com.example.christmasapp.utils.Constants;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +23,8 @@ public class EventDescriptionFragment extends Fragment {
 
    private TextView tvEventDescription;
 
+   private Event event;
+
     public EventDescriptionFragment() {
         // Required empty public constructor
     }
@@ -29,6 +33,18 @@ public class EventDescriptionFragment extends Fragment {
     public static EventDescriptionFragment newInstance() {
         EventDescriptionFragment fragment = new EventDescriptionFragment();
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initArguments();
+    }
+
+    private void initArguments() {
+        if(getArguments() != null) {
+            this.event = (Event) getArguments().getSerializable(Constants.POI_OBJECT_BUNDLE);
+        }
     }
 
     @Override
@@ -43,7 +59,15 @@ public class EventDescriptionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initViewElements(view);
         populateView();
+    }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(hidden == false) {
+            initArguments();
+            populateView();
+        }
     }
 
     private void initViewElements(View view) {
@@ -51,27 +75,6 @@ public class EventDescriptionFragment extends Fragment {
     }
 
     private void populateView() {
-        tvEventDescription.setText("ASDASD ASD ASD ASD ASD ASD SAD ASD SAD ASD ASD " +
-                "ASD ASD ASD ASD SDA ASD ASD D AS SAD ASD SAD ADS ASD  ASD ASD ASD ASD ASD " +
-                " ASD ASD ASD ASD SD ASD AD AS ASDSD A SAD SAD SAD SAD SAD SAD ASD  ASD ASD ASD " +
-                " ASD ASD ASD ADS ASD ASD D SA SAD ASD ASD ASD ASD ASD  DAS ASD ASD ASD ASD D AS" +
-                "ASD ASD ASD ASD SDA ASD ASD D AS SAD ASD SAD ADS ASD  ASD ASD ASD ASD ASD " +
-                " ASD ASD ASD ASD SD ASD AD AS ASDSD A SAD SAD SAD SAD SAD SAD ASD  ASD ASD ASD " +
-                " ASD ASD ASD ADS ASD ASD D SA SAD ASD ASD ASD ASD ASD  DAS ASD ASD ASD ASD D AS " +
-                "ASD ASD ASD ASD SDA ASD ASD D AS SAD ASD SAD ADS ASD  ASD ASD ASD ASD ASD " +
-                " ASD ASD ASD ASD SD ASD AD AS ASDSD A SAD SAD SAD SAD SAD SAD ASD  ASD ASD ASD " +
-                " ASD ASD ASD ADS ASD ASD D SA SAD ASD ASD ASD ASD ASD  DAS ASD ASD ASD ASD D AS " +
-                "ASD ASD ASD ASD SDA ASD ASD D AS SAD ASD SAD ADS ASD  ASD ASD ASD ASD ASD " +
-                " ASD ASD ASD ASD SD ASD AD AS ASDSD A SAD SAD SAD SAD SAD SAD ASD  ASD ASD ASD " +
-                " ASD ASD ASD ADS ASD ASD D SA SAD ASD ASD ASD ASD ASD  DAS ASD ASD ASD ASD D AS " +
-                "ASD ASD ASD ASD SDA ASD ASD D AS SAD ASD SAD ADS ASD  ASD ASD ASD ASD ASD " +
-                " ASD ASD ASD ASD SD ASD AD AS ASDSD A SAD SAD SAD SAD SAD SAD ASD  ASD ASD ASD " +
-                " ASD ASD ASD ADS ASD ASD D SA SAD ASD ASD ASD ASD ASD  DAS ASD ASD ASD ASD D AS " +
-                "ASD ASD ASD ASD SDA ASD ASD D AS SAD ASD SAD ADS ASD  ASD ASD ASD ASD ASD " +
-                " ASD ASD ASD ASD SD ASD AD AS ASDSD A SAD SAD SAD SAD SAD SAD ASD  ASD ASD ASD " +
-                " ASD ASD ASD ADS ASD ASD D SA SAD ASD ASD ASD ASD ASD  DAS ASD ASD ASD ASD D AS " +
-                "ASD ASD ASD ASD SDA ASD ASD D AS SAD ASD SAD ADS ASD  ASD ASD ASD ASD ASD " +
-                " ASD ASD ASD ASD SD ASD AD AS ASDSD A SAD SAD SAD SAD SAD SAD ASD  ASD ASD ASD " +
-                " ASD ASD ASD ADS ASD ASD D SA SAD ASD ASD ASD ASD ASD  DAS ASD ASD ASD ASD D AS ");
+        tvEventDescription.setText(event.getDescription());
     }
 }

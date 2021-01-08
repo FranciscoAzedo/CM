@@ -1,17 +1,13 @@
 package com.example.christmasapp.utils;
 
-import com.example.christmasapp.data.model.Event;
-import com.example.christmasapp.data.model.PointOfInterest;
 import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.data.model.dto.EventsAndMonumentsDTO;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -34,8 +30,8 @@ public class JsonReader {
         }
     }
 
-    public static Set<Topic> serializeTopicList(Set<String> deserializedTopics){
-        Set<Topic> topicList = new HashSet<>();
+    public static List<Topic> serializeTopicList(Set<String> deserializedTopics){
+        List<Topic> topicList = new ArrayList<>();
         for (String topic : deserializedTopics)
             topicList.add(deserializeTopic(topic));
         return topicList;

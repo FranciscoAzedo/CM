@@ -15,15 +15,24 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.christmasapp.R;
 import com.example.christmasapp.data.model.Event;
 import com.example.christmasapp.data.model.PointOfInterest;
+import com.example.christmasapp.data.model.Topic;
+import com.example.christmasapp.helpers.SharedPreferencesHelper;
+import com.example.christmasapp.tasks.DeleteTopicTask;
 import com.example.christmasapp.tasks.ReadPointOfInterestImageTask;
 import com.example.christmasapp.tasks.ReadPointOfInterestInfoTask;
+import com.example.christmasapp.tasks.SaveTopicTask;
+import com.example.christmasapp.utils.Constants;
+import com.example.christmasapp.utils.Utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class PointsOfInterestFragment extends Fragment {
 
@@ -32,6 +41,7 @@ public class PointsOfInterestFragment extends Fragment {
     private RecyclerView rvPOIList;
     private EditText etSearch;
     private TextView tvTotalPOIs;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private List<PointOfInterest> pointOfInterestList = new ArrayList<>();
     private List<PointOfInterest> searchPointOfInterestList = new ArrayList<>();
@@ -60,6 +70,20 @@ public class PointsOfInterestFragment extends Fragment {
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden == false) {
+//            fetchPointsOfInterest();
+            SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(getActivity());
+            List<Topic> topicList = sharedPreferencesHelper.getSharedPreference(Constants.SHARED_PREFERENCES_TOPIC_KEY);
+            for (PointOfInterest pointOfInterest : pointOfInterestList)
+                if (!Utils.sharedPreferencesContainsPointOfInterest(pointOfInterest.getName(), topicList))
+                    pointOfInterest.setSubscribed(false);
+            poIRecyclerViewAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof PointsOfInterestFragmentListener) {
@@ -79,7 +103,6 @@ public class PointsOfInterestFragment extends Fragment {
     public void updatePointOfInterestInfo(List<PointOfInterest> pointOfInterestList) {
         this.pointOfInterestList.clear();
         this.pointOfInterestList.addAll(pointOfInterestList);
-//        this.pointOfInterestList.add(new Event("Evento teste", "", Type.EVENT, null, null));
         updateSearchPointOfInterestList();
         poIRecyclerViewAdapter.notifyDataSetChanged();
         for(PointOfInterest pointOfInterest : pointOfInterestList) {
@@ -88,7 +111,7 @@ public class PointsOfInterestFragment extends Fragment {
 
     }
 
-    public void updatePointOfInterestImages(PointOfInterest pointOfInterest) {
+    public void updatePointOfInterestImages() {
         poIRecyclerViewAdapter.notifyDataSetChanged();
     }
 
@@ -97,6 +120,8 @@ public class PointsOfInterestFragment extends Fragment {
         rvPOIList = view.findViewById(R.id.recycler_view);
         etSearch = view.findViewById(R.id.et_search);
         tvTotalPOIs = view.findViewById(R.id.count_points_of_interest);
+        swipeRefreshLayout = view.findViewById(R.id.pullToRefresh);
+
     }
 
     private void populateView() {
@@ -118,15 +143,23 @@ public class PointsOfInterestFragment extends Fragment {
 
         poIRecyclerViewAdapter.setOnIconClickListener(index -> {
             PointOfInterest poi = searchPointOfInterestList.get(index);
+            Topic topic = new Topic(
+                 poi.getName(),
+                 poi.getImageUrl()
+            );
 
-            /* SUBSTITUTIR ISTO URGENTE! */
-            if (poi.getName().contains(".")) {
-                poi.setName(poi.getName().substring(0, poi.getName().indexOf(".")));
-                poIRecyclerViewAdapter.notifyItemChanged(index);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(Constants.TOPIC_KEY, topic);
+            bundle.putSerializable(Constants.ACTIVITY_KEY, (Serializable) getActivity());
+
+            if(poi.isSubscribed()) {
+                new DeleteTopicTask(bundle).execute();
             } else {
-                poi.setName(poi.getName() + ".");
-                poIRecyclerViewAdapter.notifyItemChanged(index);
+                new SaveTopicTask(bundle).execute();
             }
+
+            poi.setSubscribed(!poi.isSubscribed());
+            poIRecyclerViewAdapter.notifyDataSetChanged();
         });
 
         // Listener para pesquisar notas por título
@@ -159,6 +192,12 @@ public class PointsOfInterestFragment extends Fragment {
                 poIRecyclerViewAdapter.notifyDataSetChanged();
             }
         });
+
+        // Listener update Swipe Refresh Layout
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            fetchPointsOfInterest();
+            swipeRefreshLayout.setRefreshing(false);
+        });
     }
 
     private void updateSearchPointOfInterestList(){
@@ -176,7 +215,6 @@ public class PointsOfInterestFragment extends Fragment {
     }
 
     public interface PointsOfInterestFragmentListener {
-
         void pointsOfInterestActive(PointsOfInterestFragment pointsOfInterestFragment);
         void toMonumentDetails(PointsOfInterestFragment pointsOfInterestFragment0, PointOfInterest poi);
         void toEventDetails(PointsOfInterestFragment pointsOfInterestFragment0, PointOfInterest poi);

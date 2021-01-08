@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.example.christmasapp.ChristmasActivity;
-import com.example.christmasapp.data.model.PointOfInterest;
 import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.helpers.SharedPreferencesHelper;
 import com.example.christmasapp.utils.Constants;
@@ -14,10 +13,9 @@ import com.example.christmasapp.helpers.MqttHelper;
 import com.example.christmasapp.ui.subscriptions.SubscriptionsFragment;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public class ReadTopicTask extends AsyncTask<Void, Void, Void> {
@@ -26,7 +24,7 @@ public class ReadTopicTask extends AsyncTask<Void, Void, Void> {
     private final SubscriptionsFragment subscriptionsFragment;
     private final MqttHelper mqttHelper;
 
-    private Set<Topic> topics;
+    private List<Topic> topics;
 
     public ReadTopicTask(SubscriptionsFragment subscriptionsFragment, Bundle bundle) {
         this.sharedPreferencesHelper = SharedPreferencesHelper.getInstance(null);
@@ -37,6 +35,8 @@ public class ReadTopicTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... args) {
         topics = sharedPreferencesHelper.getSharedPreference(Constants.SHARED_PREFERENCES_TOPIC_KEY);
+        Collections.sort(topics, (o1, o2) -> o1.getTimestamp().compareTo(o2.getTimestamp()));
+        Collections.reverse(topics);
 
         downloadImages();
 
@@ -44,7 +44,6 @@ public class ReadTopicTask extends AsyncTask<Void, Void, Void> {
             mqttHelper.subscribeToTopic(topic.getName());
 
         if (subscriptionsFragment != null) {
-            Collections.reverse(new ArrayList<>(topics));
             subscriptionsFragment.updateSubscriptions(topics);
         }
         return null;

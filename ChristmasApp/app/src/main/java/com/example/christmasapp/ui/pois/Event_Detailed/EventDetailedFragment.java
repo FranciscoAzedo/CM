@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.christmasapp.R;
-import com.example.christmasapp.ui.subscriptions.SubscriptionListAdapter;
-import com.example.christmasapp.utils.Utils;
+import com.example.christmasapp.data.model.Event;
+import com.example.christmasapp.data.model.Topic;
+import com.example.christmasapp.tasks.DeleteTopicTask;
+import com.example.christmasapp.tasks.SaveTopicTask;
+import com.example.christmasapp.utils.Constants;
+
+import java.io.Serializable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +30,7 @@ public class EventDetailedFragment extends Fragment {
 
     private ImageView ivPOIImage;
     private TextView tvPOIName;
+    private ImageView ivPoIIcon;
     private TextView tvPOILocation;
     private TextView tvPOIEventDescription;
     private TextView tvPOIEventSchedule;
@@ -34,10 +39,11 @@ public class EventDetailedFragment extends Fragment {
     private ImageView ivPOIEventSchedule;
     private ImageView ivPOIEventInfo;
 
-    EventDescriptionFragment eventDescriptionFragment;
-    EventInfoFragment eventInfoFragment;
-    EventScheduleFragment eventScheduleFragment;
+    private EventDescriptionFragment eventDescriptionFragment;
+    private EventInfoFragment eventInfoFragment;
+    private EventScheduleFragment eventScheduleFragment;
 
+    private Event event;
 
 
     public EventDetailedFragment() {
@@ -59,6 +65,18 @@ public class EventDetailedFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initArguments();
+    }
+
+    private void initArguments() {
+        if(getArguments() != null) {
+            this.event = (Event) getArguments().getSerializable(Constants.POI_OBJECT_BUNDLE);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -68,6 +86,25 @@ public class EventDetailedFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(hidden == false) {
+            initArguments();
+            updateView();
+        }
+    }
+
+    private void updateView() {
+        tvPOIName.setText(event.getName());
+        tvPOILocation.setText(event.getLocation().getName());
+        ivPOIImage.setImageBitmap(event.getBitmap());
+        if (event.isSubscribed())
+            ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_go_filled));
+        else
+            ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_go_empty));
     }
 
     @Override
@@ -87,6 +124,27 @@ public class EventDetailedFragment extends Fragment {
         ivPOIEventDescription  = view.findViewById(R.id.selected_description);
         ivPOIEventSchedule = view.findViewById(R.id.selected_schedule);
         ivPOIEventInfo = view.findViewById(R.id.selected_info);
+        ivPoIIcon = view.findViewById(R.id.poi_icon);
+
+        ivPoIIcon.setOnClickListener(v -> {
+            Topic topic = new Topic(
+                    event.getName(),
+                    event.getImageUrl()
+            );
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(Constants.TOPIC_KEY, topic);
+            bundle.putSerializable(Constants.ACTIVITY_KEY, (Serializable) getActivity());
+
+            if(event.isSubscribed()) {
+                new DeleteTopicTask(bundle).execute();
+                ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_go_empty));
+            } else {
+                new SaveTopicTask(bundle).execute();
+                ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_go_filled));
+            }
+            event.setSubscribed(!event.isSubscribed());
+        });
 
         tvPOIEventDescription.setOnClickListener(v -> {
             ivPOIEventDescription.setVisibility(View.VISIBLE);
@@ -96,9 +154,9 @@ public class EventDetailedFragment extends Fragment {
             if ((eventDescriptionFragment = (EventDescriptionFragment) getChildFragmentManager().findFragmentByTag("eventDescriptionFragment")) == null)
                 eventDescriptionFragment = EventDescriptionFragment.newInstance();
 
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable(Utils.DATABASE_HELPER_KEY, noteKeeperDBHelper);
-//            noteListFragment.setArguments(bundle);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, event);
+            eventDescriptionFragment.setArguments(bundle);
 
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.event_detailed_selected_fragment, eventDescriptionFragment, "eventDescriptionFragment")
@@ -115,9 +173,9 @@ public class EventDetailedFragment extends Fragment {
             if ((eventScheduleFragment = (EventScheduleFragment) getChildFragmentManager().findFragmentByTag("eventScheduleFragment")) == null)
                 eventScheduleFragment = EventScheduleFragment.newInstance();
 
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable(Utils.DATABASE_HELPER_KEY, noteKeeperDBHelper);
-//            noteListFragment.setArguments(bundle);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, event);
+            eventScheduleFragment.setArguments(bundle);
 
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.event_detailed_selected_fragment, eventScheduleFragment, "eventScheduleFragment")
@@ -133,9 +191,9 @@ public class EventDetailedFragment extends Fragment {
             if ((eventInfoFragment = (EventInfoFragment) getChildFragmentManager().findFragmentByTag("eventInfoFragment")) == null)
                 eventInfoFragment = EventInfoFragment.newInstance();
 
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable(Utils.DATABASE_HELPER_KEY, noteKeeperDBHelper);
-//            noteListFragment.setArguments(bundle);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, event);
+            eventInfoFragment.setArguments(bundle);
 
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.event_detailed_selected_fragment, eventInfoFragment, "eventInfoFragment")
@@ -150,11 +208,20 @@ public class EventDetailedFragment extends Fragment {
         ivPOIEventSchedule.setVisibility(View.INVISIBLE);
         ivPOIEventInfo.setVisibility(View.INVISIBLE);
 
+        tvPOIName.setText(event.getName());
+        tvPOILocation.setText(event.getLocation().getName());
+        ivPOIImage.setImageBitmap(event.getBitmap());
+
+        if (event.isSubscribed())
+            ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_go_filled));
+        else
+            ivPoIIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_go_empty));
+
         eventDescriptionFragment = EventDescriptionFragment.newInstance();
 
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable(Utils.DATABASE_HELPER_KEY, noteKeeperDBHelper);
-//            noteListFragment.setArguments(bundle);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, event);
+        eventDescriptionFragment.setArguments(bundle);
 
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.event_detailed_selected_fragment, eventDescriptionFragment, "eventDescriptionFragment")

@@ -11,11 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.christmasapp.R;
 import com.example.christmasapp.data.model.Event;
-import com.example.christmasapp.data.model.PointOfInterest;
 import com.example.christmasapp.utils.Constants;
 
 /**
@@ -74,8 +72,7 @@ public class EventInfoFragment extends Fragment {
 
     private void populateView() {
         if(event != null) {
-            event.setPrice(10d);
-            tvPrice.setText(String.valueOf(event.getPrice()));
+            tvPrice.setText(String.valueOf(event.getPrice() + "€"));
             tvSchedule.setText("É dia e noite! Isto é dia e noite!");
             ivLocation.setBackgroundColor(Color.CYAN);
         }
