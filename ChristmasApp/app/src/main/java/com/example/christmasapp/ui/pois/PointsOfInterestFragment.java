@@ -98,6 +98,11 @@ public class PointsOfInterestFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        // Register broadcast receiver to be aware of changes on connectivity status
+        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        getContext().registerReceiver(networkReceiver, intentFilter);
+
         SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(getActivity());
         List<Topic> topicList = sharedPreferencesHelper.getSharedPreference(Constants.SHARED_PREFERENCES_TOPIC_KEY);
         for (PointOfInterest pointOfInterest : pointOfInterestList)
@@ -121,15 +126,6 @@ public class PointsOfInterestFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         pointsOfInterestFragmentListener = null;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // Register broadcast receiver to be aware of changes on connectivity status
-        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-        getContext().registerReceiver(networkReceiver, intentFilter);
     }
 
     @Override
