@@ -43,7 +43,7 @@ public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
         if(fragment instanceof PointsOfInterestFragment)
             ((PointsOfInterestFragment) fragment).updatePointOfInterestInfo(pointOfInterestList);
         else if(fragment instanceof MapFragment)
-            ((MapFragment) fragment).fetchPOIs(pointOfInterestList);
+            ((MapFragment) fragment).fetchPOIsOnMap(pointOfInterestList);
     }
 
     @Override
