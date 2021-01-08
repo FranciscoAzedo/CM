@@ -28,6 +28,8 @@ import java.io.Serializable;
  * Use the {@link EventDetailedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+
+
 public class EventDetailedFragment extends Fragment {
 
     private ImageView ivPOIImage;
@@ -56,14 +58,10 @@ public class EventDetailedFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EventDetailedFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static EventDetailedFragment newInstance(String param1, String param2) {
-        EventDetailedFragment fragment = new EventDetailedFragment();
-        return fragment;
+
+    public static EventDetailedFragment newInstance() {
+        return new EventDetailedFragment();
     }
 
     @Override

@@ -32,7 +32,6 @@ import com.example.christmasapp.utils.Utils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class PointsOfInterestFragment extends Fragment {
 
@@ -46,8 +45,16 @@ public class PointsOfInterestFragment extends Fragment {
     private List<PointOfInterest> pointOfInterestList = new ArrayList<>();
     private List<PointOfInterest> searchPointOfInterestList = new ArrayList<>();
 
+    private boolean created = false;
+
     public static PointsOfInterestFragment newInstance() {
         return new PointsOfInterestFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        created = true;
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -60,7 +67,10 @@ public class PointsOfInterestFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initViewElements(view);
         populateView();
-        fetchPointsOfInterest();
+        if (created) {
+            fetchPointsOfInterest();
+            created = false;
+        }
     }
 
     @Override

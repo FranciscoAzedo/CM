@@ -4,8 +4,6 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.christmasapp.data.database.NotificationsDbHelper;
 import com.example.christmasapp.data.model.PointOfInterest;
@@ -33,13 +31,13 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
 
     private BottomNavigationView navView;
 
-    private NotificationsFragment notificationsFragment = new NotificationsFragment();
-    private PointsOfInterestFragment pointsOfInterestFragment = new PointsOfInterestFragment();
-    private MapFragment mapFragment = new MapFragment();
-    private SubscriptionsFragment subscriptionsFragment = new SubscriptionsFragment();
-    private final EventDetailedFragment eventDetailedFragment = new EventDetailedFragment();
-    private final MonumentDetailedFragment monumentDetailedFragment = new MonumentDetailedFragment();
-    private Fragment active = pointsOfInterestFragment;
+    private NotificationsFragment notificationsFragment;
+    private PointsOfInterestFragment pointsOfInterestFragment;
+    private MapFragment mapFragment;
+    private SubscriptionsFragment subscriptionsFragment;
+    private EventDetailedFragment eventDetailedFragment;
+    private MonumentDetailedFragment monumentDetailedFragment;
+    private Fragment active;
 
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
@@ -75,7 +73,11 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
 
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        changeFragment(PointsOfInterestFragment.newInstance(), PointsOfInterestFragment.class.getSimpleName(), null);
+        pointsOfInterestFragment = PointsOfInterestFragment.newInstance();
+        active = pointsOfInterestFragment;
+
+        changeFragment(pointsOfInterestFragment, PointsOfInterestFragment.class
+                .getSimpleName(), null);
 
         /* Initialize the database singleton instance */
         NotificationsDbHelper.getInstance(this);
@@ -85,34 +87,52 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
 
     public void changeFragment(Fragment fragment, String tagFragmentName, Bundle bundle) {
 
-        FragmentManager mFragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        final Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(tagFragmentName);
 
-        Fragment currentFragment = mFragmentManager.getPrimaryNavigationFragment();
-        if (currentFragment != null) {
-            fragmentTransaction.hide(currentFragment);
+        if ((getSupportFragmentManager().findFragmentByTag(tagFragmentName)) == null) {
+            if (tagFragmentName.equals(PointOfInterest.class.getSimpleName())) {
+                fragment = PointsOfInterestFragment.newInstance();
+                pointsOfInterestFragment = (PointsOfInterestFragment) fragment;
+            } else if (tagFragmentName.equals(MapFragment.class.getSimpleName())) {
+                fragment = MapFragment.newInstance();
+                mapFragment = (MapFragment) fragment;
+            } else if (tagFragmentName.equals(SubscriptionsFragment.class.getSimpleName())) {
+                fragment = SubscriptionsFragment.newInstance();
+                subscriptionsFragment = (SubscriptionsFragment) fragment;
+            } else if (tagFragmentName.equals(EventDetailedFragment.class.getSimpleName())) {
+                fragment = EventDetailedFragment.newInstance();
+                eventDetailedFragment = (EventDetailedFragment) fragment;
+            } else if (tagFragmentName.equals(MonumentDetailedFragment.class.getSimpleName())) {
+                fragment = MonumentDetailedFragment.newInstance();
+                monumentDetailedFragment = (MonumentDetailedFragment) fragment;
+            }  else if (tagFragmentName.equals(NotificationsFragment.class.getSimpleName())) {
+                fragment = NotificationsFragment.newInstance();
+                notificationsFragment = (NotificationsFragment) fragment;
+            }
         }
 
-        Fragment fragmentTemp = mFragmentManager.findFragmentByTag(tagFragmentName);
-        if (fragmentTemp == null) {
-            fragmentTemp = fragment;
-            fragmentTransaction.add(R.id.nav_host_fragment, fragmentTemp, tagFragmentName);
-        } else {
-            fragmentTransaction.show(fragmentTemp);
-        }
-
-        fragmentTemp.setArguments(bundle);
-        fragmentTransaction.setPrimaryNavigationFragment(fragmentTemp);
-        fragmentTransaction.setReorderingAllowed(true);
-        fragmentTransaction.commitNowAllowingStateLoss();
+        active = fragment;
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.nav_host_fragment, fragment, tagFragmentName)
+                .addToBackStack(null)
+                .commit();
+        fragment.setArguments(bundle);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         /* Guarantee the connection to the database is available */
         NotificationsDbHelper.getInstance(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (active instanceof EventDetailedFragment || active instanceof MonumentDetailedFragment)
+            changeFragment(pointsOfInterestFragment, PointsOfInterestFragment.class.getSimpleName(), null);
+        else if (active instanceof NotificationsFragment)
+            changeFragment(subscriptionsFragment, SubscriptionsFragment.class.getSimpleName(), null);
     }
 
     @Override
@@ -249,6 +269,5 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants.ACTIVITY_KEY, this);
         new ReadTopicTask(subscriptionsFragment, bundle).execute();
-
     }
 }

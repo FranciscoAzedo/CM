@@ -24,7 +24,6 @@ import com.example.christmasapp.tasks.ReadTopicTask;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class SubscriptionsFragment extends Fragment implements Serializable {
 
@@ -121,6 +120,7 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
     }
 
     private void populateView() {
+        tvSubscriptionsEmpty.setText("Carregando Subscrições...");
         rvSubscriptionsListLayoutManager = new LinearLayoutManager(getContext());
         rvSubscriptionsList.setLayoutManager(rvSubscriptionsListLayoutManager);
         rvSubscriptionsListAdapter = new SubscriptionListAdapter(topicsList, this);
@@ -130,8 +130,10 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
 
         if (notificationCounter > 0)
             tvNotificationsCount.setText(String.valueOf(notificationCounter));
-        else
+        else {
             tvNotificationsCount.setVisibility(View.INVISIBLE);
+            rvSubscriptionsList.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

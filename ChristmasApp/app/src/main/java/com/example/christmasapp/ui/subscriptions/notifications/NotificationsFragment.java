@@ -34,6 +34,10 @@ public class NotificationsFragment extends Fragment implements Serializable {
     private NotificationListAdapter rvNotificationsListAdapter;
     private LayoutManager rvNotificationsListLayoutManager;
 
+    public static Fragment newInstance() {
+        return new NotificationsFragment();
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_notifications, container, false);
     }

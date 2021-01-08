@@ -1,7 +1,5 @@
 package com.example.christmasapp.ui.pois.Monument_Detailed;
 
-import android.graphics.text.LineBreaker;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,16 +9,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.example.christmasapp.R;
-import com.example.christmasapp.data.model.Event;
 import com.example.christmasapp.data.model.PointOfInterest;
 import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.tasks.DeleteTopicTask;
 import com.example.christmasapp.tasks.ReadPointOfInterestImageTask;
-import com.example.christmasapp.tasks.ReadPointOfInterestInfoTask;
 import com.example.christmasapp.tasks.SaveTopicTask;
 import com.example.christmasapp.utils.Constants;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -52,6 +47,10 @@ public class MonumentDetailedFragment extends Fragment {
 
     public MonumentDetailedFragment() {
         // Required empty public constructor
+    }
+
+    public static Fragment newInstance() {
+        return new MonumentDetailedFragment();
     }
 
     @Override

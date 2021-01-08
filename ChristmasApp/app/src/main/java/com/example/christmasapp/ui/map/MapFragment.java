@@ -96,6 +96,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private boolean isLocationServiceEnabled = false;
     /* [END Permissions] */
 
+    public static MapFragment newInstance() {
+        return new MapFragment();
+    }
+
     /* [START Navigation items] */
     // Navigation listener
     private MapFragmentListener mapFragmentListener;
