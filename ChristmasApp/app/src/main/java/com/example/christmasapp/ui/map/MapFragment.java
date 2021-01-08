@@ -33,9 +33,11 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.christmasapp.R;
+import com.example.christmasapp.data.model.Event;
 import com.example.christmasapp.data.model.Location;
 import com.example.christmasapp.data.model.PointOfInterest;
 import com.example.christmasapp.tasks.ReadPointOfInterestInfoTask;
+import com.example.christmasapp.ui.pois.PointsOfInterestFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,6 +47,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -217,6 +220,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        mMap.setOnInfoWindowClickListener(marker -> {
+            if(marker == null)
+                return;
+
+            String marketTitle = (String) marker.getTag();
+
+            for(int i = 0; i <pointOfInterestList.size(); i++){
+                PointOfInterest poi = pointOfInterestList.get(i);
+
+                if(poi.getName().equals(marketTitle)){
+                    //if (poi instanceof Event)
+                        //pointsOfInterestFragmentListener.toEventDetails(MapFragment.this, poi);
+                    //else
+                        //pointsOfInterestFragmentListener.toMonumentDetails(MapFragment.this, poi);
+                }
+            }
+        });
+
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
 
@@ -231,9 +252,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onMapClick(LatLng latLng) {
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                latLng, 10
-        ));
+        // Not used.
     }
 
     @Override
@@ -263,12 +282,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     public void setPointOnMap(String title, Location location) {
         LatLng poiLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
-        MarkerOptions marker = new MarkerOptions()
-                .position(poiLocation)
-                .title(title)
-                .icon(bitmapDescriptorFromVector(getContext()));
+        MarkerOptions markerOptions = new MarkerOptions()
+                                            .position(poiLocation)
+                                            .title(title)
+                                            .icon(bitmapDescriptorFromVector(getContext()));
 
-        mMap.addMarker(marker);
+        Marker marker = mMap.addMarker(markerOptions);
+        marker.setTag(title);
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context/*, @DrawableRes int vectorDrawableResourceId*/) {

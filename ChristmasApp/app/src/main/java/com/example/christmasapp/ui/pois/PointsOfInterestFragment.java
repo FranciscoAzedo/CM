@@ -133,12 +133,10 @@ public class PointsOfInterestFragment extends Fragment {
         poIRecyclerViewAdapter.setOnItemClickListener(index -> {
             PointOfInterest poi = searchPointOfInterestList.get(index);
 
-            /* SUBSTITUTIR ISTO URGENTE! */
-            if (poi instanceof Event) {
+            if (poi instanceof Event)
                 pointsOfInterestFragmentListener.toEventDetails(this, poi);
-            } else  {
+            else
                 pointsOfInterestFragmentListener.toMonumentDetails(this, poi);
-            }
         });
 
         poIRecyclerViewAdapter.setOnIconClickListener(index -> {
