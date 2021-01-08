@@ -1,56 +1,69 @@
 package com.example.christmasapp;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
 
-import com.example.christmasapp.data.database.NotificationsDbHelper;
-import com.example.christmasapp.data.model.PointOfInterest;
-import com.example.christmasapp.helpers.SharedPreferencesHelper;
-import com.example.christmasapp.ui.pois.Event_Detailed.EventDetailedFragment;
-import com.example.christmasapp.ui.pois.Monument_Detailed.MonumentDetailedFragment;
-import com.example.christmasapp.utils.Constants;
-import com.example.christmasapp.helpers.MqttHelper;
-import com.example.christmasapp.tasks.ReadNotificationTask;
-import com.example.christmasapp.tasks.ReadTopicTask;
-import com.example.christmasapp.ui.map.MapFragment;
-import com.example.christmasapp.ui.subscriptions.SubscriptionsFragment;
-import com.example.christmasapp.ui.pois.PointsOfInterestFragment;
-import com.example.christmasapp.ui.subscriptions.notifications.NotificationsFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import java.io.Serializable;
+import com.example.christmasapp.data.database.NotificationsDbHelper;
+import com.example.christmasapp.data.model.PointOfInterest;
+import com.example.christmasapp.helpers.MqttHelper;
+import com.example.christmasapp.helpers.SharedPreferencesHelper;
+import com.example.christmasapp.tasks.ReadNotificationTask;
+import com.example.christmasapp.tasks.ReadTopicTask;
+import com.example.christmasapp.ui.map.MapFragment;
+import com.example.christmasapp.ui.pois.Event_Detailed.EventDetailedFragment;
+import com.example.christmasapp.ui.pois.Monument_Detailed.MonumentDetailedFragment;
+import com.example.christmasapp.ui.pois.PointsOfInterestFragment;
+import com.example.christmasapp.ui.subscriptions.SubscriptionsFragment;
+import com.example.christmasapp.ui.subscriptions.notifications.NotificationsFragment;
+import com.example.christmasapp.utils.Constants;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import static com.example.christmasapp.utils.Constants.REQUEST_LOCATION;
+import java.io.Serializable;
 
 public class ChristmasActivity extends AppCompatActivity implements NotificationManager,
         MapFragment.MapFragmentListener,
         SubscriptionsFragment.SubscriptionsFragmentListener,
-                                                            PointsOfInterestFragment.PointsOfInterestFragmentListener,
+        PointsOfInterestFragment.PointsOfInterestFragmentListener,
         NotificationsFragment.NotificationFragmentListener,
-                                                            Serializable {
+        Serializable {
 
+    private final EventDetailedFragment eventDetailedFragment = new EventDetailedFragment();
+    private final MonumentDetailedFragment monumentDetailedFragment = new MonumentDetailedFragment();
     private BottomNavigationView navView;
-
     private NotificationsFragment notificationsFragment = new NotificationsFragment();
-
     private PointsOfInterestFragment pointsOfInterestFragment;
     private MapFragment mapFragment = new MapFragment();
     private SubscriptionsFragment subscriptionsFragment = new SubscriptionsFragment();
     private Fragment active = pointsOfInterestFragment;
-    private final EventDetailedFragment eventDetailedFragment = new EventDetailedFragment();
-    private final MonumentDetailedFragment monumentDetailedFragment = new MonumentDetailedFragment();
+    private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = item -> {
+        int itemID = item.getItemId();
+
+        switch (itemID) {
+            case R.id.navigation_points_of_interest:
+                changeFragment(new PointsOfInterestFragment(), PointsOfInterestFragment.class
+                        .getSimpleName(), null);
+                active = pointsOfInterestFragment;
+                return true;
+
+            case R.id.navigation_map:
+                changeFragment(new MapFragment(), MapFragment.class
+                        .getSimpleName(), null);
+                active = mapFragment;
+                return true;
+
+            case R.id.navigation_subscriptions:
+                changeFragment(new SubscriptionsFragment(), SubscriptionsFragment.class
+                        .getSimpleName(), null);
+                active = subscriptionsFragment;
+                return true;
+        }
+        return false;
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,32 +104,6 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         fragmentTransaction.setReorderingAllowed(true);
         fragmentTransaction.commitNowAllowingStateLoss();
     }
-
-    private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = item -> {
-        int itemID = item.getItemId();
-
-        switch (itemID) {
-            case R.id.navigation_points_of_interest:
-                changeFragment(new PointsOfInterestFragment(), PointsOfInterestFragment.class
-                        .getSimpleName(), null);
-                active = pointsOfInterestFragment;
-                return true;
-
-            case R.id.navigation_map:
-                changeFragment(new MapFragment(), MapFragment.class
-                        .getSimpleName(), null);
-                active = mapFragment;
-                return true;
-
-            case R.id.navigation_subscriptions:
-                changeFragment(new SubscriptionsFragment(), SubscriptionsFragment.class
-                        .getSimpleName(), null);
-                active = subscriptionsFragment;
-                return true;
-        }
-        return false;
-    };
 
     @Override
     protected void onResume() {
@@ -168,7 +155,7 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         updateTopicsList();
     }
 
-    private void addNewNotification(){
+    private void addNewNotification() {
         if (active instanceof NotificationsFragment)
             new ReadNotificationTask(notificationsFragment).execute();
         else {
@@ -213,7 +200,7 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
         this.pointsOfInterestFragment = pointsOfInterestFragment;
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, (Serializable) poi);
+        bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, poi);
 
         changeFragment(monumentDetailedFragment, MonumentDetailedFragment.class.getSimpleName(), bundle);
         this.active = monumentDetailedFragment;
@@ -223,16 +210,17 @@ public class ChristmasActivity extends AppCompatActivity implements Notification
     public void toEventDetails(PointsOfInterestFragment pointsOfInterestFragment, PointOfInterest poi) {
         this.pointsOfInterestFragment = pointsOfInterestFragment;
         Bundle bundle = new Bundle();
-        bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, (Serializable) poi);
+        bundle.putSerializable(Constants.POI_OBJECT_BUNDLE, poi);
 
         changeFragment(eventDetailedFragment, EventDetailedFragment.class.getSimpleName(), bundle);
         this.active = eventDetailedFragment;
     }
 
-    private void updateNotificationsView(Bundle bundle){
+    private void updateNotificationsView(Bundle bundle) {
         NotificationsFragment notificationsFragment = (NotificationsFragment) bundle.getSerializable(Constants.NOTIFICATION_FRAGMENT_KEY);
         new ReadNotificationTask(notificationsFragment).execute();
     }
+
     private void updateTopicsList() {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants.ACTIVITY_KEY, this);

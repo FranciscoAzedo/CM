@@ -182,7 +182,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         isLocationServiceEnabled = getLocationServiceStatus();
 
         if(getLocationServiceStatus() && mMap != null)
-            updateLocationUI(); 
+            updateLocationUI();
 
     }
 

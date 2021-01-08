@@ -12,11 +12,19 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.christmasapp.R;
+import com.example.christmasapp.data.model.Event;
 import com.example.christmasapp.data.model.PointOfInterest;
 import com.example.christmasapp.data.model.Topic;
 import com.example.christmasapp.tasks.DeleteTopicTask;
 import com.example.christmasapp.tasks.SaveTopicTask;
 import com.example.christmasapp.utils.Constants;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.Serializable;
 
@@ -31,6 +39,9 @@ public class MonumentDetailedFragment extends Fragment {
     private TextView tvPoILocationName;
     private TextView tvPoIDescription;
     private ImageView ivPoIThumb;
+    private MapView mMapView;
+
+    private GoogleMap googleMap;
 
     public MonumentDetailedFragment() {
         // Required empty public constructor
@@ -52,7 +63,36 @@ public class MonumentDetailedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_monument_detailed, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_monument_detailed, container, false);
+
+        mMapView = (MapView) rootView.findViewById(R.id.poi_map);
+        mMapView.onCreate(savedInstanceState);
+
+        mMapView.onResume(); // needed to get the map to display immediately
+
+        try {
+            MapsInitializer.initialize(getActivity().getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        mMapView.getMapAsync(mMap -> {
+            googleMap = mMap;
+
+            // Block map UI from user
+            mMap.getUiSettings().setAllGesturesEnabled(false);
+            mMap.setOnMapClickListener(null);
+
+            // For dropping a marker at a point on the Map
+            LatLng eventMarker = new LatLng(pointOfInterest.getLocation().getLatitude(), pointOfInterest.getLocation().getLongitude());
+            googleMap.addMarker(new MarkerOptions().position(eventMarker));
+
+            // For zooming automatically to the location of the marker
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(eventMarker).zoom(12).build();
+            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        });
+
+        return rootView;
     }
 
     @Override

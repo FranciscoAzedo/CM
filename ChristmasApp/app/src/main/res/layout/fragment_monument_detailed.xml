@@ -80,15 +80,12 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 />
 
-
-            <ImageView
+            <com.google.android.gms.maps.MapView
                 android:id="@+id/poi_map"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_marginTop="30dp"
-                android:background="@color/background_bar"
-                app:layout_constraintTop_toBottomOf="@id/poi_description"
-                />
+                app:layout_constraintTop_toBottomOf="@id/poi_description"/>
 
             <ImageView
                 android:layout_width="0dp"
@@ -98,9 +95,7 @@
                 app:layout_constraintTop_toBottomOf="@id/poi_map"
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </ScrollView>
-
-
-
 
 </LinearLayout>
