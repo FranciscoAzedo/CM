@@ -1,5 +1,8 @@
 package com.example.christmasapp.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import com.example.christmasapp.data.database.NotificationsDbHelper;
@@ -17,6 +20,14 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class Utils {
+
+    public static boolean isOnline(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
 
     public static boolean updateNotifications(String operation, Bundle bundle) {
         if (operation != null)

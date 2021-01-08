@@ -1,16 +1,22 @@
 package com.example.christmasapp.ui.pois;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,6 +54,20 @@ public class PointsOfInterestFragment extends Fragment {
     private List<PointOfInterest> searchPointOfInterestList = new ArrayList<>();
 
     private boolean created = false;
+    private boolean isNetworkAvailable = false;
+
+    // Broadcast Receiver to handles connectivity changes (enabled/disabled)
+    private final BroadcastReceiver networkReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                String action = intent.getAction();
+
+                if(!TextUtils.isEmpty(action) && action.matches("android.net.conn.CONNECTIVITY_CHANGE"))
+                    isNetworkAvailable = Utils.isOnline(getContext());
+            }
+        }
+    };
 
     public static PointsOfInterestFragment newInstance() {
         return new PointsOfInterestFragment();
@@ -105,13 +125,31 @@ public class PointsOfInterestFragment extends Fragment {
         pointsOfInterestFragmentListener = null;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Register broadcast receiver to be aware of changes on connectivity status
+        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        getContext().registerReceiver(networkReceiver, intentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        // Unregister the broadcast receiver for changes on connectivity status
+        getContext().unregisterReceiver(networkReceiver);
+
+        super.onPause();
+    }
+
     public void updatePointOfInterestInfo(List<PointOfInterest> pointOfInterestList) {
         this.pointOfInterestList.clear();
         this.pointOfInterestList.addAll(pointOfInterestList);
         updateSearchPointOfInterestList();
         poIRecyclerViewAdapter.notifyDataSetChanged();
         for(PointOfInterest pointOfInterest : pointOfInterestList) {
-            new ReadPointOfInterestImageTask(this, pointOfInterest).execute();
+            if(isNetworkAvailable)
+                new ReadPointOfInterestImageTask(this, pointOfInterest).execute();
         }
 
     }
@@ -127,6 +165,8 @@ public class PointsOfInterestFragment extends Fragment {
         tvTotalPOIs = view.findViewById(R.id.count_points_of_interest);
         swipeRefreshLayout = view.findViewById(R.id.pullToRefresh);
 
+        // Get the current network status
+        isNetworkAvailable = Utils.isOnline(requireContext());
     }
 
     private void populateView() {
@@ -212,17 +252,10 @@ public class PointsOfInterestFragment extends Fragment {
 
         tvTotalPOIs.setText(searchPointOfInterestList.size() + " resultado(s) encontrado(s)");
     }
-
-
-    public boolean isOnline(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        //should check null because in airplane mode it will be null
-        return (netInfo != null && netInfo.isConnected());
-    }
-
+    
     private void fetchPointsOfInterest() {
-        new ReadPointOfInterestInfoTask(this).execute();
+        if(isNetworkAvailable)
+            new ReadPointOfInterestInfoTask(this).execute();
     }
 
     public interface PointsOfInterestFragmentListener {
