@@ -68,6 +68,10 @@ public class ReadPointOfInterestInfoTask extends AsyncTask<Void, Void, Void> {
     }
 
     private void rawListToList(EventsAndMonumentsDTO eventsAndMonumentsDTO) {
+
+        if (eventsAndMonumentsDTO == null)
+            return;
+
         List<PointOfInterest> pointOfInterestList = Mapper.poiMapper(eventsAndMonumentsDTO.getPointsOfInterest());
         List<Event> eventList = Mapper.eventMapper(eventsAndMonumentsDTO.getEvents());
 

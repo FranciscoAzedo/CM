@@ -118,7 +118,7 @@ public class MonumentDetailedFragment extends Fragment {
     }
 
     private void checkIfImageExists() {
-        if(pointOfInterest.getBitmap() == null) {
+        if(pointOfInterest != null && pointOfInterest.getBitmap() == null) {
             new ReadPointOfInterestImageTask(this, pointOfInterest).execute();
         }
     }

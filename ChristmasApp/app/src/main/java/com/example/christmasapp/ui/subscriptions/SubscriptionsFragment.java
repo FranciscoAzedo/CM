@@ -24,6 +24,8 @@ import com.example.christmasapp.tasks.ReadPointOfInterestInfoTask;
 import com.example.christmasapp.ui.pois.PointsOfInterestFragment;
 import com.example.christmasapp.utils.Constants;
 import com.example.christmasapp.tasks.ReadTopicTask;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -139,10 +141,17 @@ public class SubscriptionsFragment extends Fragment implements Serializable {
 
         rvSubscriptionsListAdapter.setOnItemClickListener(index -> {
             PointOfInterest pointOfInterest = getPointOfInterestByName(topicsList.get(index).getName());
-            if (pointOfInterest instanceof Event)
-                subscriptionsFragmentListener.subscriptionToEventDetails(this, pointOfInterest);
-            else
-                subscriptionsFragmentListener.subscriptionToMonumentDetails(this, pointOfInterest);
+            if(pointOfInterest != null) {
+                if (pointOfInterest instanceof Event)
+                    subscriptionsFragmentListener.subscriptionToEventDetails(this, pointOfInterest);
+                else
+                    subscriptionsFragmentListener.subscriptionToMonumentDetails(this, pointOfInterest);
+            }
+            else {
+                Snackbar
+                        .make(getView(), "Ocorreu um erro durante o processo", BaseTransientBottomBar.LENGTH_SHORT)
+                        .show();
+            }
         });
 
         notificationCounter = SharedPreferencesHelper.getInstance(getActivity()).getNotifications(Constants.NOTIFICATIONS_KEY);
