@@ -55,6 +55,7 @@
                     android:layout_height="20dp"
                     android:text="9+"
                     android:textAlignment="center"
+                    android:textColor="@color/white"
                     android:background="@drawable/background_round_corner_orange"
                     android:layout_gravity="top|end"/>
             </FrameLayout>
