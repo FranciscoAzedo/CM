@@ -256,20 +256,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     public void fetchPOIsOnMap(List<PointOfInterest> pointOfInterestList) {
-        for (int i = 0; i < pointOfInterestList.size(); i++) {
-            // [SUBSTITUIR]
-            pointOfInterestList.get(i).getLocation().setLatitude(39.694784);
-            pointOfInterestList.get(i).getLocation().setLongitude(-8.130301);
+        for (int i = 0; i < pointOfInterestList.size(); i++)
             setPointOnMap(pointOfInterestList.get(i).getName(), pointOfInterestList.get(i).getLocation());
-        }
-        //new ReadPOIImageTask(MapFragment.this, pointOfInterestList.get(i).getImageUrl(), i).execute();
-    }
-
-    public void fetchImageOnPOI(int index, Bitmap bitmap) {
-        final PointOfInterest pointOfInterest = pointOfInterestList.get(index);
-        pointOfInterest.setBitmap(bitmap);
-
-        //setPointOnMap(pointOfInterest.getName(), pointOfInterest.getLocation(), bitmap);
     }
 
     public void setPointOnMap(String title, Location location) {
@@ -281,8 +269,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 .icon(bitmapDescriptorFromVector(getContext()));
 
         mMap.addMarker(marker);
-
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(poiLocation));
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context/*, @DrawableRes int vectorDrawableResourceId*/) {
